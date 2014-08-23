@@ -50,6 +50,8 @@
       <src path="image.hpp"/>
       <src path="pack.cpp"/>
       <src path="pack.hpp"/>
+      <src path="random.cpp"/>
+      <src path="random.hpp"/>
       <src path="shader.cpp"/>
       <src path="shader.hpp"/>
       <src path="sprite.hpp"/>
