@@ -54,6 +54,11 @@ struct Texture {
     float scale[2];
 
     Texture();
+    Texture(const Texture &other) = delete;
+    Texture(Texture &&);
+    ~Texture();
+    Texture &operator=(const Texture &) = delete;
+    Texture &operator=(Texture &&other);
 
     /// Load an image as a 2-dimensional texture.
     static Texture load(const std::string &path);

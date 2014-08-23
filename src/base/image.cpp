@@ -85,6 +85,35 @@ Texture Texture::load(const std::string &path) {
     return Texture::load(image);
 }
 
+Texture::Texture(Texture &&other)
+    : tex(other.tex),
+      iwidth(other.iwidth), iheight(other.iheight),
+      twidth(other.twidth), theight(other.theight) {
+    scale[0] = other.scale[0];
+    scale[1] = other.scale[1];
+}
+
+Texture::~Texture() {
+    if (tex)
+        glDeleteTextures(1, &tex);
+}
+
+Texture &Texture::operator=(Texture &&other) {
+    if (this == &other)
+        return *this;
+    if (tex)
+        glDeleteTextures(1, &tex);
+    tex      = other.tex;
+    iwidth   = other.iwidth;
+    iheight  = other.iheight;
+    twidth   = other.twidth;
+    theight  = other.theight;
+    scale[0] = other.scale[0];
+    scale[1] = other.scale[1];
+    other.tex = 0;
+    return *this;
+}
+
 Texture Texture::load(const Image &image) {
     Texture tex;
 
@@ -106,8 +135,8 @@ Texture Texture::load(const Image &image) {
         tex.twidth,
         tex.theight,
         0,
-        GL_BGRA,
-        GL_UNSIGNED_INT_8_8_8_8_REV,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
         nullptr);
     glTexSubImage2D(
         GL_TEXTURE_2D,
@@ -116,8 +145,8 @@ Texture Texture::load(const Image &image) {
         0,
         tex.iwidth,
         tex.iheight,
-        GL_BGRA,
-        GL_UNSIGNED_INT_8_8_8_8_REV,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
         image->data);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -151,15 +180,15 @@ Texture Texture::load_1d(const Image &image) {
         GL_RGBA8,
         tex.twidth,
         0,
-        GL_BGRA,
-        GL_UNSIGNED_INT_8_8_8_8_REV,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
         nullptr);
     glTexSubImage1D(
         GL_TEXTURE_1D,
         0,
         0,
         tex.iwidth,
-        GL_BGRA,
+        GL_RGBA,
         GL_UNSIGNED_INT_8_8_8_8_REV,
         image->data);
     glBindTexture(GL_TEXTURE_1D, 0);

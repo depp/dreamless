@@ -4,6 +4,7 @@
 #ifndef LD_BASE_SPRITE_HPP
 #define LD_BASE_SPRITE_HPP
 #include "array.hpp"
+#include "image.hpp"
 #include "sg/opengl.h"
 #include <array>
 #include <cstdlib>
@@ -35,27 +36,21 @@ struct Sprite {
 class SpriteSheet {
 private:
     std::vector<SpriteRect> m_sprites;
-    GLuint m_texture;
-    int m_width, m_height;
-    float m_texscale[2];
+    Texture m_texture;
 
 public:
     SpriteSheet();
     SpriteSheet(const std::string &dirname, const Sprite *sprites);
     SpriteSheet(const SpriteSheet &other) = delete;
-    SpriteSheet(SpriteSheet &&other);
+    SpriteSheet(SpriteSheet &&other) = default;
     ~SpriteSheet();
     SpriteSheet &operator=(const SpriteSheet &other) = delete;
-    SpriteSheet &operator=(SpriteSheet &&other);
+    SpriteSheet &operator=(SpriteSheet &&other) = default;
 
     /// Get the texture object containing the sprites.
-    GLuint texture() const { return m_texture; }
-    /// Get the width of the texture.
-    int width() const { return m_width; }
-    /// Get the height of the texture.
-    int height() const { return m_height; }
+    GLuint texture() const { return m_texture.tex; }
     /// Get the factor to convert pixel coordinates to texture coordinates.
-    const float *texscale() const { return m_texscale; }
+    const float *texscale() const { return m_texture.scale; }
     /// Get the rectangle containing the given sprite.
     SpriteRect get(int index) const { return m_sprites.at(index); }
 };
