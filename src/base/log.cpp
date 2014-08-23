@@ -1,3 +1,6 @@
+/* Copyright 2014 Dietrich Epp.
+   This file is part of Dreamless.  Dreamless is licensed under the terms
+   of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "log.hpp"
 #include "sg/log.h"
 #include "sg/entry.h"

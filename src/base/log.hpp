@@ -1,3 +1,8 @@
+/* Copyright 2014 Dietrich Epp.
+   This file is part of Dreamless.  Dreamless is licensed under the terms
+   of the 2-clause BSD license.  For more information, see LICENSE.txt. */
+#ifndef LD_BASE_LOG_HPP
+#define LD_BASE_LOG_HPP
 #include "sg/attribute.h"
 namespace Base {
 
@@ -27,3 +32,4 @@ struct Log {
 };
 
 }
+#endif
