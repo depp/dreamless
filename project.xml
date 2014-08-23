@@ -19,11 +19,37 @@
   <module type="sglib">
     <key name="name">Dreamless</key>
     <key name="uuid">341c1cb2-abdc-490a-b0aa-115d4c634aa9</key>
+    <header-path path="src"/>
     <require module="math"/>
     <group path="src/game">
       <src path="main.cpp"/>
+      <src path="graphics.hpp"/>
+      <src path="graphics.cpp"/>
+      <src path="graphics_common.hpp"/>
+      <src path="graphics_common.cpp"/>
+      <src path="graphics_sprite.hpp"/>
+      <src path="graphics_sprite.cpp"/>
+      <src path="shader.cpp"/>
+      <src path="shader.hpp"/>
+      <src path="sprite.cpp"/>
+      <src path="sprite.hpp"/>
+      <src path="sprite_array.hpp"/>
+      <src path="sprite_enum.hpp"/>
     </group>
     <group path="src/base">
+      <src path="array.hpp"/>
+      <src path="file.cpp"/>
+      <src path="file.hpp"/>
+      <src path="image.cpp"/>
+      <src path="image.hpp"/>
+      <src path="pack.cpp"/>
+      <src path="pack.hpp"/>
+      <src path="shader.cpp"/>
+      <src path="shader.hpp"/>
+      <src path="sprite.hpp"/>
+      <src path="sprite_array.cpp"/>
+      <src path="sprite_sheet.cpp"/>
+      <src path="sprite_orientation.cpp"/>
     </group>
   </module>
 </build>
