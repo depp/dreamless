@@ -10,15 +10,25 @@ class System;
 }
 namespace Game {
 
+enum TileType {
+    /// Free movement.
+    OPEN,
+
+    /// Completely solid.
+    SOLID
+};
+
 /// Level data.
 class Level {
     struct TileInfo {
         unsigned char c;
         Tile tile;
+        TileType type;
     };
 
     static bool is_initialized;
     static const TileInfo TILES_RAW[];
+    static const TileInfo TILE_SOLID;
     static TileInfo TILES[256];
 
     int m_width;
@@ -28,6 +38,15 @@ class Level {
     static const TileInfo &tile_info(unsigned char tile) {
         return TILES[tile];
     }
+
+    const TileInfo &tile_at(IVec pos) const {
+        if (pos.x < 0 || pos.y < 0 || pos.x >= m_width || pos.y >= m_width)
+            return TILE_SOLID;
+        return tile_info(m_data[m_width * pos.y + pos.x]);
+    }
+
+    static float tile_floor(TileType type, float relx);
+    float tile_floor(IVec pos, float relx);
 
 public:
     Level();
@@ -39,6 +58,9 @@ public:
 
     void load(const std::string &name);
     void draw(::Graphics::System &gr) const;
+
+    /// Get the Y position of the nearest floor.
+    float find_floor(FVec pos);
 };
 
 }

@@ -32,6 +32,8 @@
       <src path="level.cpp"/>
       <src path="level.hpp"/>
       <src path="main.cpp"/>
+      <src path="physics.cpp"/>
+      <src path="physics.hpp"/>
       <src path="player.cpp"/>
       <src path="player.hpp"/>
       <src path="screen.cpp"/>

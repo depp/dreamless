@@ -4,11 +4,19 @@
 #include "player.hpp"
 namespace Game {
 
+const Walker::Stats Player::STATS = {
+    // ground accel, speed
+    1200, 120,
+    // air accel, speed
+    300, 150,
+
+    // jump time, accel, speed, gravity, doublejump
+    25, 400.0f, 180.0f, 600.0f, true
+};
+
 Player::Player(GameScreen &scr, IVec pos)
-    : Entity(scr, Team::FRIEND) {
-    m_pos = (FVec) pos;
-    m_pos0 = m_pos;
-}
+    : Entity(scr, Team::FRIEND), m_mover(pos), m_walker()
+{ }
 
 Player::~Player()
 { }
@@ -16,16 +24,14 @@ Player::~Player()
 void Player::update(unsigned time) {
     (void) time;
 
-    m_pos0 = m_pos;
-    float xaxis = m_screen.control().get_xaxis();
-    // float yaxis = m_screen.control().get_yaxis();
-    m_pos.x += xaxis * Defs::velocity(32 * 5);
+    m_walker.update(
+        STATS, m_mover, m_screen.control().get_2d());
 }
 
 void Player::draw(::Graphics::System &gr, int delta) const {
     gr.add_sprite(
         Sprite::KNIGHT_1,
-        Defs::interp(m_pos0, m_pos, delta),
+        m_mover.drawpos(delta),
         Orientation::NORMAL,
         Layer::Sprite1);
 }

@@ -3,6 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #ifndef LD_GAME_CONTROL_HPP
 #define LD_GAME_CONTROL_HPP
+#include "base/vec.hpp"
 namespace Game {
 
 enum class Button {
@@ -32,10 +33,8 @@ public:
     bool any_button_instant() const;
     /// Set the state for a key.
     void set_button(Button k, bool state);
-    /// Get the x-axis state, in the range [-1,1].
-    float get_xaxis() const;
-    /// Get the y-axis state, in the range [-1,1].
-    float get_yaxis() const;
+    /// Get the x-axis and y-axis state, each in the range [-1,+1].
+    Base::FVec get_2d() const;
 };
 
 }

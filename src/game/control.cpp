@@ -60,12 +60,10 @@ void ControlState::set_button(Button k, bool state) {
     }
 }
 
-float ControlState::get_xaxis() const {
-    return button_to_axis(Button::LEFT, Button::RIGHT);
-}
-
-float ControlState::get_yaxis() const {
-    return button_to_axis(Button::DOWN, Button::UP);
+Base::FVec ControlState::get_2d() const {
+    return Base::FVec(
+        button_to_axis(Button::LEFT, Button::RIGHT),
+        button_to_axis(Button::DOWN, Button::UP));
 }
 
 }

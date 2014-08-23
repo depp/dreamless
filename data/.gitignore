@@ -3,3 +3,6 @@
 
 # GIMP sources
 *.xcf
+
+# Raw PCM
+*.wav

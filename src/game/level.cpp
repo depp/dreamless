@@ -15,13 +15,34 @@ namespace Game {
 bool Level::is_initialized;
 
 const Level::TileInfo Level::TILES_RAW[] = {
-    { ' ', Tile::NONE },
-    { '#', Tile::REAL_1 },
+    { ' ', Tile::NONE,   TileType::OPEN  },
+    { '#', Tile::REAL_1, TileType::SOLID },
 
-    { '\0', Tile::NONE }
+    { '\0', Tile::NONE,  TileType::OPEN  }
+};
+
+const Level::TileInfo Level::TILE_SOLID = {
+    '\0', Tile::NONE, TileType::SOLID
 };
 
 Level::TileInfo Level::TILES[256];
+
+float Level::tile_floor(TileType type, float relx) {
+    (void) relx;
+    switch (type) {
+    case TileType::OPEN:
+        return 0.0f;
+    case TileType::SOLID:
+        return 32.0f;
+    }
+    Log::abort("invalid tile type");
+    return 0.0f;
+}
+
+float Level::tile_floor(IVec pos, float relx) {
+    auto &info = tile_at(pos);
+    return tile_floor(info.type, relx);
+}
 
 Level::Level()
     : m_width(0), m_height(0), m_data(nullptr) {
@@ -144,6 +165,17 @@ void Level::draw(::Graphics::System &gr) const {
                 gr.add_sprite(tile, pos, Orientation::NORMAL, Layer::World1);
         }
     }
+}
+
+float Level::find_floor(FVec pos) {
+    IVec tile = Defs::tile_pos(pos);
+    FVec rel = Defs::tile_relpos(pos);
+    float floor = tile_floor(tile, rel.x);
+    if (floor <= 0)
+        floor = tile_floor(tile + IVec(0, -1), rel.x) - Defs::TILESZ;
+    else if (floor >= Defs::TILESZ)
+        floor = tile_floor(tile + IVec(0, -1), rel.x) + Defs::TILESZ;
+    return floor + Defs::TILESZ * tile.y;
 }
 
 }

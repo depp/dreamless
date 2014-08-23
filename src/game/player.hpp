@@ -4,10 +4,14 @@
 #ifndef LD_GAME_PLAYER_HPP
 #define LD_GAME_PLAYER_HPP
 #include "entity.hpp"
+#include "physics.hpp"
 namespace Game {
 
 class Player : public Entity {
-    FVec m_pos, m_pos0;
+    static const Walker::Stats STATS;
+
+    Mover m_mover;
+    Walker m_walker;
 
 public:
     Player(GameScreen &scr, IVec pos);
