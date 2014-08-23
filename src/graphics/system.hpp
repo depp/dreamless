@@ -6,6 +6,7 @@
 #include <memory>
 namespace Base {
 enum class Orientation;
+class IVec;
 }
 namespace Graphics {
 class AnySprite;
@@ -35,7 +36,7 @@ public:
     /// Draw the world.
     void draw();
     /// Add a sprite to the world.
-    void add_sprite(AnySprite sp, int x, int y,
+    void add_sprite(AnySprite sp, Base::IVec pos,
                     Base::Orientation orientation,
                     bool screen=false);
 };

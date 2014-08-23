@@ -6,6 +6,7 @@
 #include "scaler.hpp"
 #include "sprite_layer.hpp"
 #include "sprite.hpp"
+#include "base/vec.hpp"
 namespace Graphics {
 
 namespace {
@@ -50,13 +51,13 @@ void System::draw() {
     m_scaler->end(*m_common);
 }
 
-void System::add_sprite(AnySprite sp, int x, int y,
+void System::add_sprite(AnySprite sp, Base::IVec pos,
                         Base::Orientation orientation,
                         bool screen) {
     auto &arr = screen ? m_sprite->m_screen : m_sprite->m_world;
     arr.add(
         m_sprite->m_sheet.get(static_cast<int>(sp)),
-        x, y, orientation);
+        pos.x, pos.y, orientation);
 }
 
 }
