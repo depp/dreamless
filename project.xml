@@ -27,6 +27,8 @@
     <group path="src/graphics">
       <src path="common.cpp"/>
       <src path="common.hpp"/>
+      <src path="scaler.cpp"/>
+      <src path="scaler.hpp"/>
       <src path="shader.cpp"/>
       <src path="shader.hpp"/>
       <src path="sprite.cpp"/>

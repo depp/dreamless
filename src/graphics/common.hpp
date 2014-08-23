@@ -8,6 +8,7 @@ namespace Graphics {
 
 struct CommonData {
     Base::Program<Shader::Sprite> m_sprite;
+    Base::Program<Shader::Television> m_television;
 
     float m_xform_world[4];
     float m_xform_screen[4];

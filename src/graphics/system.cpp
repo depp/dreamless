@@ -3,6 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "system.hpp"
 #include "common.hpp"
+#include "scaler.hpp"
 #include "sprite_layer.hpp"
 #include "sprite.hpp"
 namespace Graphics {
@@ -18,7 +19,8 @@ void make_xform(float *xform, int w, int h, int x, int y) {
 
 System::System()
     : m_common(new CommonData),
-      m_sprite(new SpriteLayer)
+      m_sprite(new SpriteLayer),
+      m_scaler(new Scaler)
 { }
 
 System::~System()
@@ -35,14 +37,16 @@ void System::end() {
 }
 
 void System::draw() {
-    make_xform(m_common->m_xform_world, m_width, m_height, 0, 0);
-    make_xform(m_common->m_xform_screen, m_width, m_height, 0, 0);
+    int width = (m_width + 1) / 2, height = (m_height + 1) / 2;
+    m_scaler->begin(m_width, m_height, width, height);
 
-    glViewport(0, 0, m_width, m_height);
+    make_xform(m_common->m_xform_world, width, height, 0, 0);
+    make_xform(m_common->m_xform_screen, width, height, 0, 0);
+
     glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
     m_sprite->draw(*m_common);
+    m_scaler->end(*m_common);
 }
 
 void System::add_sprite(AnySprite sp, int x, int y,

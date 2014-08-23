@@ -5,7 +5,8 @@
 namespace Graphics {
 
 CommonData::CommonData()
-    : m_sprite("sprite", "sprite")
+    : m_sprite("sprite", "sprite"),
+      m_television("tv", "tv")
 { }
 
 }

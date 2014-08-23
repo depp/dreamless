@@ -11,11 +11,13 @@ namespace Graphics {
 class AnySprite;
 struct CommonData;
 struct SpriteLayer;
+struct Scaler;
 
 class System {
 private:
     std::unique_ptr<CommonData> m_common;
     std::unique_ptr<SpriteLayer> m_sprite;
+    std::unique_ptr<Scaler> m_scaler;
     int m_width, m_height;
 
 public:

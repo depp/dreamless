@@ -1,1 +1,5 @@
+# Pixelmator sources
 *.pxm
+
+# GIMP sources
+*.xcf

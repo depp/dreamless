@@ -53,9 +53,6 @@ const ShaderField Text::ATTRIBUTES[] = {
 const ShaderField Television::UNIFORMS[] = {
     FIELD(u_picture),
     FIELD(u_pattern),
-    FIELD(u_banding),
-    FIELD(u_noise),
-    FIELD(u_noiseoffset),
     FIELD(u_texscale),
     FIELD(u_color),
     { nullptr, 0 }
