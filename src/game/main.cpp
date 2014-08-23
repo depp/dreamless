@@ -27,7 +27,7 @@ public:
     static Main *main;
 
     Main() :m_logger(sg_logger_get("game")), m_initted(false) {
-        m_screen.reset(new GameScreen("01"));
+        m_screen.reset(new GameScreen(m_control, "01"));
     }
 
     void event(union sg_event *evt) {
@@ -76,7 +76,7 @@ private:
             unsigned utime =
                 m_frametime + (i - nframes + 1) * Defs::FRAMETIME;
             sg_mixer_settime(utime);
-            m_screen->update(utime, m_control);
+            m_screen->update(utime);
             sg_mixer_commit();
             m_control.update();
         }

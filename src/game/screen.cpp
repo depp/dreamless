@@ -4,15 +4,15 @@
 #include "screen.hpp"
 namespace Game {
 
-Screen::Screen()
+Screen::Screen(const ControlState &ctl)
+    : m_control(ctl)
 { }
 
 Screen::~Screen()
 { }
 
-void Screen::update(unsigned time, const ControlState &ctl) {
+void Screen::update(unsigned time) {
     (void) time;
-    (void) &ctl;
 }
 
 }

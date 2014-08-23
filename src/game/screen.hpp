@@ -10,15 +10,19 @@ namespace Game {
 class ControlState;
 
 class Screen {
+private:
+    const ControlState &m_control;
+
 public:
-    Screen();
+    Screen(const ControlState &ctl);
     Screen(const Screen &) = delete;
     Screen(Screen &&) = delete;
     virtual ~Screen();
     Screen &operator=(const Screen &) = delete;
     Screen &operator=(Screen &&) = delete;
     virtual void draw(::Graphics::System &gr, int delta) = 0;
-    virtual void update(unsigned time, const ControlState &ctl);
+    virtual void update(unsigned time);
+    const ControlState &control() const { return m_control; }
 };
 
 }

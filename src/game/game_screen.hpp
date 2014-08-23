@@ -12,11 +12,11 @@ class GameScreen : public Screen {
     Level m_level;
 
 public:
-    explicit GameScreen(const std::string &name);
+    GameScreen(const ControlState &ctl, const std::string &name);
     virtual ~GameScreen();
 
     virtual void draw(::Graphics::System &gr, int delta);
-    virtual void update(unsigned time, const ControlState &ctl);
+    virtual void update(unsigned time);
 };
 
 }

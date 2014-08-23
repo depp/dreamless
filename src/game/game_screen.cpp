@@ -8,10 +8,10 @@
 #include "graphics/system.hpp"
 namespace Game {
 
-GameScreen::GameScreen(const std::string &name) {
+GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
+    : Screen(ctl) {
     m_level.load(name);
 }
-
 GameScreen::~GameScreen()
 { }
 
@@ -23,9 +23,8 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
         Base::Orientation::NORMAL);
 }
 
-void GameScreen::update(unsigned time, const ControlState &ctl) {
+void GameScreen::update(unsigned time) {
     (void) time;
-    (void) &ctl;
 }
 
 }
