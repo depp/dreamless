@@ -23,18 +23,20 @@
     <require module="math"/>
     <group path="src/game">
       <src path="main.cpp"/>
-      <src path="graphics.hpp"/>
-      <src path="graphics.cpp"/>
-      <src path="graphics_common.hpp"/>
-      <src path="graphics_common.cpp"/>
-      <src path="graphics_sprite.hpp"/>
-      <src path="graphics_sprite.cpp"/>
+    </group>
+    <group path="src/graphics">
+      <src path="common.cpp"/>
+      <src path="common.hpp"/>
       <src path="shader.cpp"/>
       <src path="shader.hpp"/>
       <src path="sprite.cpp"/>
       <src path="sprite.hpp"/>
       <src path="sprite_array.hpp"/>
       <src path="sprite_enum.hpp"/>
+      <src path="sprite_layer.cpp"/>
+      <src path="sprite_layer.hpp"/>
+      <src path="system.cpp"/>
+      <src path="system.hpp"/>
     </group>
     <group path="src/base">
       <src path="array.hpp"/>

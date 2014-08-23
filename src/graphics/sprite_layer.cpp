@@ -1,26 +1,26 @@
 /* Copyright 2014 Dietrich Epp.
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
-#include "graphics_common.hpp"
-#include "graphics_sprite.hpp"
+#include "common.hpp"
+#include "sprite_layer.hpp"
 #include "sprite.hpp"
 namespace Graphics {
 
-SpriteData::SpriteData()
+SpriteLayer::SpriteLayer()
     : m_sheet("", SPRITES)
 { }
 
-void SpriteData::clear() {
+void SpriteLayer::clear() {
     m_world.clear();
     m_screen.clear();
 }
 
-void SpriteData::upload() {
+void SpriteLayer::upload() {
     m_world.upload(GL_DYNAMIC_DRAW);
     m_screen.upload(GL_DYNAMIC_DRAW);
 }
 
-void SpriteData::draw(const CommonData &com) {
+void SpriteLayer::draw(const CommonData &com) {
     auto &prog = com.m_sprite;
 
     glUseProgram(prog.prog());
@@ -49,7 +49,7 @@ void SpriteData::draw(const CommonData &com) {
     glDisableVertexAttribArray(prog->a_vert);
     glUseProgram(0);
 
-    sg_opengl_checkerror("SpriteData::draw");
+    sg_opengl_checkerror("SpriteLayer::draw");
 }
 
 }

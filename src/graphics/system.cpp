@@ -1,9 +1,9 @@
 /* Copyright 2014 Dietrich Epp.
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
-#include "graphics.hpp"
-#include "graphics_common.hpp"
-#include "graphics_sprite.hpp"
+#include "system.hpp"
+#include "common.hpp"
+#include "sprite_layer.hpp"
 #include "sprite.hpp"
 namespace Graphics {
 
@@ -18,7 +18,7 @@ void make_xform(float *xform, int w, int h, int x, int y) {
 
 System::System()
     : m_common(new CommonData),
-      m_sprite(new SpriteData)
+      m_sprite(new SpriteLayer)
 { }
 
 System::~System()

@@ -1,7 +1,7 @@
 /* Copyright 2014 Dietrich Epp.
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
-#include "graphics_common.hpp"
+#include "common.hpp"
 using Base::ShaderField;
 namespace Shader {
 

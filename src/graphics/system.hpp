@@ -1,8 +1,8 @@
 /* Copyright 2014 Dietrich Epp.
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
-#ifndef LD_GAME_GRAPHICS_HPP
-#define LD_GAME_GRAPHICS_HPP
+#ifndef LD_GRAPHICS_SYSTEM_HPP
+#define LD_GRAPHICS_SYSTEM_HPP
 #include <memory>
 namespace Base {
 enum class Orientation;
@@ -10,12 +10,12 @@ enum class Orientation;
 namespace Graphics {
 class AnySprite;
 struct CommonData;
-struct SpriteData;
+struct SpriteLayer;
 
 class System {
 private:
     std::unique_ptr<CommonData> m_common;
-    std::unique_ptr<SpriteData> m_sprite;
+    std::unique_ptr<SpriteLayer> m_sprite;
     int m_width, m_height;
 
 public:

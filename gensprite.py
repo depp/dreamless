@@ -50,7 +50,7 @@ def scan(root):
 def run():
     categories = [('sprite', 'Sprite'), ('tile', 'Tile')]
     allimages = [scan(c[0]) for c in categories]
-    with open('src/game/sprite_enum.hpp', 'w') as fp:
+    with open('src/graphics/sprite_enum.hpp', 'w') as fp:
         print(AUTOGEN, file=fp)
         for (category, enum), images in zip(categories, allimages):
             print('static const int {}_COUNT = {};'
@@ -60,7 +60,7 @@ def run():
                 print('    {},'.format(image.name.upper()), file=fp)
             print('    {}'.format(images[-1].name.upper()), file=fp)
             print('};', file=fp)
-    with open('src/game/sprite_array.hpp', 'w') as fp:
+    with open('src/graphics/sprite_array.hpp', 'w') as fp:
         print(AUTOGEN, file=fp)
         for (category, enum), images in zip(categories, allimages):
             for image in images:

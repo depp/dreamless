@@ -4,9 +4,9 @@
 #include "sg/entry.h"
 #include "sg/event.h"
 #include "sg/mixer.h"
-#include "graphics.hpp"
-#include "sprite.hpp"
 #include "base/sprite.hpp"
+#include "graphics/system.hpp"
+#include "graphics/sprite.hpp"
 
 static ::Graphics::System *graphics;
 
