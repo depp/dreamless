@@ -11,6 +11,7 @@ void main() {
     vec4 picture = texture2D(
         u_picture, v_texcoord * u_texscale);
     vec4 pattern = texture2D(u_pattern, v_texcoord * 0.125);
+    pattern *= texture2D(u_pattern, v_texcoord * 0.0625);
 
     vec2 delta = (v_texcoord - u_blendscale.xy) * u_blendscale.zw;
     float d = dot(delta, delta);
