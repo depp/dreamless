@@ -3,7 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "file.hpp"
 #include "shader.hpp"
-#include <cstdio>
+#include "log.hpp"
 #include <stdexcept>
 #include <assert.h>
 namespace Base {
@@ -41,12 +41,11 @@ GLuint load_shader(const std::string &name, GLenum type) {
 
     GLint loglen;
     glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &loglen);
-    std::fprintf(stderr, "%s: compilation failed\n", path.c_str());
+    Log::error("%s: compilation failed", path.c_str());
     if (loglen > 0) {
         char *log = new char[loglen];
         glGetShaderInfoLog(shader, loglen, nullptr, log);
-        std::fputs(log, stderr);
-        std::fputc('\n', stderr);
+        Log::error("%s", log);
         delete[] log;
     }
     glDeleteShader(shader);
@@ -64,12 +63,11 @@ bool link_program(GLuint prog, std::string &name) {
         return true;
 
     glGetProgramiv(prog, GL_INFO_LOG_LENGTH, &loglen);
-    std::fprintf(stderr, "%s: linking failed", name.c_str());
+    Log::error("%s: linking failed", name.c_str());
     if (loglen > 0) {
         log = new char[loglen];
         glGetProgramInfoLog(prog, loglen, nullptr, log);
-        std::fputs(log, stderr);
-        std::fputc('\n', stderr);
+        Log::error("%s", log);
         delete[] log;
     }
     return false;

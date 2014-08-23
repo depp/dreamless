@@ -4,7 +4,9 @@
 #ifndef LD_GAME_DEFS_HPP
 #define LD_GAME_DEFS_HPP
 #include "base/vec.hpp"
+#include "base/log.hpp"
 namespace Game {
+typedef Base::Log Log;
 
 struct Defs {
     /// Milliseconds between updates.

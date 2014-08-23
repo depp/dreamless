@@ -5,8 +5,8 @@
 #include "sprite.hpp"
 #include "pack.hpp"
 #include "image.hpp"
+#include "log.hpp"
 #include <unordered_map>
-#include <cstdio>
 #include <string>
 namespace Base {
 
@@ -53,8 +53,8 @@ SpriteSheet::SpriteSheet(const std::string &dirname, const Sprite *sprites)
 
     Packing packing = Packing::pack(imagesizes);
 
-    std::fprintf(stderr, "Packing %zu sprites into a %dx%d sheet\n",
-                 count, packing.packsize.width, packing.packsize.height);
+    Log::info("Packing %zu sprites into a %dx%d sheet",
+              count, packing.packsize.width, packing.packsize.height);
 
     m_sprites.reserve(count);
     for (std::size_t i = 0; i < count; i++) {

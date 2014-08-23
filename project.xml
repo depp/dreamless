@@ -61,6 +61,8 @@
       <src path="file.hpp"/>
       <src path="image.cpp"/>
       <src path="image.hpp"/>
+      <src path="log.cpp"/>
+      <src path="log.hpp"/>
       <src path="pack.cpp"/>
       <src path="pack.hpp"/>
       <src path="random.cpp"/>

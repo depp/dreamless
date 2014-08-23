@@ -2,6 +2,7 @@
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "level.hpp"
+#include "defs.hpp"
 #include "base/file.hpp"
 #include <cstring>
 #include <cstdio>
@@ -76,7 +77,11 @@ void Level::load(const std::string &name) {
             columns = lines[i].second;
     }
 
-    std::printf("Size: %d x %d\n", columns, rows);
+    Log::info("level size: %d x %d", columns, rows);
+}
+
+void Level::draw(::Graphics::System &gr) {
+    (void) &gr;
 }
 
 }

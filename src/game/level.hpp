@@ -4,6 +4,9 @@
 #ifndef LD_GAME_LEVEL_HPP
 #define LD_GAME_LEVEL_HPP
 #include <string>
+namespace Graphics {
+class System;
+}
 namespace Game {
 
 /// Level data.
@@ -21,6 +24,7 @@ public:
     Level &operator=(Level &&other);
 
     void load(const std::string &name);
+    void draw(::Graphics::System &gr);
 };
 
 }

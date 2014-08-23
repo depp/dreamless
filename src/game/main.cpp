@@ -3,7 +3,6 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "sg/entry.h"
 #include "sg/event.h"
-#include "sg/log.h"
 #include "sg/mixer.h"
 #include "sg/keycode.h"
 #include "base/sprite.hpp"
@@ -17,7 +16,6 @@
 namespace Game {
 class Main {
 private:
-    sg_logger *m_logger;
     ControlState m_control;
     std::unique_ptr<Graphics::System> m_graphics;
     std::unique_ptr<Screen> m_screen;
@@ -27,7 +25,7 @@ private:
 public:
     static Main *main;
 
-    Main() :m_logger(sg_logger_get("game")), m_initted(false) {
+    Main() : m_initted(false) {
         m_screen.reset(new GameScreen(m_control, "01"));
     }
 
@@ -97,7 +95,7 @@ private:
         if (m_initted) {
             unsigned delta = time - m_frametime;
             if (delta > Defs::MAXUPDATE) {
-                sg_logs(m_logger, SG_LOG_WARN, "Lag");
+                Log::warn("lag");
                 nframes = 1;
                 m_frametime = time;
             } else {
@@ -125,6 +123,7 @@ Main *Main::main;
 }
 
 void sg_game_init(void) {
+    Base::Log::init();
     Game::Main::main = new Game::Main;
 }
 

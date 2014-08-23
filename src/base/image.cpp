@@ -33,7 +33,7 @@ void Image::load(const std::string &path) {
     int r = sg_pixbuf_loadimage(
         &m_pixbuf, data.ptr(), data.size(), nullptr);
     if (r)
-        sg_sys_abortf("could not load image: %s\n", path.c_str());
+        sg_sys_abortf("could not load image: %s", path.c_str());
 }
 
 void Image::copy_from(const Image &other, int x, int y) {
