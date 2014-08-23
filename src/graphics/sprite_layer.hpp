@@ -17,7 +17,7 @@ class SpriteLayer {
 public:
     SpriteLayer();
 
-    void clear();
+    void clear(bool all);
     void add_sprite(AnySprite sp, Base::IVec pos,
                     Base::Orientation orientation,
                     Layer layer);
@@ -25,6 +25,10 @@ public:
     void draw(const CommonData &com);
 
 private:
+    Base::SpriteArray &array(Layer layer) {
+        return m_array[static_cast<int>(layer)];
+    }
+
     void draw_layer(const CommonData &com, Layer layer);
 };
 

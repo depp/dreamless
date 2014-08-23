@@ -12,6 +12,8 @@ namespace Game {
 class Entity;
 
 class GameScreen : public Screen {
+    /// Whether static data has been uploaded.
+    bool m_drawn;
     /// The current level data.
     Level m_level;
     /// List of active entities.

@@ -14,7 +14,7 @@ public:
     virtual ~Player();
 
     virtual void update(unsigned time);
-    virtual void draw(::Graphics::System &gr, int delta);
+    virtual void draw(::Graphics::System &gr, int delta) const;
 };
 
 }

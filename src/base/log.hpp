@@ -18,6 +18,10 @@ struct Log {
     SG_ATTR_FORMAT(printf, 1, 2)
     static void error(const char *msg, ...);
 
+    /// Abort with the given message.
+    SG_ATTR_FORMAT(printf, 1, 2)
+    static void abort(const char *msg, ...);
+
     /// Initialize the logger.
     static void init();
 };

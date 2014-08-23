@@ -68,6 +68,7 @@ private:
     T *m_data;
     int m_count;
     int m_alloc;
+    bool m_dirty;
     GLuint m_buffer;
 
 public:
@@ -96,19 +97,21 @@ public:
 
 template<class T>
 inline Array<T>::Array()
-    : m_data(nullptr), m_count(0), m_alloc(0), m_buffer(0)
+    : m_data(nullptr), m_count(0), m_alloc(0), m_dirty(true), m_buffer(0)
 { }
 
 template<class T>
 inline Array<T>::Array(Array<T> &&other)
-    : m_data(nullptr), m_count(0), m_alloc(0), m_buffer(0) {
+    : m_data(nullptr), m_count(0), m_alloc(0), m_dirty(true), m_buffer(0) {
     m_data = other.m_data;
     m_count = other.m_count;
     m_alloc = other.m_alloc;
+    m_dirty = other.m_dirty;
     m_buffer = other.m_buffer;
     other.m_data = nullptr;
     other.m_count = 0;
     other.m_alloc = 0;
+    other.m_dirty = true;
     other.m_buffer = 0;
 }
 
@@ -126,10 +129,12 @@ Array<T> &Array<T>::operator=(Array<T> &&other) {
     m_data = other.m_data;
     m_count = other.m_count;
     m_alloc = other.m_alloc;
+    m_dirty=  other.m_dirty;
     m_buffer = other.m_buffer;
     other.m_data = nullptr;
     other.m_count = 0;
     other.m_alloc = 0;
+    other.m_dirty = true;
     other.m_buffer = 0;
     return *this;
 }
@@ -179,11 +184,14 @@ T *Array<T>::insert(std::size_t count) {
     }
     int pos = m_count;
     m_count += count;
+    m_dirty = true;
     return m_data + pos;
 }
 
 template<class T>
 void Array<T>::upload(GLenum usage) {
+    if (!m_dirty)
+        return;
     if (m_buffer == 0)
         glGenBuffers(1, &m_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_buffer);

@@ -5,25 +5,10 @@
 #define LD_GAME_ENTITY_HPP
 #include "base/vec.hpp"
 // The following are not necessary, but useful.
-#include "base/sprite.hpp"
 #include "game_screen.hpp"
 #include "control.hpp"
 #include "defs.hpp"
-#include "graphics/layer.hpp"
-#include "graphics/sprite.hpp"
-#include "graphics/system.hpp"
 namespace Game {
-
-// Re-export common types.
-typedef ::Base::Orientation Orientation;
-typedef ::Base::IVec IVec;
-typedef ::Base::IRect IRect;
-typedef ::Base::FVec FVec;
-typedef ::Base::FRect FRect;
-typedef ::Graphics::AnySprite AnySprite;
-typedef ::Graphics::Sprite Sprite;
-typedef ::Graphics::Tile Tile;
-typedef ::Graphics::Layer Layer;
 
 class GameScreen;
 
@@ -64,7 +49,7 @@ public:
     /// Update the entity's state for the next frame.
     virtual void update(unsigned time);
     /// Draw the entity.
-    virtual void draw(::Graphics::System &gr, int delta) = 0;
+    virtual void draw(::Graphics::System &gr, int delta) const = 0;
 };
 
 }

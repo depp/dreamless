@@ -30,7 +30,7 @@ System::~System()
 void System::begin(int width, int height) {
     m_width = width;
     m_height = height;
-    m_sprite->clear();
+    m_sprite->clear(false);
 }
 
 void System::end() {

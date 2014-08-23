@@ -3,8 +3,9 @@ static const int SPRITE_COUNT = 1;
 enum class Sprite {
     KNIGHT_1
 };
-static const int TILE_COUNT = 3;
+static const int TILE_COUNT = 4;
 enum class Tile {
+    NONE,
     REAL_1,
     REAL_2,
     REAL_4

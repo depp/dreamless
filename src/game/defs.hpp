@@ -5,8 +5,23 @@
 #define LD_GAME_DEFS_HPP
 #include "base/vec.hpp"
 #include "base/log.hpp"
+#include "base/sprite.hpp"
+#include "graphics/layer.hpp"
+#include "graphics/sprite.hpp"
+#include "graphics/system.hpp"
 namespace Game {
 typedef Base::Log Log;
+
+// Re-export common types.
+typedef ::Base::Orientation Orientation;
+typedef ::Base::IVec IVec;
+typedef ::Base::IRect IRect;
+typedef ::Base::FVec FVec;
+typedef ::Base::FRect FRect;
+typedef ::Graphics::AnySprite AnySprite;
+typedef ::Graphics::Sprite Sprite;
+typedef ::Graphics::Tile Tile;
+typedef ::Graphics::Layer Layer;
 
 struct Defs {
     /// Milliseconds between updates.

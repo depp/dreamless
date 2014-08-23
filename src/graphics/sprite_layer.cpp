@@ -10,9 +10,14 @@ SpriteLayer::SpriteLayer()
     : m_sheet("", SPRITES)
 { }
 
-void SpriteLayer::clear() {
-    for (int i = 0; i < NLAYER; i++)
-        m_array[i].clear();
+void SpriteLayer::clear(bool all) {
+    if (all) {
+        array(Layer::World1).clear();
+        array(Layer::World2).clear();
+    }
+    array(Layer::Sprite1).clear();
+    array(Layer::Sprite2).clear();
+    array(Layer::Interface).clear();
 }
 
 void SpriteLayer::add_sprite(AnySprite sp, Base::IVec pos,
@@ -60,7 +65,7 @@ void SpriteLayer::draw(const CommonData &com) {
 
 void SpriteLayer::draw_layer(const CommonData &com, Layer layer) {
     auto &prog = com.m_sprite;
-    auto &arr = m_array[static_cast<int>(layer)];
+    auto &arr = array(layer);
 
     if (!arr.empty()) {
         arr.set_attrib(prog->a_vert);

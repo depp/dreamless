@@ -22,7 +22,7 @@ void Player::update(unsigned time) {
     m_pos.x += xaxis * Defs::velocity(32 * 5);
 }
 
-void Player::draw(::Graphics::System &gr, int delta) {
+void Player::draw(::Graphics::System &gr, int delta) const {
     gr.add_sprite(
         Sprite::KNIGHT_1,
         Defs::interp(m_pos0, m_pos, delta),
