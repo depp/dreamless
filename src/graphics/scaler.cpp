@@ -5,11 +5,13 @@
 #include "common.hpp"
 #include "sg/entry.h"
 #include "sg/util.h"
+#include <cmath>
 namespace Graphics {
 
 Scaler::Scaler()
     : m_width(0), m_height(0), m_tex(0), m_fbuf(0) {
     m_pattern = Base::Texture::load("misc/hilbert");
+    m_blendcolor = Color::transparent();
 }
 
 void Scaler::begin(int dest_width, int dest_height,
@@ -75,6 +77,16 @@ void Scaler::begin(int dest_width, int dest_height,
     data[5][0] = +1.0f; data[5][1] = +1.0f; data[5][2] = u; data[5][3] = v;
     m_array.upload(GL_DYNAMIC_DRAW);
 
+    {
+        float x = 0.5f * (float) src_width;
+        float y = 0.5f * (float) src_height;
+        float sc = std::sqrt(1.0f / (x * x + y * y));
+        m_blendscale[0] = x;
+        m_blendscale[1] = y;
+        m_blendscale[2] = sc;
+        m_blendscale[3] = sc;
+    }
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbuf);
     glViewport(0, 0, src_width, src_height);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -103,7 +115,8 @@ void Scaler::end(const CommonData &com) {
     glUniform1i(prog->u_picture, 0);
     glUniform1i(prog->u_pattern, 1);
     glUniform2fv(prog->u_texscale, 1, m_scale);
-    glUniform4f(prog->u_color, 0.0f, 0.0f, 0.0f, 0.0f);
+    glUniform4fv(prog->u_color, 1, m_blendcolor.v);
+    glUniform4fv(prog->u_blendscale, 1, m_blendscale);
     m_array.set_attrib(prog->a_vert);
 
     glDrawArrays(GL_TRIANGLES, 0, m_array.size());

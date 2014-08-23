@@ -38,6 +38,7 @@ void System::end() {
 
 void System::draw() {
     int width = (m_width + 1) / 2, height = (m_height + 1) / 2;
+    m_scaler->m_blendcolor = Color::palette(3);
     m_scaler->begin(m_width, m_height, width, height);
 
     make_xform(m_common->m_xform_world, width, height, 0, 0);

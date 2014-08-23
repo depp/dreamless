@@ -25,6 +25,8 @@
       <src path="main.cpp"/>
     </group>
     <group path="src/graphics">
+      <src path="color.cpp"/>
+      <src path="color.hpp"/>
       <src path="common.cpp"/>
       <src path="common.hpp"/>
       <src path="scaler.cpp"/>

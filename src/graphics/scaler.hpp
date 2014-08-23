@@ -6,6 +6,7 @@
 #include "sg/opengl.h"
 #include "base/array.hpp"
 #include "base/image.hpp"
+#include "color.hpp"
 namespace Graphics {
 struct CommonData;
 
@@ -17,6 +18,8 @@ struct Scaler {
     Base::Array<float[4]> m_array;
     Base::Texture m_pattern;
     float m_scale[2];
+    float m_blendscale[4];
+    Color m_blendcolor;
 
     Scaler();
     void begin(int dest_width, int dest_height,

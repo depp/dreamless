@@ -50,6 +50,7 @@ struct Television {
     GLint u_pattern;
     GLint u_texscale;
     GLint u_color;
+    GLint u_blendscale;
 };
 
 }

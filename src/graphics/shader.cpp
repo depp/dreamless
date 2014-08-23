@@ -55,6 +55,7 @@ const ShaderField Television::UNIFORMS[] = {
     FIELD(u_pattern),
     FIELD(u_texscale),
     FIELD(u_color),
+    FIELD(u_blendscale),
     { nullptr, 0 }
 };
 
