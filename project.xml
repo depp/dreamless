@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<build>
+  <key name="name">Dreamless</key>
+  <key name="email">depp@zdome.net</key>
+  <key name="url">http://www.moria.us/</key>
+  <key name="copyright">Copyright © 2014 Dietrich Epp</key>
+  <key name="version">0.1</key>
+  <key name="identifier">us.moria.dreamless</key>
+
+  <key name="cvar.log.level.root">debug</key>
+  <if value="$os == windows">
+    <key name="cvar.log.winconsole">yes</key>
+  </if>
+  <key name="cvar.path.data"><path path="data"/></key>
+  <key name="cvar.path.user"><path path="user"/></key>
+
+  <key name="lib-dir"><path path="lib"/></key>
+
+  <module type="sglib">
+    <key name="name">Dreamless</key>
+    <key name="uuid">341c1cb2-abdc-490a-b0aa-115d4c634aa9</key>
+    <require module="math"/>
+    <group path="src/game">
+      <src path="main.cpp"/>
+    </group>
+    <group path="src/base">
+    </group>
+  </module>
+</build>
