@@ -25,7 +25,8 @@ void Player::update(unsigned time) {
     (void) time;
 
     m_walker.update(
-        STATS, m_mover, m_screen.control().get_2d());
+        STATS, m_screen.level(),
+        m_mover, m_screen.control().get_2d());
 }
 
 void Player::draw(::Graphics::System &gr, int delta) const {

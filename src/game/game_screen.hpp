@@ -32,6 +32,9 @@ public:
 
     /// Add an entity to the level, takes ownership.  NULL is ok.
     void add_entity(Entity *ent);
+
+    /// Accessor for the level.
+    const Level &level() const { return m_level; }
 };
 
 }

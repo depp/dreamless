@@ -46,7 +46,7 @@ class Level {
     }
 
     static float tile_floor(TileType type, float relx);
-    float tile_floor(IVec pos, float relx);
+    float tile_floor(IVec pos, float relx) const;
 
 public:
     Level();
@@ -59,8 +59,10 @@ public:
     void load(const std::string &name);
     void draw(::Graphics::System &gr) const;
 
+    /// Test whether a point hits the level.
+    bool hit_test(FVec pos) const;
     /// Get the Y position of the nearest floor.
-    float find_floor(FVec pos);
+    float find_floor(FVec pos) const;
 };
 
 }

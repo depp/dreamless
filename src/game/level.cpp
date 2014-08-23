@@ -39,7 +39,7 @@ float Level::tile_floor(TileType type, float relx) {
     return 0.0f;
 }
 
-float Level::tile_floor(IVec pos, float relx) {
+float Level::tile_floor(IVec pos, float relx) const {
     auto &info = tile_at(pos);
     return tile_floor(info.type, relx);
 }
@@ -167,14 +167,21 @@ void Level::draw(::Graphics::System &gr) const {
     }
 }
 
-float Level::find_floor(FVec pos) {
+bool Level::hit_test(FVec pos) const {
+    IVec tile = Defs::tile_pos(pos);
+    FVec rel = Defs::tile_relpos(pos);
+    float floor = tile_floor(tile, rel.x);
+    return floor > rel.y;
+}
+
+float Level::find_floor(FVec pos) const {
     IVec tile = Defs::tile_pos(pos);
     FVec rel = Defs::tile_relpos(pos);
     float floor = tile_floor(tile, rel.x);
     if (floor <= 0)
         floor = tile_floor(tile + IVec(0, -1), rel.x) - Defs::TILESZ;
     else if (floor >= Defs::TILESZ)
-        floor = tile_floor(tile + IVec(0, -1), rel.x) + Defs::TILESZ;
+        floor = tile_floor(tile + IVec(0, 1), rel.x) + Defs::TILESZ;
     return floor + Defs::TILESZ * tile.y;
 }
 

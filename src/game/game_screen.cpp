@@ -14,7 +14,7 @@ static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
 GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
     : Screen(ctl), m_drawn(false) {
     m_level.load(name);
-    add_entity(new Player(*this, IVec(0, 16)));
+    add_entity(new Player(*this, IVec(48, 48)));
 }
 
 GameScreen::~GameScreen()

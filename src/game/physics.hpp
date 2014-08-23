@@ -5,13 +5,14 @@
 #define LD_GAME_PHYSICS_HPP
 #include "defs.hpp"
 namespace Game {
+class Level;
 
 /// Utility class for objects that move.
 class Mover {
     FVec m_pos0, m_pos1;
 
 public:
-    Mover(IVec pos) : m_pos1(pos) { }
+    Mover(IVec pos) : m_pos0(pos), m_pos1(pos) { }
 
     /// Update the mover, setting the new location.
     void update(FVec new_pos) {
@@ -24,6 +25,11 @@ public:
         return m_pos1;
     }
 
+    /// Get the previous location.
+    FVec lastpos() const {
+        return m_pos0;
+    }
+
     /// Get the draw location.
     IVec drawpos(int delta) const {
         return Defs::interp(m_pos0, m_pos1, delta);
@@ -33,16 +39,12 @@ public:
 /// Utility class for objects that can walk and jump.
 class Walker {
 private:
-    enum class Jumpstate { READY, JUMP1, JUMP2 };
+    enum class State { WALK, AIR, DOUBLE };
 
-    /// Whether we are airborne.
-    bool m_airborne;
-    /// The current velocity.
-    FVec m_velocity;
-    /// Time since the jump started.
+    /// The state of the jump, or lack thereof.
+    State m_state;
+    /// Time remaining with jump control, or -1 if jump was released.
     int m_jumptime;
-    /// The state of the jump in progress.
-    Jumpstate m_jumpstate;
 
 public:
     struct Stats {
@@ -64,7 +66,7 @@ public:
     Walker();
 
     /// This will also update the mover.
-    void update(const struct Stats &stats,
+    void update(const struct Stats &stats, const Level &level,
                 Mover &mover, FVec drive);
 };
 
