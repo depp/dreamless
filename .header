@@ -1,4 +1,5 @@
 {
     + /config.sh
+    + /data
     ignore
 }
