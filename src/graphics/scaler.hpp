@@ -8,9 +8,9 @@
 #include "base/image.hpp"
 #include "color.hpp"
 namespace Graphics {
-struct CommonData;
+class CommonData;
 
-struct Scaler {
+class Scaler {
     int m_width, m_height;
     int m_fwidth, m_fheight;
     GLuint m_tex;
@@ -19,8 +19,8 @@ struct Scaler {
     Base::Texture m_pattern;
     float m_scale[2];
     float m_blendscale[4];
-    Color m_blendcolor;
 
+public:
     Scaler();
     void begin(int dest_width, int dest_height,
                int src_width, int src_height);

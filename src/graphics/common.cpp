@@ -6,7 +6,8 @@ namespace Graphics {
 
 CommonData::CommonData()
     : m_sprite("sprite", "sprite"),
-      m_television("tv", "tv")
+      m_television("tv", "tv"),
+      m_blendcolor(Color::transparent())
 { }
 
 }

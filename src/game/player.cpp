@@ -26,7 +26,8 @@ void Player::draw(::Graphics::System &gr, int delta) {
     gr.add_sprite(
         Sprite::KNIGHT_1,
         Defs::interp(m_pos0, m_pos, delta),
-        Orientation::NORMAL);
+        Orientation::NORMAL,
+        Layer::Sprite1);
 }
 
 }

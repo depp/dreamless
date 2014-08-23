@@ -39,7 +39,7 @@ void System::end() {
 
 void System::draw() {
     int width = (m_width + 1) / 2, height = (m_height + 1) / 2;
-    m_scaler->m_blendcolor = Color::palette(3);
+    m_common->m_blendcolor = Color::palette(3);
     m_scaler->begin(m_width, m_height, width, height);
 
     make_xform(m_common->m_xform_world, width, height, 0, 0);
@@ -53,11 +53,8 @@ void System::draw() {
 
 void System::add_sprite(AnySprite sp, Base::IVec pos,
                         Base::Orientation orientation,
-                        bool screen) {
-    auto &arr = screen ? m_sprite->m_screen : m_sprite->m_world;
-    arr.add(
-        m_sprite->m_sheet.get(static_cast<int>(sp)),
-        pos.x, pos.y, orientation);
+                        Layer layer) {
+    m_sprite->add_sprite(sp, pos, orientation, layer);
 }
 
 }

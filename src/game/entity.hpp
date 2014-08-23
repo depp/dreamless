@@ -9,6 +9,7 @@
 #include "game_screen.hpp"
 #include "control.hpp"
 #include "defs.hpp"
+#include "graphics/layer.hpp"
 #include "graphics/sprite.hpp"
 #include "graphics/system.hpp"
 namespace Game {
@@ -22,6 +23,7 @@ typedef ::Base::FRect FRect;
 typedef ::Graphics::AnySprite AnySprite;
 typedef ::Graphics::Sprite Sprite;
 typedef ::Graphics::Tile Tile;
+typedef ::Graphics::Layer Layer;
 
 class GameScreen;
 

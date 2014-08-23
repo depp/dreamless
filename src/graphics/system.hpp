@@ -10,9 +10,10 @@ class IVec;
 }
 namespace Graphics {
 class AnySprite;
-struct CommonData;
-struct SpriteLayer;
-struct Scaler;
+class CommonData;
+class SpriteLayer;
+class Scaler;
+enum class Layer;
 
 class System {
 private:
@@ -38,7 +39,7 @@ public:
     /// Add a sprite to the world.
     void add_sprite(AnySprite sp, Base::IVec pos,
                     Base::Orientation orientation,
-                    bool screen=false);
+                    Layer layer);
 };
 
 }

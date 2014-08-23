@@ -4,14 +4,17 @@
 #ifndef LD_GRAPHICS_COMMON_HPP
 #define LD_GRAPHICS_COMMON_HPP
 #include "shader.hpp"
+#include "color.hpp"
 namespace Graphics {
 
-struct CommonData {
+class CommonData {
+public:
     Base::Program<Shader::Sprite> m_sprite;
     Base::Program<Shader::Television> m_television;
 
     float m_xform_world[4];
     float m_xform_screen[4];
+    Color m_blendcolor;
 
     CommonData();
 };

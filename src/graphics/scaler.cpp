@@ -11,7 +11,6 @@ namespace Graphics {
 Scaler::Scaler()
     : m_width(0), m_height(0), m_tex(0), m_fbuf(0) {
     m_pattern = Base::Texture::load("misc/hilbert");
-    m_blendcolor = Color::transparent();
 }
 
 void Scaler::begin(int dest_width, int dest_height,
@@ -115,7 +114,7 @@ void Scaler::end(const CommonData &com) {
     glUniform1i(prog->u_picture, 0);
     glUniform1i(prog->u_pattern, 1);
     glUniform2fv(prog->u_texscale, 1, m_scale);
-    glUniform4fv(prog->u_color, 1, m_blendcolor.v);
+    glUniform4fv(prog->u_color, 1, com.m_blendcolor.v);
     glUniform4fv(prog->u_blendscale, 1, m_blendscale);
     m_array.set_attrib(prog->a_vert);
 

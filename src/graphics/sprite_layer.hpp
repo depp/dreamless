@@ -4,19 +4,28 @@
 #ifndef LD_GRAPHICS_SPRITE_LAYER_HPP
 #define LD_GRAPHICS_SPRITE_LAYER_HPP
 #include "base/sprite.hpp"
+#include "base/vec.hpp"
+#include "layer.hpp"
+#include "sprite.hpp"
 namespace Graphics {
 class CommonData;
 
-struct SpriteLayer {
+class SpriteLayer {
     Base::SpriteSheet m_sheet;
-    Base::SpriteArray m_world;
-    Base::SpriteArray m_screen;
+    Base::SpriteArray m_array[NLAYER];
 
+public:
     SpriteLayer();
 
     void clear();
+    void add_sprite(AnySprite sp, Base::IVec pos,
+                    Base::Orientation orientation,
+                    Layer layer);
     void upload();
     void draw(const CommonData &com);
+
+private:
+    void draw_layer(const CommonData &com, Layer layer);
 };
 
 }
