@@ -25,11 +25,15 @@
       <src path="control.cpp"/>
       <src path="control.hpp"/>
       <src path="defs.hpp"/>
+      <src path="entity.cpp"/>
+      <src path="entity.hpp"/>
       <src path="game_screen.cpp"/>
       <src path="game_screen.hpp"/>
       <src path="level.cpp"/>
       <src path="level.hpp"/>
       <src path="main.cpp"/>
+      <src path="player.cpp"/>
+      <src path="player.hpp"/>
       <src path="screen.cpp"/>
       <src path="screen.hpp"/>
     </group>

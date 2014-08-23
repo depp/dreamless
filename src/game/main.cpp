@@ -5,6 +5,7 @@
 #include "sg/event.h"
 #include "sg/log.h"
 #include "sg/mixer.h"
+#include "sg/keycode.h"
 #include "base/sprite.hpp"
 #include "graphics/system.hpp"
 #include "graphics/sprite.hpp"
@@ -37,6 +38,14 @@ public:
                 m_graphics.reset(new Graphics::System);
             break;
 
+        case SG_EVENT_KDOWN:
+            event_key(evt->key.key, true);
+            break;
+
+        case SG_EVENT_KUP:
+            event_key(evt->key.key, false);
+            break;
+
         default:
             break;
         }
@@ -54,6 +63,35 @@ public:
     }
 
 private:
+    void event_key(int key, bool state) {
+        Button button;
+        switch (key) {
+        case KEY_A:
+        case KEY_Left:
+            button = Button::LEFT;
+            break;
+
+        case KEY_D:
+        case KEY_Right:
+            button = Button::RIGHT;
+            break;
+
+        case KEY_W:
+        case KEY_Up:
+            button = Button::UP;
+            break;
+
+        case KEY_S:
+        case KEY_Down:
+            button = Button::DOWN;
+            break;
+
+        default:
+            return;
+        }
+        m_control.set_button(button, state);
+    }
+
     void advance(unsigned time) {
         unsigned nframes;
         if (m_initted) {

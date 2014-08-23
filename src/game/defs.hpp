@@ -4,7 +4,6 @@
 #ifndef LD_GAME_DEFS_HPP
 #define LD_GAME_DEFS_HPP
 #include "base/vec.hpp"
-class FVec;
 namespace Game {
 
 struct Defs {
@@ -15,11 +14,20 @@ struct Defs {
     static const unsigned MAXUPDATE = 500;
 
     /// Interpolate between positions at successive updates.
-    static Base::FVec interp(Base::FVec a, Base::FVec b, int reltime) {
+    static Base::IVec interp(Base::FVec a, Base::FVec b, int reltime) {
         float frac = reltime * (1.0f / FRAMETIME);
-        return a + (b - a) * frac;
+        return Base::IVec(a + (b - a) * frac);
     }
 
+    /// Scale a per-second velocity to a per-update velocity.
+    static float velocity(float x) {
+        return (1.0f / FRAMETIME) * x;
+    }
+
+    /// Scale a per-second acceleration to a per
+    static float acceleration(float x) {
+        return (1.0f / (FRAMETIME * FRAMETIME)) * x;
+    }
 };
 
 }
