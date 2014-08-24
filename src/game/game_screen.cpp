@@ -16,7 +16,14 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
     m_level.load(name);
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(1280 / 2, 720 / 2));
-    add_entity(new Player(*this, m_level.spawn_point()));
+    typedef Level::SpawnType Spawn;
+    for (auto &sp : m_level.spawn_points()) {
+        switch (sp.type) {
+        case Spawn::PLAYER:
+            add_entity(new Player(*this, sp.pos));
+            break;
+        }
+    }
 }
 
 GameScreen::~GameScreen()

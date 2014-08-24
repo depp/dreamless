@@ -14,9 +14,19 @@ namespace Game {
 
 bool Level::is_initialized;
 
+const Level::SpawnInfo Level::SPAWN[] = {
+    { 'P', SpawnType::PLAYER },
+
+    { '\0', SpawnType::PLAYER }
+};
+
 const Level::TileInfo Level::TILES_RAW[] = {
-    { ' ', Tile::NONE,   TileType::OPEN  },
-    { '#', Tile::REAL_1, TileType::SOLID },
+    { ' ', Tile::NONE,   TileType::OPEN    },
+    { '#', Tile::REAL_1, TileType::SOLID   },
+    { 'a', Tile::REAL_7, TileType::RAMP_R1 },
+    { 'b', Tile::REAL_8, TileType::RAMP_R2 },
+    { 'c', Tile::REAL_6, TileType::RAMP_L1 },
+    { 'd', Tile::REAL_5, TileType::RAMP_L2 },
 
     { '\0', Tile::NONE,  TileType::OPEN  }
 };
@@ -34,6 +44,14 @@ float Level::tile_floor(TileType type, float relx) {
         return 0.0f;
     case TileType::SOLID:
         return 32.0f;
+    case TileType::RAMP_R1:
+        return relx * 0.5f;
+    case TileType::RAMP_R2:
+        return relx * 0.5f + 16.0f;
+    case TileType::RAMP_L1:
+        return relx * -0.5f + 32.0f;
+    case TileType::RAMP_L2:
+        return relx * -0.5f + 16.0f;
     }
     Log::abort("invalid tile type");
     return 0.0f;
@@ -138,16 +156,22 @@ void Level::load(const std::string &name) {
         int x = 0;
         for (; x < line.second; x++) {
             unsigned char c = line.first[x];
-            if (c == 'a') {
-                m_spawn = IVec(
-                    x * Defs::TILESZ + Defs::TILESZ / 2,
-                    y * Defs::TILESZ + Defs::TILESZ / 2);
-                c = ' ';
-            }
             auto &info = tile_info(c);
             if (info.c == '\0') {
-                Log::error("bad tile at (%d, %d): '%c'", x, y, c);
-                errors = true;
+                const SpawnInfo *pi = SPAWN;
+                for (; pi->c != '\0' && pi->c != c; pi++) { }
+                if (pi->c == c) {
+                    SpawnPoint pt;
+                    pt.type = pi->type;
+                    pt.pos = IVec(
+                        x * Defs::TILESZ + Defs::TILESZ / 2,
+                        y * Defs::TILESZ + Defs::TILESZ / 2);
+                    m_spawn.push_back(pt);
+                } else {
+                    Log::error("bad tile at (%d, %d): '%c'", x, y, c);
+                    errors = true;
+                }
+                c = ' ';
             }
             data[y * width + x] = c;
         }

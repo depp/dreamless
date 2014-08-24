@@ -3,11 +3,15 @@ static const int SPRITE_COUNT = 1;
 enum class Sprite {
     KNIGHT_1
 };
-static const int TILE_COUNT = 5;
+static const int TILE_COUNT = 9;
 enum class Tile {
     NONE,
     REAL_1,
     REAL_2,
     REAL_3,
-    REAL_4
+    REAL_4,
+    REAL_5,
+    REAL_6,
+    REAL_7,
+    REAL_8
 };

@@ -11,7 +11,7 @@ Walker::Walker()
 
 void Walker::update(const struct Stats &stats, const Level &level,
                     Mover &mover, FVec drive) {
-    const int STEPS = 8;
+    const int STEPS = 4;
     FVec pos = mover.pos(), accel(FVec::zero());
     FVec vel = (pos - mover.lastpos()) * Defs::invdt();
 
@@ -61,7 +61,7 @@ void Walker::update(const struct Stats &stats, const Level &level,
 
     // Handle horizontal collisions
     if (vel.x != 0.0f) {
-        FVec test1(8.0f, -10.0f), test2(8.0f, 10.0f);
+        FVec test1(8.0f, -8.0f), test2(8.0f, 10.0f);
         if (vel.x < 0) {
             test1.x = -test1.x;
             test2.x = -test2.x;
