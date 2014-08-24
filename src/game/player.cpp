@@ -90,6 +90,7 @@ void Player::update() {
     }
 
     if (m_dialogue > 0) {
+        m_screen.set_camera(m_mover.pos() + FVec(0, -80), true);
         m_dialogue_time++;
         if (m_dialogue_time >= DIALOGUE_STICKY) {
             bool dismiss = m_dialogue_time >= DIALOGUE_DISMISS ||

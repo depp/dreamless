@@ -56,7 +56,7 @@ public:
     const Level &level() const { return m_level; }
 
     /// Set the camera target.
-    void set_camera(FVec target);
+    void set_camera(FVec target, bool override=false);
 
     /// Get the list of all entities.
     const std::vector<std::unique_ptr<Entity>> &entities() const {

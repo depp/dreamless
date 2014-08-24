@@ -28,7 +28,7 @@ public:
     void update();
 
     /// Set the target for the camera center.
-    void set_target(FVec target);
+    void set_target(FVec target, bool override=false);
 
     /// Get the lower-left origin of the camera.
     IVec drawpos(int delta) const;

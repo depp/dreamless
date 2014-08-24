@@ -48,8 +48,8 @@ void Camera::update() {
     m_pos1.y = (float) (accy / accw);
 }
 
-void Camera::set_target(FVec target) {
-    m_target = m_clamp.nearest(target);
+void Camera::set_target(FVec target, bool override) {
+    m_target = override ? target : m_clamp.nearest(target);
 }
 
 IVec Camera::drawpos(int delta) const {

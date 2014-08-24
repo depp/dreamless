@@ -180,8 +180,8 @@ void GameScreen::add_entity(Entity *ent) {
         m_new_entity.push_back(std::unique_ptr<Entity>(ent));
 }
 
-void GameScreen::set_camera(FVec target) {
-    m_camera.set_target(target);
+void GameScreen::set_camera(FVec target, bool override) {
+    m_camera.set_target(target, override);
 }
 
 void GameScreen::play_sound(Sfx sfx, float volume, FVec pos) {
