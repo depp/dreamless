@@ -9,6 +9,8 @@ namespace Game {
 namespace {
 const IRect HIT_BOX = IRect::centered(8, 24);
 const IRect MEMORY_BOX = IRect::centered(16, 32);
+const int JUMP_TIME = 10;
+const int JUMP_HOLDTIME = 15;
 }
 
 const Walker::Stats Minion::STATS = {
@@ -58,7 +60,7 @@ void Minion::update() {
     if (flags & Walker::FLAG_JUMPED) {
         m_screen.play_sound(Sfx::GRUNT, -1.0f, m_mover.pos());
         m_state = State::JUMPING;
-        m_statetime = 15;
+        m_statetime = JUMP_HOLDTIME;
     }
     if ((flags & Walker::FLAG_AIRBORNE) == 0 && m_state != State::JUMPING) {
         m_state = State::WALK;
@@ -173,7 +175,7 @@ void Minion::do_action(Action action) {
     switch (action) {
     case Action::JUMP:
         m_state = State::JUMP;
-        m_statetime = 10;
+        m_statetime = JUMP_TIME;
         break;
     case Action::JUMP_BACK:
         break;
