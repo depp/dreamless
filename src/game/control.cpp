@@ -24,6 +24,8 @@ void ControlState::update() {
     for (int i = 0; i < NBUTTONS; i++) {
         if (m_buttons[i] == 1)
             m_buttons[i] = 2;
+        else if (m_buttons[i] == 3)
+            m_buttons[i] = 0;
     }
 }
 
@@ -38,7 +40,7 @@ bool ControlState::get_button_instant(Button k) const {
     int index = static_cast<int>(k);
     if (index < 0 || index >= NBUTTONS)
         sg_sys_abort("unknown button");
-    return m_buttons[index] == 1;
+    return (m_buttons[index] & 1) == 1;
 }
 
 bool ControlState::any_button_instant() const {
@@ -56,7 +58,10 @@ void ControlState::set_button(Button k, bool state) {
         if (m_buttons[index] == 0)
             m_buttons[index] = 1;
     } else {
-        m_buttons[index] = 0;
+        if (m_buttons[index] == 1)
+            m_buttons[index] = 3;
+        else
+            m_buttons[index] = 0;
     }
 }
 
