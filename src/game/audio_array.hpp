@@ -5,11 +5,15 @@ const AudioInfo SFX_INFO[SFX_COUNT] = {
 { 21, 8 },
 { 29, 4 },
 { 33, 4 },
-{ 37, 1 },
-{ 38, 2 },
-{ 40, 1 }
+{ 37, 6 },
+{ 43, 1 },
+{ 44, 2 },
+{ 46, 4 },
+{ 50, 1 },
+{ 51, 5 },
+{ 56, 5 }
 };
-static const int AUDIO_FILE_COUNT = 41;
+static const int AUDIO_FILE_COUNT = 61;
 static const int AUDIO_FILE_NAMELEN = 8;
 const char AUDIO_FILE_NAMES[AUDIO_FILE_COUNT][AUDIO_FILE_NAMELEN+1] = {
 "boot_1",
@@ -49,8 +53,28 @@ const char AUDIO_FILE_NAMES[AUDIO_FILE_COUNT][AUDIO_FILE_NAMELEN+1] = {
 "grunt_2",
 "grunt_3",
 "grunt_4",
+"haa_1",
+"haa_2",
+"haa_3",
+"haa_4",
+"haa_5",
+"haa_6",
 "locked_1",
 "open_1",
 "open_2",
-"unlock_1"
+"plink_1",
+"plink_2",
+"plink_3",
+"plink_4",
+"unlock_1",
+"wap_1",
+"wap_2",
+"wap_3",
+"wap_4",
+"wap_5",
+"wha_1",
+"wha_2",
+"wha_3",
+"wha_4",
+"wha_5"
 };
