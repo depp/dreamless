@@ -7,12 +7,20 @@
 #include "physics.hpp"
 namespace Game {
 class Item;
+enum class Action;
 
 class Minion : public Entity {
     static const Walker::Stats STATS;
 
+    enum State {
+        WALK,
+        JUMP
+    };
+
     Mover m_mover;
     Walker m_walker;
+    State m_state;
+    int m_statetime;
     int m_direction;
     bool m_haskey;
 
@@ -25,6 +33,7 @@ public:
 
 private:
     void hit_item(Item &item);
+    void do_action(Action action);
 };
 
 }

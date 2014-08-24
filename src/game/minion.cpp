@@ -19,7 +19,8 @@ const Walker::Stats Minion::STATS = {
 };
 
 Minion::Minion(GameScreen &scr, IVec pos)
-    : Entity(scr, Team::FOE), m_mover(pos), m_walker(), m_direction(1),
+    : Entity(scr, Team::FOE), m_mover(pos), m_walker(),
+      m_state(State::WALK), m_statetime(0), m_direction(1),
       m_haskey(false)
 { }
 
@@ -27,18 +28,32 @@ Minion::~Minion()
 { }
 
 void Minion::update() {
-    unsigned flags = m_walker.update(
-        STATS, m_screen.level(),
-        m_mover,
-        FVec((float) m_direction, 0.0f));
-    if (flags & Walker::FLAG_BLOCKED) {
-        m_direction = m_direction > 0 ? -1 : +1;
+    if (m_statetime > 0) {
+        m_statetime--;
+    } else {
+        m_state = State::WALK;
     }
+
+    FVec drive((float) m_direction, 0.0f);
+    if (m_state == State::JUMP) {
+        drive.y = 1.0f;
+    }
+
+    unsigned flags = m_walker.update(
+        STATS, m_screen.level(), m_mover, drive);
+    m_pos = IVec(m_mover.pos());
+
     if (flags & Walker::FLAG_FOOTSTEP) {
         m_screen.play_sound(Sfx::BOOT, -10.0f, m_mover.pos());
     }
+    if (flags & Walker::FLAG_JUMPED) {
+        m_screen.play_sound(Sfx::GRUNT, -1.0f, m_mover.pos());
+        m_state = State::WALK;
+    }
+    if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
+        m_direction = m_direction > 0 ? -1 : +1;
+    }
 
-    m_pos = IVec(m_mover.pos());
     IRect hitbox = IRect::centered(8, 24).offset(m_pos);
     for (auto &ep : m_screen.entities()) {
         Entity &ent = *ep;
@@ -106,7 +121,22 @@ void Minion::hit_item(Item &item) {
         break;
 
     case IType::ACTION:
-        // perform action
+        do_action(item.action());
+        break;
+    }
+}
+
+void Minion::do_action(Action action) {
+    switch (action) {
+    case Action::JUMP:
+        m_state = State::JUMP;
+        m_statetime = 10;
+        break;
+    case Action::JUMP_BACK:
+        break;
+    case Action::TURN:
+        break;
+    case Action::DROP:
         break;
     }
 }
