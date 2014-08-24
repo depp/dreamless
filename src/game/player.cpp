@@ -10,6 +10,8 @@ namespace Game {
 namespace {
 const int DIALOGUE_STICKY = 25;
 const int DIALOGUE_DISMISS = 32 * 20;
+const int GIRL_COLOR = 20;
+const int SHADOW_COLOR = 28;
 };
 
 const Walker::Stats Player::STATS_PHYSICAL = {
@@ -172,7 +174,8 @@ void Player::draw(::Graphics::System &gr, int delta) const {
             Graphics::HAlign::LEFT,
             Graphics::VAlign::TOP,
             512 - MARGIN * 3 - PWIDTH,
-            Graphics::Color::palette(line.speaker == 0 ? 17 : 28),
+            Graphics::Color::palette(
+                line.speaker == 0 ? GIRL_COLOR : SHADOW_COLOR),
             line.text);
     }
 }
