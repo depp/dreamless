@@ -26,7 +26,7 @@ const Walker::Stats Player::STATS_DREAM = {
     500, 180,
 
     // jump time, accel, speed, gravity, doublejump
-    25, 400.0f, 280.0f, 800.0f, true,
+    25, 400.0f, 300.0f, 800.0f, true,
 
     // step time
     0.20
