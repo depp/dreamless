@@ -37,6 +37,7 @@ const ShaderField Sprite::ATTRIBUTES[] = {
 #define TYPE Text
 const ShaderField Text::UNIFORMS[] = {
     FIELD(u_vertxform),
+    FIELD(u_vertoff),
     FIELD(u_texscale),
     FIELD(u_texture),
     FIELD(u_color),

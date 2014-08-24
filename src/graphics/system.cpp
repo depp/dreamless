@@ -18,6 +18,8 @@
 #include "sg/util.h"
 
 #include <cstring>
+#include <limits>
+#include <vector>
 
 namespace Graphics {
 
@@ -65,10 +67,17 @@ void make_fullscreen_quad(Array<float[4]> &arr, FRect tex) {
 }
 
 struct System::Data {
+    struct TextRun {
+        Color color;
+        IVec pos;
+        unsigned length;
+    };
+
     // Shader programs
     Program<Shader::Sprite> m_prog_sprite;
     Program<Shader::Dream> m_prog_dream;
     Program<Shader::Scale> m_prog_scale;
+    Program<Shader::Text> m_prog_text;
 
     // Target textures and framebuffers.
     int m_target_width, m_target_height;
@@ -93,6 +102,10 @@ struct System::Data {
     SpriteSheet m_sprite_sheet;
     SpriteArray m_sprite_array[LAYER_COUNT];
 
+    // Text data
+    Array<short[4]> m_text_array;
+    std::vector<TextRun> m_text_run;
+
     // The blend effect color.
     Color m_blendcolor;
 
@@ -109,6 +122,7 @@ struct System::Data {
     float m_noiseoffset[4];
 
     // Textures
+    Texture m_font;
     Texture m_pattern;
     Texture m_noise;
 
@@ -146,6 +160,17 @@ struct System::Data {
 
     // ============================================================
 
+    void text_clear();
+
+    void text_put(IVec pos, HAlign halign, VAlign valign, int width,
+                  Color color, const std::string &str);
+
+    void text_finalize();
+
+    void text_draw();
+
+    // ============================================================
+
     void draw_layers();
 
     void draw_reality();
@@ -161,6 +186,7 @@ System::Data::Data()
     : m_prog_sprite("sprite", "sprite"),
       m_prog_dream("dream", "dream"),
       m_prog_scale("scale", "scale"),
+      m_prog_text("text", "text"),
       m_target_width(-1), m_target_height(-1),
       m_sprite_sheet("", SPRITES),
       m_blendcolor(Color::transparent()),
@@ -171,6 +197,7 @@ System::Data::Data()
     std::memset(m_target_fbuf, 0, sizeof(m_target_fbuf));
     for (int i = 0; i < 4; i++)
         m_noiseoffset[i] = 0.0f;
+    m_font = Texture::load("font/terminus");
     m_pattern = Texture::load("misc/hilbert");
     m_noise = Texture::load("misc/noise");
 }
@@ -337,6 +364,156 @@ void System::Data::sprite_draw(Layer layer) {
 
 // ============================================================
 
+void System::Data::text_clear() {
+    m_text_array.clear();
+    m_text_run.clear();
+}
+
+void System::Data::text_put(IVec pos, HAlign halign, VAlign valign, int width,
+                            Color color, const std::string &str) {
+    IVec csz(m_font.iwidth >> 4, m_font.iheight >> 4);
+    int maxc = width >= 0 ?
+        width / csz.x : std::numeric_limits<int>::max();
+
+    const char *cpos = str.data(), *cend = cpos + str.size();
+    int ypos = 0;
+    unsigned runsize = 0;
+    while (cpos != cend) {
+        // Get the next line of text
+        int rem = cend - cpos;
+        const char *line_end;
+        if (rem > maxc) {
+            line_end = nullptr;
+            bool was_white = false;
+            const char *scan = cpos;
+            for (; scan != cpos + maxc; scan++) {
+                if (*scan == '\n') {
+                    line_end = scan;
+                    break;
+                } else if (*scan == ' ') {
+                    if (!was_white) {
+                        line_end = scan;
+                        was_white = true;
+                    }
+                } else {
+                    was_white = false;
+                }
+            }
+            if (!line_end) {
+                for (; scan != cend; scan++) {
+                    if (*scan == '\n' || *scan == ' ')
+                        break;
+                }
+                line_end = scan;
+            }
+        } else {
+            const char *scan = cpos;
+            line_end = cend;
+            for (; scan != cend; scan++) {
+                if (*scan == '\n') {
+                    line_end = scan;
+                    break;
+                }
+            }
+        }
+
+        int line_len = line_end - cpos;
+        int offset = 0;
+        switch (halign) {
+        case HAlign::LEFT:
+            break;
+        case HAlign::CENTER:
+            offset = -(line_len * csz.x) / 2;
+            break;
+        case HAlign::RIGHT:
+            offset = -line_len * csz.x;
+            break;
+        }
+
+        for (int i = 0; i < line_len; i++) {
+            unsigned char c = cpos[i];
+            if (c == ' ')
+                continue;
+            short x0 = i * csz.x + offset, x1 = x0 + csz.x;
+            short y1 = -ypos * csz.y, y0 = y1 - csz.y;
+            short u0 = (c & 15), u1 = u0 + 1, v1 = (c >> 4), v0 = v1 + 1;
+            auto d = m_text_array.insert(6);
+            d[0][0] = x0; d[0][1] = y0; d[0][2] = u0; d[0][3] = v0;
+            d[1][0] = x1; d[1][1] = y0; d[1][2] = u1; d[1][3] = v0;
+            d[2][0] = x0; d[2][1] = y1; d[2][2] = u0; d[2][3] = v1;
+            d[3][0] = x0; d[3][1] = y1; d[3][2] = u0; d[3][3] = v1;
+            d[4][0] = x1; d[4][1] = y0; d[4][2] = u1; d[4][3] = v0;
+            d[5][0] = x1; d[5][1] = y1; d[5][2] = u1; d[5][3] = v1;
+            runsize++;
+        }
+
+        cpos = line_end;
+        while (cpos != cend && *cpos == ' ')
+            cpos++;
+        if (cpos != cend && *cpos == '\n')
+            cpos++;
+
+        ypos++;
+    }
+
+    if (!runsize)
+        return;
+
+    TextRun run;
+    run.color = color;
+    run.pos = pos;
+    switch (valign) {
+    case VAlign::TOP:
+        break;
+    case VAlign::CENTER:
+        run.pos.y += (csz.y * ypos) / 2;
+        break;
+    case VAlign::BOTTOM:
+        run.pos.y += csz.y * ypos;
+        break;
+    }
+    run.length = runsize;
+    m_text_run.push_back(run);
+}
+
+void System::Data::text_finalize() {
+    m_text_array.upload(GL_DYNAMIC_DRAW);
+}
+
+void System::Data::text_draw() {
+    auto &prog = m_prog_text;
+    auto &arr = m_text_array;
+
+    if (arr.empty())
+        return;
+
+    glUseProgram(prog.prog());
+    glEnableVertexAttribArray(prog->a_vert);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    arr.set_attrib(prog->a_vert);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_font.tex);
+
+    glUniform4fv(prog->u_vertxform, 1, m_xform_screen);
+    glUniform2f(prog->u_texscale, 1.0f/16.0f, 1.0f/16.0f);
+    glUniform1i(prog->u_texture, 0);
+
+    unsigned pos = 0;
+    for (auto &run : m_text_run) {
+        glUniform2f(prog->u_vertoff, run.pos.x, run.pos.y);
+        glUniform4fv(prog->u_color, 1, run.color.v);
+        glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
+    }
+
+    glUseProgram(0);
+    sg_opengl_checkerror("System::Data::text_draw");
+}
+
+// ============================================================
+
 void System::Data::draw_layers() {
     target_set(Target::PHYSICAL);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -349,6 +526,7 @@ void System::Data::draw_layers() {
     sprite_draw(Layer::DREAM);
     sprite_draw(Layer::BOTH);
     sprite_draw(Layer::INTERFACE);
+    text_draw();
 }
 
 void System::Data::draw_reality() {
@@ -432,12 +610,14 @@ System::~System()
 void System::clear(bool all) {
     auto &d = *m_data;
     d.sprite_clear(all);
+    d.text_clear();
 }
 
 void System::finalize() {
     auto &d = *m_data;
     d.target_finalize();
     d.sprite_finalize();
+    d.text_finalize();
 }
 
 void System::draw() {
@@ -475,6 +655,11 @@ void System::add_sprite(AnySprite sp, IVec pos, Layer layer,
 
 void System::add_sprite(AnySprite sp, IVec pos, Layer layer) {
     m_data->sprite_add(sp, pos, Orientation::NORMAL, layer);
+}
+
+void System::put_text(IVec pos, HAlign halign, VAlign valign, int width,
+                      Color color, const std::string &str) {
+    m_data->text_put(pos, halign, valign, width, color, str);
 }
 
 }

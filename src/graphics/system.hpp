@@ -4,6 +4,7 @@
 #ifndef LD_GRAPHICS_SYSTEM_HPP
 #define LD_GRAPHICS_SYSTEM_HPP
 #include <memory>
+#include <string>
 namespace Base {
 enum class Orientation;
 class IVec;
@@ -11,6 +12,10 @@ class IVec;
 namespace Graphics {
 enum class Layer;
 class AnySprite;
+class Color;
+
+enum class HAlign { LEFT, CENTER, RIGHT };
+enum class VAlign { BOTTOM, CENTER, TOP };
 
 class System {
 private:
@@ -45,6 +50,11 @@ public:
                     Base::Orientation orientation);
     /// Add a sprite to the world.
     void add_sprite(AnySprite sp, Base::IVec pos, Layer layer);
+    /// Put text on the screen.  Width is measured in pixels, use -1
+    /// for unlimited width.  The point specified is on the edge of
+    /// the text's bounding box.
+    void put_text(Base::IVec pos, HAlign halign, VAlign valign, int width,
+                  Color color, const std::string &str);
 };
 
 }

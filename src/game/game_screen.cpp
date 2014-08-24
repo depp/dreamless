@@ -8,6 +8,7 @@
 #include "player.hpp"
 #include "main.hpp"
 #include "base/random.hpp"
+#include "graphics/color.hpp"
 #include <algorithm>
 namespace Game {
 
@@ -78,6 +79,15 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
     } else {
         gr.clear(false);
     }
+
+    using Graphics::Color;
+    gr.put_text(
+        IVec(4, 4),
+        Graphics::HAlign::LEFT,
+        Graphics::VAlign::BOTTOM,
+        100,
+        Color::palette(27),
+        "Hello, this is text.  It is long and needs line breaks.");
 
     float noise[4];
     for (int i = 0; i < 4; i++) {

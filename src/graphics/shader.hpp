@@ -34,6 +34,7 @@ struct Text {
 
     GLint a_vert;
     GLint u_vertxform;
+    GLint u_vertoff;
     GLint u_texscale;
     GLint u_texture;
     GLint u_color;
