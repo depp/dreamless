@@ -44,7 +44,7 @@ void Minion::update() {
     }
 
     FVec drive((float) m_direction, 0.0f);
-    if (m_state == State::JUMP) {
+    if (m_state == State::JUMP || m_state == State::JUMPING) {
         drive.y = 1.0f;
     }
 
@@ -57,9 +57,12 @@ void Minion::update() {
     }
     if (flags & Walker::FLAG_JUMPED) {
         m_screen.play_sound(Sfx::GRUNT, -1.0f, m_mover.pos());
+        m_state = State::JUMPING;
+        m_statetime = 15;
+    }
+    if ((flags & Walker::FLAG_AIRBORNE) == 0 && m_state != State::JUMPING) {
         m_state = State::WALK;
     }
-
     if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
         m_direction = m_direction > 0 ? -1 : +1;
     }

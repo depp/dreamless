@@ -13,9 +13,10 @@ enum class Action;
 class Minion : public Entity {
     static const Walker::Stats STATS;
 
-    enum State {
+    enum class State {
         WALK,
-        JUMP
+        JUMP,
+        JUMPING
     };
 
     struct Memory {
