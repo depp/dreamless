@@ -20,6 +20,7 @@ enum TileType {
 
 /// Level data.
 class Level {
+
     struct TileInfo {
         unsigned char c;
         Tile tile;
@@ -34,6 +35,8 @@ class Level {
     int m_width;
     int m_height;
     unsigned char *m_data;
+
+    IVec m_spawn;
 
     static const TileInfo &tile_info(unsigned char tile) {
         return TILES[tile];
@@ -63,6 +66,13 @@ public:
     bool hit_test(FVec pos) const;
     /// Get the Y position of the nearest floor.
     float find_floor(FVec pos) const;
+
+    /// Get the pixel bounds of the level.
+    IRect bounds() const {
+        return IRect(0, 0, m_width * Defs::TILESZ, m_height * Defs::TILESZ);
+    }
+
+    IVec spawn_point() const { return m_spawn; }
 };
 
 }

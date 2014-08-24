@@ -14,7 +14,9 @@ static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
 GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
     : Screen(ctl), m_drawn(false) {
     m_level.load(name);
-    add_entity(new Player(*this, IVec(48, 48)));
+    m_camera.set_bounds(m_level.bounds());
+    m_camera.set_fov(IVec(1280 / 2, 720 / 2));
+    add_entity(new Player(*this, m_level.spawn_point()));
 }
 
 GameScreen::~GameScreen()
@@ -27,6 +29,7 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
     }
     for (auto &ent : m_entity)
         ent->draw(gr, delta);
+    gr.set_camera(m_camera.drawpos(delta));
 }
 
 void GameScreen::update(unsigned time) {
@@ -40,11 +43,16 @@ void GameScreen::update(unsigned time) {
     auto part = std::stable_partition(
         m_entity.begin(), m_entity.end(), entity_is_alive);
     m_entity.erase(part, m_entity.end());
+    m_camera.update();
 }
 
 void GameScreen::add_entity(Entity *ent) {
     if (ent)
         m_new_entity.push_back(std::unique_ptr<Entity>(ent));
+}
+
+void GameScreen::set_camera(FVec target) {
+    m_camera.set_target(target);
 }
 
 }

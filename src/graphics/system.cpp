@@ -7,14 +7,15 @@
 #include "sprite_layer.hpp"
 #include "sprite.hpp"
 #include "base/vec.hpp"
+#include "base/log.hpp"
 namespace Graphics {
 
 namespace {
 void make_xform(float *xform, int w, int h, int x, int y) {
     xform[0] = 2.0 / w;
     xform[1] = 2.0 / h;
-    xform[2] = x * (-1.0 / (w / 2));
-    xform[3] = y * (-1.0 / (h / 2));
+    xform[2] = -1.0 - xform[0] * x;
+    xform[3] = -1.0 - xform[1] * y;
 }
 }
 
@@ -42,13 +43,19 @@ void System::draw() {
     m_common->m_blendcolor = Color::palette(3);
     m_scaler->begin(m_width, m_height, width, height);
 
-    make_xform(m_common->m_xform_world, width, height, 0, 0);
-    make_xform(m_common->m_xform_screen, width, height, 0, 0);
+    make_xform(m_common->m_xform_world,
+               width, height, m_camera.x, m_camera.y);
+    make_xform(m_common->m_xform_screen,
+               width, height, 0, 0);
 
     glClearColor(0.2f, 0.2f, 0.2f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     m_sprite->draw(*m_common);
     m_scaler->end(*m_common);
+}
+
+void System::set_camera(Base::IVec pos) {
+    m_camera = pos;
 }
 
 void System::add_sprite(AnySprite sp, Base::IVec pos,

@@ -4,9 +4,9 @@
 #ifndef LD_GRAPHICS_SYSTEM_HPP
 #define LD_GRAPHICS_SYSTEM_HPP
 #include <memory>
+#include "base/vec.hpp"
 namespace Base {
 enum class Orientation;
-class IVec;
 }
 namespace Graphics {
 class AnySprite;
@@ -21,6 +21,7 @@ private:
     std::unique_ptr<SpriteLayer> m_sprite;
     std::unique_ptr<Scaler> m_scaler;
     int m_width, m_height;
+    Base::IVec m_camera;
 
 public:
     System();
@@ -36,6 +37,8 @@ public:
     void end();
     /// Draw the world.
     void draw();
+    /// Set the lower-left corner of the camera.
+    void set_camera(Base::IVec pos);
     /// Add a sprite to the world.
     void add_sprite(AnySprite sp, Base::IVec pos,
                     Base::Orientation orientation,

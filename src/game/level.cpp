@@ -138,6 +138,12 @@ void Level::load(const std::string &name) {
         int x = 0;
         for (; x < line.second; x++) {
             unsigned char c = line.first[x];
+            if (c == 'a') {
+                m_spawn = IVec(
+                    x * Defs::TILESZ + Defs::TILESZ / 2,
+                    y * Defs::TILESZ + Defs::TILESZ / 2);
+                c = ' ';
+            }
             auto &info = tile_info(c);
             if (info.c == '\0') {
                 Log::error("bad tile at (%d, %d): '%c'", x, y, c);

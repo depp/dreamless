@@ -5,6 +5,7 @@
 #define LD_GAME_GAME_SCREEN_HPP
 #include "level.hpp"
 #include "screen.hpp"
+#include "camera.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -16,6 +17,8 @@ class GameScreen : public Screen {
     bool m_drawn;
     /// The current level data.
     Level m_level;
+    /// The level camera.
+    Camera m_camera;
     /// List of active entities.
     std::vector<std::unique_ptr<Entity>> m_entity;
     /// List of new entities, not yet active.
@@ -35,6 +38,9 @@ public:
 
     /// Accessor for the level.
     const Level &level() const { return m_level; }
+
+    /// Set the camera target.
+    void set_camera(FVec target);
 };
 
 }

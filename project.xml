@@ -22,6 +22,8 @@
     <header-path path="src"/>
     <require module="math"/>
     <group path="src/game">
+      <src path="camera.cpp"/>
+      <src path="camera.hpp"/>
       <src path="control.cpp"/>
       <src path="control.hpp"/>
       <src path="defs.hpp"/>
@@ -75,6 +77,8 @@
       <src path="sprite_array.cpp"/>
       <src path="sprite_sheet.cpp"/>
       <src path="sprite_orientation.cpp"/>
+      <src path="vec.cpp"/>
+      <src path="vec.hpp"/>
     </group>
   </module>
 </build>

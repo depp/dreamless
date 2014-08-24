@@ -49,6 +49,7 @@ struct FRect {
         : x0(x0), y0(y0), x1(x1), y1(y1)
     { }
 
+    static FRect zero() { return FRect(0, 0, 0, 0); }
     static bool test_intersect(const FRect &a, const FRect &b);
     FVec center() const;
     FRect offset(FVec v) const;
@@ -56,6 +57,8 @@ struct FRect {
     FRect expand(float horiz, float vert) const;
     FRect expand(const FRect &r) const;
     FVec nearest(FVec v) const;
+    float width() const { return x1 - x0; }
+    float height() const { return y1 - y0; }
 };
 
 /// Integer vector.
@@ -89,6 +92,7 @@ struct IRect {
         : x0(x0), y0(y0), x1(x1), y1(y1)
     { }
 
+    static IRect zero() { return IRect(0, 0, 0, 0); }
     static IRect centered(int w, int h);
     static bool test_intersect(const IRect &a, const IRect &b);
     IVec center() const;
@@ -97,6 +101,8 @@ struct IRect {
     IRect expand(int horiz, int vert) const;
     IRect expand(const IRect &r) const;
     bool contains(IVec v) const;
+    int width() const { return x1 - x0; }
+    int height() const { return y1 - y0; }
 };
 
 }
