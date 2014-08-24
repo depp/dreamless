@@ -7,12 +7,12 @@
 namespace Game {
 
 enum class Button {
-    LEFT, RIGHT, UP, DOWN, SELECT, CANCEL, RESTART, ESCAPE
+    LEFT, RIGHT, UP, DOWN, NEXT, PREV, ACTION, RESTART, ESCAPE
 };
 
 class ControlState {
 private:
-    const static int NBUTTONS = 8;
+    const static int NBUTTONS = 9;
     int m_buttons[NBUTTONS];
 
     /// Read two button states and convert them to a continuous value.

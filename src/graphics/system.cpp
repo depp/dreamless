@@ -385,6 +385,8 @@ void System::Data::draw_composite() {
 
     glUseProgram(0);
     sg_opengl_checkerror("System::Data::draw_composite");
+
+    sprite_draw(Layer::INTERFACE);
 }
 
 void System::Data::draw_scaled() {

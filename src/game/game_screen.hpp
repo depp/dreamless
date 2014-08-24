@@ -51,7 +51,10 @@ public:
     }
 
     /// Play a sound at the given location.
-    void play_sound(Sfx sfx, FVec pos, float volume);
+    void play_sound(Sfx sfx, float volume, FVec pos);
+
+    /// Play a sound with no associated location.
+    void play_sound(Sfx sfx, float volume);
 };
 
 }

@@ -22,6 +22,8 @@
     <header-path path="src"/>
     <require module="math"/>
     <group path="src/game">
+      <src path="action.cpp"/>
+      <src path="action.hpp"/>
       <src path="audio.cpp"/>
       <src path="audio.hpp"/>
       <src path="camera.cpp"/>

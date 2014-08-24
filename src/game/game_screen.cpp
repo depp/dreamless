@@ -17,7 +17,7 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
     : Screen(ctl), m_drawn(false) {
     m_level.load(name);
     m_camera.set_bounds(m_level.bounds());
-    m_camera.set_fov(IVec(1280 / 2, 720 / 2));
+    m_camera.set_fov(IVec(Defs::WIDTH, Defs::HEIGHT));
     typedef Level::SpawnType Spawn;
     typedef Item::Type IType;
     for (auto &sp : m_level.spawn_points()) {
@@ -80,9 +80,9 @@ void GameScreen::set_camera(FVec target) {
     m_camera.set_target(target);
 }
 
-void GameScreen::play_sound(Sfx sfx, FVec pos, float volume) {
+void GameScreen::play_sound(Sfx sfx, float volume, FVec pos) {
     FVec delta = pos - m_camera.center();
-    int width = 1280 / 2;
+    int width = Defs::WIDTH / 2;
     float panwidth = 0.8f;
     float pan = delta.x * (1.0f / (float) width * panwidth);
     if (pan > 1.0f)
@@ -90,6 +90,10 @@ void GameScreen::play_sound(Sfx sfx, FVec pos, float volume) {
     else if (pan < -1.0f)
         pan = -1.0f;
     Audio::play(m_time + Defs::FRAMETIME, sfx, volume, pan);
+}
+
+void GameScreen::play_sound(Sfx sfx, float volume) {
+    Audio::play(m_time + Defs::FRAMETIME, sfx, volume, 0.0f);
 }
 
 }

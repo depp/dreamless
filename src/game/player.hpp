@@ -12,6 +12,7 @@ class Player : public Entity {
 
     Mover m_mover;
     Walker m_walker;
+    int m_selection;
 
 public:
     Player(GameScreen &scr, IVec pos);

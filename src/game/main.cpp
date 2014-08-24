@@ -86,6 +86,27 @@ private:
             button = Button::DOWN;
             break;
 
+        case KEY_E:
+        case KEY_Tab:
+            button = Button::NEXT;
+            break;
+
+        case KEY_Q:
+            button = Button::PREV;
+            break;
+
+        case KEY_Space:
+            button = Button::ACTION;
+            break;
+
+        case KEY_R:
+            button = Button::RESTART;
+            break;
+
+        case KEY_Escape:
+            button = Button::ESCAPE;
+            break;
+
         default:
             return;
         }

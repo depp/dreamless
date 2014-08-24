@@ -35,7 +35,7 @@ void Minion::update() {
         m_direction = m_direction > 0 ? -1 : +1;
     }
     if (flags & Walker::FLAG_FOOTSTEP) {
-        m_screen.play_sound(Sfx::BOOT, m_mover.pos(), -10.0f);
+        m_screen.play_sound(Sfx::BOOT, -10.0f, m_mover.pos());
     }
 
     m_pos = IVec(m_mover.pos());
@@ -84,16 +84,16 @@ void Minion::hit_item(Item &item) {
     case IType::DOOR_CLOSED:
         m_team = Team::DEAD;
         item.set_type(IType::DOOR_OPEN);
-        m_screen.play_sound(Sfx::OPEN, m_mover.pos(), -10.0f);
+        m_screen.play_sound(Sfx::OPEN, -10.0f, m_mover.pos());
         break;
 
     case IType::DOOR_LOCKED:
         if (m_haskey) {
             m_team = Team::DEAD;
-            m_screen.play_sound(Sfx::UNLOCK, m_mover.pos(), -10.0f);
+            m_screen.play_sound(Sfx::UNLOCK,  -10.0f, m_mover.pos());
             item.set_type(IType::DOOR_OPEN);
         } else {
-            m_screen.play_sound(Sfx::LOCKED, m_mover.pos(), -10.0f);
+            m_screen.play_sound(Sfx::LOCKED, -10.0f, m_mover.pos());
         }
         break;
 
@@ -101,7 +101,7 @@ void Minion::hit_item(Item &item) {
         if (!m_haskey) {
             m_haskey = true;
             item.destroy();
-            m_screen.play_sound(Sfx::PLINK, m_mover.pos(), -10.0f);
+            m_screen.play_sound(Sfx::PLINK, -10.0f, m_mover.pos());
         }
         break;
 

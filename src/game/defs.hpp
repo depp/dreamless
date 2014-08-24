@@ -25,6 +25,12 @@ typedef ::Graphics::Tile Tile;
 typedef ::Graphics::Layer Layer;
 
 struct Defs {
+    /// Screen width.
+    static const int WIDTH = 1280 / 2;
+
+    /// Screen height.
+    static const int HEIGHT = 720 / 2;
+
     /// Milliseconds between updates.
     static const int FRAMETIME = 32;
 
