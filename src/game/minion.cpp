@@ -107,6 +107,7 @@ void Minion::hit_item(Item &item) {
         m_team = Team::DEAD;
         item.set_type(IType::DOOR_OPEN);
         m_screen.play_sound(Sfx::OPEN, -10.0f, m_mover.pos());
+        m_screen.capture_minion();
         break;
 
     case IType::DOOR_LOCKED:
@@ -114,6 +115,7 @@ void Minion::hit_item(Item &item) {
             m_team = Team::DEAD;
             m_screen.play_sound(Sfx::UNLOCK,  -10.0f, m_mover.pos());
             item.set_type(IType::DOOR_OPEN);
+            m_screen.capture_minion();
         } else {
             m_screen.play_sound(Sfx::LOCKED, -10.0f, m_mover.pos());
         }

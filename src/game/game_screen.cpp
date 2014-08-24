@@ -6,20 +6,23 @@
 #include "item.hpp"
 #include "minion.hpp"
 #include "player.hpp"
+#include "main.hpp"
 #include "base/random.hpp"
 #include <algorithm>
 namespace Game {
 
 static const int DREAM_TIME = 50;
+static const int WIN_DELAY = 50;
 static const float NOISE_SPEED = 0.01f;
 
 static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
     return p->team() != Team::DEAD;
 }
 
-GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
-    : Screen(ctl), m_drawn(false), m_dream(-1) {
-    m_level.load(name);
+GameScreen::GameScreen(const ControlState &ctl, int levelnum)
+    : Screen(ctl), m_levelnum(levelnum), m_drawn(false), m_dream(-1),
+      m_minions(0), m_wincounter(-1) {
+    m_level.load(std::to_string(levelnum));
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(Defs::WIDTH, Defs::HEIGHT));
     typedef Level::SpawnType Spawn;
@@ -32,6 +35,7 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
             m_camera.update();
             break;
         case Spawn::MINION:
+            m_minions++;
             add_entity(new Minion(*this, sp.pos));
             break;
         case Spawn::DOOR_CLOSED:
@@ -55,6 +59,10 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
         m_noisevel[2*i+0] = std::cos(angle) * NOISE_SPEED;
         m_noisevel[2*i+1] = std::sin(angle) * NOISE_SPEED;
     }
+
+    /// End condition (the last level)
+    if (!m_minions)
+        m_minions = -1;
 }
 
 GameScreen::~GameScreen()
@@ -88,6 +96,11 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
 }
 
 void GameScreen::update(unsigned time) {
+    if (m_wincounter > 0) {
+        if (!--m_wincounter)
+            Main::main->load_level(m_levelnum + 1);
+    }
+
     for (int i = 0; i < 4; i++) {
         m_noise[i] += m_noisevel[i];
         if (m_noise[i] > +1.0f)
@@ -146,6 +159,14 @@ void GameScreen::wake_up() {
         return;
     m_dream = DREAM_TIME;
     play_sound(Sfx::WHA, -10.0f);
+}
+
+void GameScreen::capture_minion() {
+    m_minions--;
+    if (m_minions)
+        return;
+    play_sound(Sfx::DREAM, -3.0f);
+    m_wincounter = WIN_DELAY;
 }
 
 }

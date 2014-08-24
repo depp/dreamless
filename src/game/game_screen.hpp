@@ -14,6 +14,8 @@ namespace Game {
 class Entity;
 
 class GameScreen : public Screen {
+    /// The level number.
+    int m_levelnum;
     /// Whether static data has been uploaded.
     bool m_drawn;
     /// The current level data.
@@ -32,9 +34,12 @@ class GameScreen : public Screen {
     /// Noise to feed to the graphics system.
     float m_noise[4];
     float m_noisevel[4];
+    /// Minions remaining to clear the level.
+    int m_minions;
+    int m_wincounter;
 
 public:
-    GameScreen(const ControlState &ctl, const std::string &name);
+    GameScreen(const ControlState &ctl, int levelnum);
     virtual ~GameScreen();
 
     /// Draw the screen.
@@ -67,6 +72,10 @@ public:
 
     /// Wake up from the dream.
     void wake_up();
+
+    /// Register a capture.  When all minions are captured, the level
+    /// is won.
+    void capture_minion();
 };
 
 }
