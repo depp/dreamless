@@ -2,12 +2,14 @@
 
 uniform sampler2D u_reality;
 uniform sampler2D u_noise;
+uniform sampler2D u_background;
 
 uniform float u_world;
 uniform vec4 u_color;
 uniform vec4 u_blendscale;
 uniform vec2 u_noisescale;
 uniform vec4 u_noiseoffset;
+uniform vec4 u_backgroundxform;
 
 varying vec2 v_texcoord;
 
@@ -32,7 +34,9 @@ void main() {
     float value = dot(reality, weight);
     vec4 monochrome = vec4(vec3(value), reality.a);
 
-    vec4 background = vec4(0.2, 0.3, 0.2, 1.0);
+    vec4 background = texture2D(
+        u_background,
+        (v_texcoord + u_backgroundxform.xy) * u_backgroundxform.zw);
     vec4 foreground = mix(toned, monochrome, u_world);
 
     gl_FragColor = background * vec4(1.0 - foreground.a) + foreground;

@@ -154,16 +154,6 @@ Texture Texture::load(const Image &image) {
         0,
         info.fmt,
         info.type,
-        nullptr);
-    glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0,
-        0,
-        tex.iwidth,
-        tex.iheight,
-        info.fmt,
-        info.type,
         image->data);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -198,14 +188,6 @@ Texture Texture::load_1d(const Image &image) {
         info.ifmt,
         tex.twidth,
         0,
-        info.fmt,
-        info.type,
-        nullptr);
-    glTexSubImage1D(
-        GL_TEXTURE_1D,
-        0,
-        0,
-        tex.iwidth,
         info.fmt,
         info.type,
         image->data);

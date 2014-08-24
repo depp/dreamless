@@ -88,6 +88,8 @@ struct System::Data {
     float m_pixscale[2];
     // Scale for the blending effect.
     float m_blendscale[4];
+    /// Translate to background texture coordinates.
+    float m_bgxform[4];
 
     // Sprite transformation from screen or world coordinates.
     float m_xform_screen[4];
@@ -125,6 +127,7 @@ struct System::Data {
     Texture m_font;
     Texture m_pattern;
     Texture m_noise;
+    Texture m_background;
 
     Data();
 
@@ -200,6 +203,7 @@ System::Data::Data()
     m_font = Texture::load("font/terminus");
     m_pattern = Texture::load("misc/hilbert");
     m_noise = Texture::load("misc/noise");
+    m_background = Texture::load("misc/background");
 }
 
 // ============================================================
@@ -279,6 +283,11 @@ void System::Data::target_finalize() {
         m_blendscale[2] = sc;
         m_blendscale[3] = sc;
     }
+
+    m_bgxform[0] = -texpos.x * xs;
+    m_bgxform[1] = (-height - texpos.y) * ys;
+    m_bgxform[2] = m_background.scale[0] * m_target_width;
+    m_bgxform[3] = -m_background.scale[1] * m_target_height;
 
     sg_opengl_checkerror("TargetManager::set_camera");
 }
@@ -548,9 +557,12 @@ void System::Data::draw_reality() {
     glBindTexture(GL_TEXTURE_2D, target_texture(Target::PHYSICAL));
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_noise.tex);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, m_background.tex);
 
     glUniform1i(prog->u_reality, 0);
     glUniform1i(prog->u_noise, 1);
+    glUniform1i(prog->u_background, 2);
 
     glUniform1f(prog->u_world, m_world);
     glUniform4fv(prog->u_color, 1, m_blendcolor.v);
@@ -560,6 +572,7 @@ void System::Data::draw_reality() {
         noisescale[i] = m_pixscale[i] * m_noise.scale[i];
     glUniform2fv(prog->u_noisescale, 1, noisescale);
     glUniform4fv(prog->u_noiseoffset, 1, m_noiseoffset);
+    glUniform4fv(prog->u_backgroundxform, 1, m_bgxform);
 
     arr.set_attrib(prog->a_vert);
 

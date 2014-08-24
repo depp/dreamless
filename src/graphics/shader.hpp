@@ -61,12 +61,14 @@ struct Dream {
 
     GLint u_reality;
     GLint u_noise;
+    GLint u_background;
 
     GLint u_world;
     GLint u_color;
     GLint u_blendscale;
     GLint u_noisescale;
     GLint u_noiseoffset;
+    GLint u_backgroundxform;
 };
 
 }

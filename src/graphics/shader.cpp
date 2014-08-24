@@ -69,10 +69,12 @@ const ShaderField Dream::UNIFORMS[] = {
     FIELD(u_reality),
     FIELD(u_noise),
     FIELD(u_world),
+    FIELD(u_background),
     FIELD(u_color),
     FIELD(u_blendscale),
     FIELD(u_noisescale),
     FIELD(u_noiseoffset),
+    FIELD(u_backgroundxform),
     { nullptr, 0 }
 };
 
