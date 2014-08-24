@@ -12,7 +12,10 @@ const Walker::Stats Minion::STATS = {
     300, 150,
 
     // jump time, accel, speed, gravity, doublejump
-    25, 400.0f, 180.0f, 600.0f, true
+    25, 400.0f, 180.0f, 600.0f, true,
+
+    // step time
+    0.3
 };
 
 Minion::Minion(GameScreen &scr, IVec pos)
@@ -31,6 +34,10 @@ void Minion::update(unsigned time) {
         FVec((float) m_direction, 0.0f));
     if (flags & Walker::FLAG_BLOCKED) {
         m_direction = m_direction > 0 ? -1 : +1;
+    }
+    if (flags & Walker::FLAG_FOOTSTEP) {
+        m_screen.play_sound(time + Defs::FRAMETIME,
+                            Sfx::BOOT, m_mover.pos(), -10.0f);
     }
 
     m_pos = IVec(m_mover.pos());
@@ -72,7 +79,7 @@ void Minion::hit_item(Item &item) {
         m_team = Team::DEAD;
         item.set_type(IType::DOOR_OPEN);
         break;
-        
+
     case IType::DOOR_LOCKED:
         // try to unlock
         break;

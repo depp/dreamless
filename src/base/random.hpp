@@ -25,6 +25,14 @@ struct Random {
         return ww;
     }
 
+    // generates x in 0 <= x < max
+    int nexti(int max);
+
+    // generates x in 0 <= x < max
+    static int gnexti(int max) {
+        return global.nexti(max);
+    }
+
     static float gnextf() {
         return global.nextf();
     }

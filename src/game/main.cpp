@@ -12,6 +12,7 @@
 #include "defs.hpp"
 #include "game_screen.hpp"
 #include "screen.hpp"
+#include "audio.hpp"
 
 namespace Game {
 class Main {
@@ -124,6 +125,7 @@ Main *Main::main;
 
 void sg_game_init(void) {
     Base::Log::init();
+    Game::Audio::init();
     Game::Main::main = new Game::Main;
 }
 

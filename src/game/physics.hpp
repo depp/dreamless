@@ -45,6 +45,8 @@ private:
     State m_state;
     /// Time remaining with jump control, or -1 if jump was released.
     int m_jumptime;
+    /// The distance traveled since the last footstep.
+    float m_stepdistance;
 
 public:
     struct Stats {
@@ -60,6 +62,9 @@ public:
         float jump_speed;
         float jump_gravity;
         bool jump_double;
+
+        // Time interval between footsteps
+        float step_time;
     };
 
 public:
@@ -71,6 +76,8 @@ public:
     static const unsigned FLAG_DOUBLE = 1u << 2;
     /// Is currently airborne.
     static const unsigned FLAG_AIRBORNE = 1u << 3;
+    /// Should play a footstep sound.
+    static const unsigned FLAG_FOOTSTEP = 1u << 4;
 
     Walker();
 

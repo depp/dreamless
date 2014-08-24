@@ -96,6 +96,7 @@ unsigned Walker::update(const struct Stats &stats, const Level &level,
             m_jumptime = 0;
             m_state = State::WALK;
             newpos.y = floor;
+            flags |= FLAG_FOOTSTEP;
         }
     }
 
@@ -122,8 +123,16 @@ unsigned Walker::update(const struct Stats &stats, const Level &level,
             flags |= FLAG_BLOCKED;
     }
 
-    if (m_state != State::WALK)
+    if (m_state != State::WALK) {
         flags |= FLAG_AIRBORNE;
+    } else {
+        m_stepdistance += std::abs(newpos.x - pos.x);
+        if (m_stepdistance >= stats.speed_ground * stats.step_time)
+            flags |= FLAG_FOOTSTEP;
+    }
+
+    if (flags & FLAG_FOOTSTEP)
+        m_stepdistance = 0.0f;
 
     mover.update(newpos);
     return flags;

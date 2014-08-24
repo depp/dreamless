@@ -31,7 +31,10 @@ public:
     void set_target(FVec target);
 
     /// Get the lower-left origin of the camera.
-    IVec drawpos(int delta);
+    IVec drawpos(int delta) const;
+
+    /// Get the current center.
+    FVec center() const;
 
 private:
     void calculate_clamp();

@@ -6,6 +6,7 @@
 #include "level.hpp"
 #include "screen.hpp"
 #include "camera.hpp"
+#include "audio.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -46,6 +47,9 @@ public:
     const std::vector<std::unique_ptr<Entity>> &entities() const {
         return m_entity;
     }
+
+    /// Play a sound at the given location.
+    void play_sound(unsigned time, Sfx sfx, FVec pos, float volume);
 };
 
 }

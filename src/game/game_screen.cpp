@@ -24,6 +24,8 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
         switch (sp.type) {
         case Spawn::PLAYER:
             add_entity(new Player(*this, sp.pos));
+            m_camera.set_target(FVec(sp.pos));
+            m_camera.update();
             break;
         case Spawn::MINION:
             add_entity(new Minion(*this, sp.pos));
@@ -75,6 +77,18 @@ void GameScreen::add_entity(Entity *ent) {
 
 void GameScreen::set_camera(FVec target) {
     m_camera.set_target(target);
+}
+
+void GameScreen::play_sound(unsigned time, Sfx sfx, FVec pos, float volume) {
+    FVec delta = pos - m_camera.center();
+    int width = 1280 / 2;
+    float panwidth = 0.8f;
+    float pan = delta.x * (1.0f / (float) width * panwidth);
+    if (pan > 1.0f)
+        pan = 1.0f;
+    else if (pan < -1.0f)
+        pan = -1.0f;
+    Audio::play(time, sfx, volume, pan);
 }
 
 }

@@ -52,9 +52,13 @@ void Camera::set_target(FVec target) {
     m_target = m_clamp.nearest(target);
 }
 
-IVec Camera::drawpos(int delta) {
+IVec Camera::drawpos(int delta) const {
     return Defs::interp(m_pos0, m_pos1, delta) +
         IVec(m_camera.x0, m_camera.y0);
+}
+
+FVec Camera::center() const {
+    return m_pos1;
 }
 
 void Camera::calculate_clamp() {

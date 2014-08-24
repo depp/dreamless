@@ -2,6 +2,7 @@
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "random.hpp"
+#include <limits>
 namespace Base {
 
 Random Random::global = {
@@ -16,6 +17,17 @@ void Random::init() {
     y = 0xe2db5f92u;
     z = 0x62bb2830u;
     w = 0xda65a90bu;
+}
+
+int Random::nexti(int max) {
+    if (max <= 1)
+        return 0;
+    unsigned bin_size = std::numeric_limits<unsigned>::max() / max;
+    unsigned limit = bin_size * max - 1;
+    unsigned x;
+    do x = next();
+    while (x > limit);
+    return x / bin_size;
 }
 
 }
