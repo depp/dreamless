@@ -9,7 +9,8 @@ namespace Game {
 class Item;
 
 class Player : public Entity {
-    static const Walker::Stats STATS;
+    static const Walker::Stats STATS_PHYSICAL;
+    static const Walker::Stats STATS_DREAM;
 
     Mover m_mover;
     Walker m_walker;

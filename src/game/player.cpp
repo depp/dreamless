@@ -6,8 +6,7 @@
 #include "item.hpp"
 namespace Game {
 
-#if 0
-const Walker::Stats Player::STATS = {
+const Walker::Stats Player::STATS_PHYSICAL = {
     // ground accel, speed
     1200, 150,
     // air accel, speed
@@ -19,8 +18,8 @@ const Walker::Stats Player::STATS = {
     // step time
     0.16
 };
-#else
-const Walker::Stats Player::STATS = {
+
+const Walker::Stats Player::STATS_DREAM = {
     // ground accel, speed
     600, 130,
     // air accel, speed
@@ -32,7 +31,7 @@ const Walker::Stats Player::STATS = {
     // step time
     0.20
 };
-#endif
+
 Player::Player(GameScreen &scr, IVec pos)
     : Entity(scr, Team::FRIEND), m_mover(pos), m_walker(),
       m_selection(0)
@@ -44,13 +43,16 @@ Player::~Player()
 void Player::update() {
     auto &ctl = m_screen.control();
     unsigned flags = m_walker.update(
-        STATS, m_screen.level(),
-        m_mover, ctl.get_2d());
+        m_screen.is_dreaming() ? STATS_DREAM : STATS_PHYSICAL,
+        m_screen.level(), m_mover, ctl.get_2d());
     m_screen.set_camera(m_mover.pos());
     m_pos = IVec(m_mover.pos());
     if (flags & Walker::FLAG_FOOTSTEP) {
         m_screen.play_sound(Sfx::FOOT, -10.0f, m_mover.pos());
     }
+
+    if (!m_screen.is_dreaming())
+        return;
 
     IRect hitbox = IRect::centered(12, 24).offset(m_pos);
     for (auto &ep : m_screen.entities()) {
@@ -100,6 +102,8 @@ void Player::draw(::Graphics::System &gr, int delta) const {
         m_mover.drawpos(delta),
         Layer::BOTH);
 
+    if (!m_screen.is_dreaming())
+        return;
     IVec center(Defs::WIDTH / 2, Defs::HEIGHT - 20);
     for (int i = 0; i < ACTION_COUNT; i++) {
         IVec pos = center + IVec(18 * (1 - ACTION_COUNT + 2 * i), 0);
