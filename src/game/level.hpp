@@ -16,7 +16,10 @@ class Level {
 public:
     enum class SpawnType {
         PLAYER,
-        MINION
+        MINION,
+        DOOR_CLOSED,
+        DOOR_LOCKED,
+        KEY
     };
 
     struct SpawnPoint {

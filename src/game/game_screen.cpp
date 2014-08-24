@@ -3,6 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "game_screen.hpp"
 #include "entity.hpp"
+#include "item.hpp"
 #include "minion.hpp"
 #include "player.hpp"
 #include <algorithm>
@@ -18,6 +19,7 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(1280 / 2, 720 / 2));
     typedef Level::SpawnType Spawn;
+    typedef Item::Type IType;
     for (auto &sp : m_level.spawn_points()) {
         switch (sp.type) {
         case Spawn::PLAYER:
@@ -25,6 +27,15 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
             break;
         case Spawn::MINION:
             add_entity(new Minion(*this, sp.pos));
+            break;
+        case Spawn::DOOR_CLOSED:
+            add_entity(new Item(*this, sp.pos, IType::DOOR_CLOSED));
+            break;
+        case Spawn::DOOR_LOCKED:
+            add_entity(new Item(*this, sp.pos, IType::DOOR_LOCKED));
+            break;
+        case Spawn::KEY:
+            add_entity(new Item(*this, sp.pos, IType::KEY));
             break;
         }
     }

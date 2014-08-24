@@ -17,6 +17,9 @@ bool Level::is_initialized;
 const Level::SpawnInfo Level::SPAWN[] = {
     { 'P', SpawnType::PLAYER },
     { 'M', SpawnType::MINION },
+    { 'D', SpawnType::DOOR_CLOSED },
+    { 'L', SpawnType::DOOR_LOCKED },
+    { 'K', SpawnType::KEY },
 
     { '\0', SpawnType::PLAYER }
 };
