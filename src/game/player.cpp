@@ -6,15 +6,15 @@ namespace Game {
 
 const Walker::Stats Player::STATS = {
     // ground accel, speed
-    1200, 120,
+    1200, 150,
     // air accel, speed
-    300, 150,
+    300, 180,
 
     // jump time, accel, speed, gravity, doublejump
-    25, 400.0f, 180.0f, 600.0f, true,
+    25, 400.0f, 280.0f, 1200.0f, false,
 
     // step time
-    0.3
+    0.16
 };
 
 Player::Player(GameScreen &scr, IVec pos)
