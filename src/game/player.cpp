@@ -151,6 +151,9 @@ void Player::hit_item(Item &item) {
     case IType::GATEWAY:
         m_screen.wake_up();
         break;
+
+    case IType::ADVERSARY:
+        break;
     }
 }
 

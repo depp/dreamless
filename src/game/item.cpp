@@ -39,6 +39,10 @@ void Item::draw(::Graphics::System &gr, int delta) const {
     case Type::GATEWAY:
         gr.add_sprite(Sprite::PORTAL, m_pos, Layer::DREAM);
         break;
+
+    case Type::ADVERSARY:
+        gr.add_sprite(Sprite::ADVERSARY, m_pos, Layer::DREAM);
+        break;
     }
 }
 

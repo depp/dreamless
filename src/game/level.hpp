@@ -22,7 +22,8 @@ public:
         DOOR_CLOSED,
         DOOR_LOCKED,
         KEY,
-        GATEWAY
+        GATEWAY,
+        ADVERSARY
     };
 
     struct SpawnPoint {

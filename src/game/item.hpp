@@ -16,6 +16,7 @@ public:
         KEY,
         ACTION,
         GATEWAY,
+        ADVERSARY
     };
 
 private:

@@ -32,5 +32,8 @@ void main() {
     float value = dot(reality, weight);
     vec4 monochrome = vec4(vec3(value), reality.a);
 
-    gl_FragColor = mix(toned, monochrome, u_world);
+    vec4 background = vec4(0.2, 0.3, 0.2, 1.0);
+    vec4 foreground = mix(toned, monochrome, u_world);
+
+    gl_FragColor = background * vec4(1.0 - foreground.a) + foreground;
 }

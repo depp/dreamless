@@ -173,6 +173,7 @@ void Minion::hit_item(Item &item) {
         break;
 
     case IType::GATEWAY:
+    case IType::ADVERSARY:
         break;
     }
 }

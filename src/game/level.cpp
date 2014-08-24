@@ -22,6 +22,7 @@ const Level::SpawnInfo Level::SPAWN[] = {
     { 'L', 48, SpawnType::DOOR_LOCKED },
     { 'K', 32, SpawnType::KEY },
     { 'G', 32, SpawnType::GATEWAY },
+    { 'A', 32, SpawnType::ADVERSARY },
 
     { '\0', 0, SpawnType::PLAYER }
 };

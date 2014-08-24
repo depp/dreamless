@@ -520,6 +520,8 @@ void System::Data::text_draw() {
 // ============================================================
 
 void System::Data::draw_layers() {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
     target_set(Target::PHYSICAL);
     glClear(GL_COLOR_BUFFER_BIT);
     sprite_draw(Layer::TILE);

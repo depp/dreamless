@@ -53,6 +53,9 @@ GameScreen::GameScreen(const ControlState &ctl, int levelnum)
         case Spawn::GATEWAY:
             add_entity(new Item(*this, sp.pos, IType::GATEWAY));
             break;
+        case Spawn::ADVERSARY:
+            add_entity(new Item(*this, sp.pos, IType::ADVERSARY));
+            break;
         }
     }
     for (int i = 0; i < 2; i++) {
