@@ -405,8 +405,11 @@ void System::Data::draw() {
 // ============================================================
 
 System::System()
-    : m_data(new Data)
-{ }
+    : m_data(new Data) {
+    auto &d = *m_data;
+    d.m_blendcolor = Color::palette(2);
+    d.m_world = 0.5f;
+}
 
 System::~System()
 { }
