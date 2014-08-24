@@ -71,6 +71,18 @@ GameScreen::GameScreen(const ControlState &ctl, int levelnum)
 GameScreen::~GameScreen()
 { }
 
+static const char HELP[] =
+    "[F1]: help\n"
+    "\n"
+    "[WASD] or [arrows]: move\n"
+    "[space]: place or remove action\n"
+    "[E] or [Tab]: next action\n"
+    "[Q]: previous action\n"
+    "[R] or [F5]: restart level\n"
+    "\n"
+    "[F7]: previous level\n"
+    "[F8]: next level\n";
+
 void GameScreen::draw(::Graphics::System &gr, int delta) {
     if (!m_drawn) {
         gr.clear(true);
@@ -81,13 +93,33 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
     }
 
     using Graphics::Color;
-    gr.put_text(
-        IVec(4, 4),
-        Graphics::HAlign::LEFT,
-        Graphics::VAlign::BOTTOM,
-        100,
-        Color::palette(27),
-        "Hello, this is text.  It is long and needs line breaks.");
+    if (!control().get_button(Button::HELP)) {
+        gr.put_text(
+            IVec(4, Defs::HEIGHT - 4),
+            Graphics::HAlign::LEFT,
+            Graphics::VAlign::TOP,
+            -1,
+            Color::palette(18),
+            "[F1]: help");
+    } else {
+        gr.put_text(
+            IVec(4, Defs::HEIGHT - 4),
+            Graphics::HAlign::LEFT,
+            Graphics::VAlign::TOP,
+            -1,
+            Color::palette(20),
+            HELP);
+    }
+
+    if (control().get_button_instant(Button::RESTART)) {
+        Main::main->load_level(m_levelnum);
+    } else if (control().get_button_instant(Button::NEXTLEVEL)) {
+        if (m_minions >= 0)
+            Main::main->load_level(m_levelnum + 1);
+    } else if (control().get_button_instant(Button::PREVLEVEL)) {
+        if (m_levelnum > 1)
+            Main::main->load_level(m_levelnum - 1);
+    }
 
     float noise[4];
     for (int i = 0; i < 4; i++) {

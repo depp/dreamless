@@ -92,11 +92,24 @@ void Main::event_key(int key, bool state) {
         break;
 
     case KEY_R:
+    case KEY_F5:
         button = Button::RESTART;
         break;
 
     case KEY_Escape:
         button = Button::ESCAPE;
+        break;
+
+    case KEY_F1:
+        button = Button::HELP;
+        break;
+
+    case KEY_F7:
+        button = Button::PREVLEVEL;
+        break;
+
+    case KEY_F8:
+        button = Button::NEXTLEVEL;
         break;
 
     default:
