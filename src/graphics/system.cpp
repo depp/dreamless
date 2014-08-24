@@ -105,8 +105,12 @@ struct System::Data {
     // The current world.
     float m_world;
 
+    // Noise offsets.
+    float m_noiseoffset[4];
+
     // Textures
     Texture m_pattern;
+    Texture m_noise;
 
     Data();
 
@@ -165,7 +169,10 @@ System::Data::Data()
       m_world(0.0f) {
     std::memset(m_target_tex, 0, sizeof(m_target_tex));
     std::memset(m_target_fbuf, 0, sizeof(m_target_fbuf));
+    for (int i = 0; i < 4; i++)
+        m_noiseoffset[i] = 0.0f;
     m_pattern = Texture::load("misc/hilbert");
+    m_noise = Texture::load("misc/noise");
 }
 
 // ============================================================
@@ -354,12 +361,20 @@ void System::Data::draw_reality() {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, target_texture(Target::PHYSICAL));
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, m_noise.tex);
 
     glUniform1i(prog->u_reality, 0);
+    glUniform1i(prog->u_noise, 1);
 
     glUniform1f(prog->u_world, m_world);
     glUniform4fv(prog->u_color, 1, m_blendcolor.v);
     glUniform4fv(prog->u_blendscale, 1, m_blendscale);
+    float noisescale[2];
+    for (int i = 0; i < 2; i++)
+        noisescale[i] = m_pixscale[i] * m_noise.scale[i];
+    glUniform2fv(prog->u_noisescale, 1, noisescale);
+    glUniform4fv(prog->u_noiseoffset, 1, m_noiseoffset);
 
     arr.set_attrib(prog->a_vert);
 
@@ -445,6 +460,12 @@ void System::set_camera(IVec pos) {
 void System::set_world(float world) {
     auto &d = *m_data;
     d.m_world = world;
+}
+
+void System::set_noise(float noise[4]) {
+    auto &d = *m_data;
+    for (int i = 0; i < 4; i++)
+        d.m_noiseoffset[i] = noise[i];
 }
 
 void System::add_sprite(AnySprite sp, IVec pos, Layer layer,

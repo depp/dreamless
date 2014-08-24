@@ -6,10 +6,12 @@
 #include "item.hpp"
 #include "minion.hpp"
 #include "player.hpp"
+#include "base/random.hpp"
 #include <algorithm>
 namespace Game {
 
 static const int DREAM_TIME = 50;
+static const float NOISE_SPEED = 0.01f;
 
 static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
     return p->team() != Team::DEAD;
@@ -46,6 +48,13 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
             break;
         }
     }
+    for (int i = 0; i < 2; i++) {
+        float angle = std::atan(1.0f) * 8.0 * Base::Random::gnextf();
+        m_noise[2*i+0] = 0.0f;
+        m_noise[2*i+1] = 0.0f;
+        m_noisevel[2*i+0] = std::cos(angle) * NOISE_SPEED;
+        m_noisevel[2*i+1] = std::sin(angle) * NOISE_SPEED;
+    }
 }
 
 GameScreen::~GameScreen()
@@ -56,6 +65,13 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
         m_level.draw(gr);
         m_drawn = true;
     }
+
+    float noise[4];
+    for (int i = 0; i < 4; i++) {
+        noise[i] = m_noise[i] +
+            m_noisevel[i] * (delta * (1.0f / Defs::FRAMETIME));
+    }
+    gr.set_noise(noise);
 
     float world;
     if (m_dream <= 0) {
@@ -72,6 +88,14 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
 }
 
 void GameScreen::update(unsigned time) {
+    for (int i = 0; i < 4; i++) {
+        m_noise[i] += m_noisevel[i];
+        if (m_noise[i] > +1.0f)
+            m_noise[i] -= 1.0f;
+        else if (m_noise[i] < -1.0f)
+            m_noise[i] += 1.0f;
+    }
+
     if (m_dream > 0)
         m_dream--;
     m_time = time;

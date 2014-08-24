@@ -114,8 +114,25 @@ Texture &Texture::operator=(Texture &&other) {
     return *this;
 }
 
+namespace {
+
+struct FormatInfo {
+    GLenum ifmt, fmt, type;
+};
+
+const FormatInfo FORMAT_INFO[SG_PIXBUF_NFORMAT] = {
+    { GL_R8,    GL_RED,  GL_UNSIGNED_BYTE },
+    { GL_RG8,   GL_RG,   GL_UNSIGNED_BYTE },
+    { GL_RGBA8, GL_RGB,  GL_UNSIGNED_BYTE },
+    { GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8 },
+    { GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE }
+};
+
+}
+
 Texture Texture::load(const Image &image) {
     Texture tex;
+    auto &info = FORMAT_INFO[image->format];
 
     tex.iwidth = image->iwidth;
     tex.iheight = image->iheight;
@@ -131,12 +148,12 @@ Texture Texture::load(const Image &image) {
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        GL_RGBA8,
+        info.ifmt,
         tex.twidth,
         tex.theight,
         0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
+        info.fmt,
+        info.type,
         nullptr);
     glTexSubImage2D(
         GL_TEXTURE_2D,
@@ -145,8 +162,8 @@ Texture Texture::load(const Image &image) {
         0,
         tex.iwidth,
         tex.iheight,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
+        info.fmt,
+        info.type,
         image->data);
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -162,6 +179,7 @@ Texture Texture::load_1d(const std::string &path) {
 
 Texture Texture::load_1d(const Image &image) {
     Texture tex;
+    auto &info = FORMAT_INFO[image->format];
 
     tex.iwidth = image->iwidth;
     tex.iheight = 1;
@@ -177,19 +195,19 @@ Texture Texture::load_1d(const Image &image) {
     glTexImage1D(
         GL_TEXTURE_1D,
         0,
-        GL_RGBA8,
+        info.ifmt,
         tex.twidth,
         0,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
+        info.fmt,
+        info.type,
         nullptr);
     glTexSubImage1D(
         GL_TEXTURE_1D,
         0,
         0,
         tex.iwidth,
-        GL_RGBA,
-        GL_UNSIGNED_INT_8_8_8_8_REV,
+        info.fmt,
+        info.type,
         image->data);
     glBindTexture(GL_TEXTURE_1D, 0);
 

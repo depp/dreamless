@@ -26,8 +26,12 @@ class GameScreen : public Screen {
     std::vector<std::unique_ptr<Entity>> m_new_entity;
     /// Current timestamp.
     unsigned m_time;
-    ///
+    /// If -1, we are dreaming.  0 is awake.  Positive is countdown to
+    /// wake up.
     int m_dream;
+    /// Noise to feed to the graphics system.
+    float m_noise[4];
+    float m_noisevel[4];
 
 public:
     GameScreen(const ControlState &ctl, const std::string &name);

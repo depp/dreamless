@@ -38,6 +38,8 @@ public:
     void set_camera(Base::IVec pos);
     /// Set the current world, or in between.
     void set_world(float world);
+    /// Set the noise offsets.
+    void set_noise(float noise[4]);
     /// Add a sprite to the world.
     void add_sprite(AnySprite sp, Base::IVec pos, Layer layer,
                     Base::Orientation orientation);
