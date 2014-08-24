@@ -63,11 +63,20 @@ public:
     };
 
 public:
+    /// Horizontal movement blocked by obstacle.
+    static const unsigned FLAG_BLOCKED = 1u << 0;
+    /// Did jump.
+    static const unsigned FLAG_JUMPED = 1u << 1;
+    /// The jump is a double jump.
+    static const unsigned FLAG_DOUBLE = 1u << 2;
+    /// Is currently airborne.
+    static const unsigned FLAG_AIRBORNE = 1u << 3;
+
     Walker();
 
-    /// This will also update the mover.
-    void update(const struct Stats &stats, const Level &level,
-                Mover &mover, FVec drive);
+    /// This will also update the mover.  Returns flags.
+    unsigned update(const struct Stats &stats, const Level &level,
+                    Mover &mover, FVec drive);
 };
 
 }

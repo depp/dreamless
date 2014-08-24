@@ -9,8 +9,9 @@ Walker::Walker()
     : m_state(State::AIR), m_jumptime(-1)
 { }
 
-void Walker::update(const struct Stats &stats, const Level &level,
-                    Mover &mover, FVec drive) {
+unsigned Walker::update(const struct Stats &stats, const Level &level,
+                        Mover &mover, FVec drive) {
+    unsigned flags = 0;
     const int STEPS = 4;
     FVec pos = mover.pos(), accel(FVec::zero());
     FVec vel = (pos - mover.lastpos()) * Defs::invdt();
@@ -39,10 +40,13 @@ void Walker::update(const struct Stats &stats, const Level &level,
             m_jumptime--;
             accel.y += stats.jump_accel * drive.y;
         } else if (can_jump) {
-            if (m_state == State::WALK)
+            flags |= FLAG_JUMPED;
+            if (m_state == State::WALK) {
                 m_state = State::AIR;
-            else
+            } else {
                 m_state = State::DOUBLE;
+                flags |= FLAG_DOUBLE;
+            }
             m_jumptime = stats.jump_time;
             float dv = stats.jump_speed - vel.y;
             if (dv > 0.0f)
@@ -114,9 +118,15 @@ void Walker::update(const struct Stats &stats, const Level &level,
             float frac = (float) scale * (1.0f / (float) STEPS);
             newpos.x = pos.x + vel.x * (frac * Defs::dt());
         }
+        if (scale != STEPS)
+            flags |= FLAG_BLOCKED;
     }
 
+    if (m_state != State::WALK)
+        flags |= FLAG_AIRBORNE;
+
     mover.update(newpos);
+    return flags;
 }
 
 }

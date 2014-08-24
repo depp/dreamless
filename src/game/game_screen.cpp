@@ -3,6 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "game_screen.hpp"
 #include "entity.hpp"
+#include "minion.hpp"
 #include "player.hpp"
 #include <algorithm>
 namespace Game {
@@ -21,6 +22,9 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
         switch (sp.type) {
         case Spawn::PLAYER:
             add_entity(new Player(*this, sp.pos));
+            break;
+        case Spawn::MINION:
+            add_entity(new Minion(*this, sp.pos));
             break;
         }
     }

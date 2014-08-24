@@ -34,6 +34,8 @@
       <src path="level.cpp"/>
       <src path="level.hpp"/>
       <src path="main.cpp"/>
+      <src path="minion.cpp"/>
+      <src path="minion.hpp"/>
       <src path="physics.cpp"/>
       <src path="physics.hpp"/>
       <src path="player.cpp"/>

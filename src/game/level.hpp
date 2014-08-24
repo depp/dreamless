@@ -15,7 +15,8 @@ namespace Game {
 class Level {
 public:
     enum class SpawnType {
-        PLAYER
+        PLAYER,
+        MINION
     };
 
     struct SpawnPoint {

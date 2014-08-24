@@ -16,6 +16,7 @@ bool Level::is_initialized;
 
 const Level::SpawnInfo Level::SPAWN[] = {
     { 'P', SpawnType::PLAYER },
+    { 'M', SpawnType::MINION },
 
     { '\0', SpawnType::PLAYER }
 };
