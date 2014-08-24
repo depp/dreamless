@@ -184,11 +184,13 @@ void Minion::do_action(Item &item, Action action) {
         m_statetime = JUMP_TIME;
         break;
     case Action::JUMP_BACK:
+        m_screen.play_sound(Sfx::HAA, -10.0f, m_mover.pos());
         m_direction = -m_direction;
         m_state = State::JUMP_BACK;
         m_statetime = JUMP_TURNTIME;
         break;
     case Action::TURN:
+        m_screen.play_sound(Sfx::HAA, -10.0f, m_mover.pos());
         m_direction = -m_direction;
         break;
     case Action::DROP:
