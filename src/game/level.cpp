@@ -129,7 +129,16 @@ std::vector<Line> read_lines(Base::Data &filedata) {
     return lines;
 }
 
-
+std::vector<Line>::const_iterator find_break(
+    const std::vector<Line> &lines) {
+    auto lp = lines.begin(), le = lines.end();
+    for (; lp != le; lp++) {
+        if (lp->second > 1 && lp->first[0] == '-')
+            return lp;
+    }
+    Log::abort("Could not find level delimiter");
+    return le;
+}
 
 }
 
@@ -145,24 +154,57 @@ void Level::load(const std::string &name) {
 
     auto lines = read_lines(filedata);
 
-    int height = lines.size();
-    int width = 0;
-    for (size_t i = 0; i < lines.size(); i++) {
-        if (lines[i].second > 0 && lines[i].first[0] == '-') {
-            height = i;
-            break;
-        }
-        if (lines[i].second > width)
-            width = lines[i].second;
-    }
-
-    Log::info("level size: %d x %d", width, height);
-
     if (m_data)
         delete[] m_data;
     m_width = 0;
     m_height = 0;
     m_data = nullptr;
+
+    {
+        for (int i = 0; i < ACTION_COUNT; i++)
+            m_action[i] = false;
+        auto first_break = find_break(lines);
+        std::string white(" ");
+        for (auto lp = lines.begin(); lp != first_break; lp++) {
+            std::string line(lp->first, lp->second);
+            auto i = line.find(':');
+            if (i == std::string::npos)
+                Log::abort("invalid line: '%s'", line.c_str());
+            auto name = line.substr(0, i);
+            auto j = line.find_first_not_of(white, i + 1);
+            std::string data;
+            if (j != std::string::npos)
+                data = line.substr(j);
+            if (name == "actions") {
+                for (auto c : data) {
+                    Action action;
+                    switch (c) {
+                    case 'j': case 'J': action = Action::JUMP; break;
+                    case 'b': case 'B': action = Action::JUMP_BACK; break;
+                    case 't': case 'T': action = Action::TURN; break;
+                    case 'd': case 'D': action = Action::DROP; break;
+                    default:
+                        Log::abort("unknown action: '%c'", c);
+                        return;
+                    }
+                    m_action[static_cast<int>(action)] = true;
+                }
+            } else {
+                Log::abort("unknown property: %s", name.c_str());
+            }
+        }
+        lines.erase(lines.begin(), first_break + 1);
+        lines.erase(find_break(lines), lines.end());
+    }
+
+    int height = lines.size();
+    int width = 0;
+    for (auto &line : lines) {
+        if (line.second > width)
+            width = line.second;
+    }
+
+    Log::info("level size: %d x %d", width, height);
 
     unsigned char *data = new unsigned char[height * width];
     bool errors = false;

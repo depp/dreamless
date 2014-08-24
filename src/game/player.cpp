@@ -100,7 +100,7 @@ void Player::update() {
     if (ctl.get_button_instant(Button::ACTION)) {
         m_screen.play_sound(Sfx::WAP, -10.0f, m_mover.pos());
         auto ent = new Item(m_screen, m_pos, Item::Type::ACTION);
-        ent->set_action(static_cast<Action>(m_selection));
+        ent->set_action(m_actions[m_selection]);
         m_screen.add_entity(ent);
     }
 }

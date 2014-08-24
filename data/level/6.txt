@@ -1,4 +1,5 @@
-actions: jbtd
+actions: d
+-----
 
 
                   M
@@ -10,3 +11,4 @@ actions: jbtd
    ab####         #   
  L ##   # P D     ##
 #####   ############
+-----
