@@ -190,6 +190,12 @@ void Level::load(const std::string &name) {
                     }
                     m_action[static_cast<int>(action)] = true;
                 }
+            } else if (name == "girl") {
+                Dialogue d = { std::move(data), 0 };
+                m_dialogue.push_back(std::move(d));
+            } else if (name == "shadow") {
+                Dialogue d = { std::move(data), 1 };
+                m_dialogue.push_back(std::move(d));
             } else {
                 Log::abort("unknown property: %s", name.c_str());
             }

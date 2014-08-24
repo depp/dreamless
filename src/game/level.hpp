@@ -12,6 +12,11 @@ class System;
 }
 namespace Game {
 
+struct Dialogue {
+    std::string text;
+    int speaker; // 0 = girl, 1 = shadow
+};
+
 /// Level data.
 class Level {
 public:
@@ -63,6 +68,7 @@ private:
     int m_height;
     unsigned char *m_data;
     std::vector<SpawnPoint> m_spawn;
+    std::vector<Dialogue> m_dialogue;
     bool m_action[ACTION_COUNT];
 
 public:
@@ -88,6 +94,9 @@ public:
 
     /// Get a list of all spawn points.
     const std::vector<SpawnPoint> &spawn_points() const { return m_spawn; }
+
+    /// Get a list of all spawn points.
+    const std::vector<Dialogue> &dialogue() const { return m_dialogue; }
 
     bool is_action_allowed(Action action) const {
         return m_action[static_cast<int>(action)];

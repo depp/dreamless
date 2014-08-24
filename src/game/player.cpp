@@ -4,6 +4,7 @@
 #include "player.hpp"
 #include "action.hpp"
 #include "item.hpp"
+#include "graphics/color.hpp"
 namespace Game {
 
 const Walker::Stats Player::STATS_PHYSICAL = {
@@ -34,7 +35,8 @@ const Walker::Stats Player::STATS_DREAM = {
 
 Player::Player(GameScreen &scr, IVec pos)
     : Entity(scr, Team::FRIEND), m_mover(pos), m_walker(),
-      m_selection(0), m_num_actions(0), m_direction(1) {
+      m_selection(0), m_num_actions(0), m_direction(1),
+      m_dialogue(0) {
     const Level &level = scr.level();
     for (int i = 0; i < ACTION_COUNT; i++) {
         auto a = static_cast<Action>(i);
@@ -118,23 +120,44 @@ void Player::draw(::Graphics::System &gr, int delta) const {
         m_direction > 0 ?
         Orientation::NORMAL : Orientation::FLIP_HORIZONTAL);
 
-    if (!m_screen.is_dreaming())
-        return;
-    if (!m_num_actions)
-        return;
-    IVec center(Defs::WIDTH / 2, Defs::HEIGHT - 20);
-    for (int i = 0; i < m_num_actions; i++) {
-        IVec pos = center + IVec(18 * (1 - m_num_actions + 2 * i), 0);
-        gr.add_sprite(
-            action_sprite(m_actions[i]),
-            pos,
-            Layer::INTERFACE);
-        if (m_selection == i) {
+    if (m_screen.is_dreaming() && m_num_actions > 0) {
+        IVec center(Defs::WIDTH / 2, Defs::HEIGHT - 20);
+        for (int i = 0; i < m_num_actions; i++) {
+            IVec pos = center + IVec(18 * (1 - m_num_actions + 2 * i), 0);
             gr.add_sprite(
-                Sprite::SELECTION,
+                action_sprite(m_actions[i]),
                 pos,
                 Layer::INTERFACE);
+            if (m_selection == i) {
+                gr.add_sprite(
+                    Sprite::SELECTION,
+                    pos,
+                    Layer::INTERFACE);
+            }
         }
+    }
+
+    if (m_dialogue > 0) {
+        auto &line = m_screen.level().dialogue()[m_dialogue - 1];
+        const int PWIDTH = 128;
+        const int MARGIN = 16;
+        const int CENTER = Defs::WIDTH / 2;
+        gr.add_sprite(
+            Sprite::DIALOG,
+            IVec(CENTER, MARGIN + PWIDTH / 2),
+            Layer::INTERFACE);
+        gr.add_sprite(
+            line.speaker == 0 ? Sprite::TALKG1 : Sprite::TALKS1,
+            IVec(CENTER - 256 + MARGIN + PWIDTH / 2,
+                 MARGIN + PWIDTH / 2),
+            Layer::INTERFACE);
+        gr.put_text(
+            IVec(CENTER - 256 + PWIDTH + MARGIN * 2, PWIDTH + MARGIN),
+            Graphics::HAlign::LEFT,
+            Graphics::VAlign::TOP,
+            512 - MARGIN * 3 - PWIDTH,
+            Graphics::Color::palette(line.speaker == 0 ? 17 : 28),
+            line.text);
     }
 }
 
@@ -153,6 +176,8 @@ void Player::hit_item(Item &item) {
         break;
 
     case IType::ADVERSARY:
+        if (m_dialogue == 0)
+            m_dialogue = 1;
         break;
     }
 }

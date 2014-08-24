@@ -18,6 +18,7 @@ class Player : public Entity {
     int m_num_actions;
     Action m_actions[ACTION_COUNT];
     int m_direction;
+    int m_dialogue;
 
 public:
     Player(GameScreen &scr, IVec pos);

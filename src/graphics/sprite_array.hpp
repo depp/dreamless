@@ -4,6 +4,7 @@
 { "sprite/action_jumpback", 0, 0, 32, 32, 16, 16 },
 { "sprite/action_turn", 0, 0, 32, 32, 16, 16 },
 { "sprite/adversary", 0, 0, 32, 32, 16, 16 },
+{ "sprite/dialog", 0, 0, 512, 160, 256, 80 },
 { "sprite/door_closed", 0, 0, 32, 48, 16, 24 },
 { "sprite/door_locked", 0, 0, 32, 48, 16, 24 },
 { "sprite/door_open", 0, 0, 32, 48, 16, 24 },
