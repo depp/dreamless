@@ -18,9 +18,9 @@ const Walker::Stats Minion::STATS = {
     0.3
 };
 
-Minion::Minion(GameScreen &scr, IVec pos)
+Minion::Minion(GameScreen &scr, IVec pos, int direction)
     : Entity(scr, Team::FOE), m_mover(pos), m_walker(),
-      m_state(State::WALK), m_statetime(0), m_direction(1),
+      m_state(State::WALK), m_statetime(0), m_direction(direction),
       m_haskey(false)
 { }
 

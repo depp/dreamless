@@ -17,6 +17,7 @@ public:
     enum class SpawnType {
         PLAYER,
         MINION,
+        MINION_LEFT,
         DOOR_CLOSED,
         DOOR_LOCKED,
         KEY,

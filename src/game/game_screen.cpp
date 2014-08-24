@@ -35,8 +35,10 @@ GameScreen::GameScreen(const ControlState &ctl, int levelnum)
             m_camera.update();
             break;
         case Spawn::MINION:
+        case Spawn::MINION_LEFT:
             m_minions++;
-            add_entity(new Minion(*this, sp.pos));
+            add_entity(new Minion(*this, sp.pos,
+                                  sp.type == Spawn::MINION ? 1 : -1));
             break;
         case Spawn::DOOR_CLOSED:
             add_entity(new Item(*this, sp.pos, IType::DOOR_CLOSED));

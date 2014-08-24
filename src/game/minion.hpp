@@ -25,7 +25,7 @@ class Minion : public Entity {
     bool m_haskey;
 
 public:
-    Minion(GameScreen &scr, IVec pos);
+    Minion(GameScreen &scr, IVec pos, int direction);
     virtual ~Minion();
 
     virtual void update();
