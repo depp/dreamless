@@ -15,7 +15,7 @@ Item::~Item()
 void Item::draw(::Graphics::System &gr, int delta) const {
     (void) delta;
     gr.add_sprite(
-        sprite(), m_pos, Orientation::NORMAL, Layer::Sprite1);
+        sprite(), m_pos, Orientation::NORMAL, Layer::SPRITE_1);
 }
 
 Sprite Item::sprite() const {

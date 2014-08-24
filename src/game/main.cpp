@@ -55,9 +55,10 @@ public:
 
         Graphics::System &gr = *m_graphics;
         int delta = msec - m_frametime;
-        gr.begin(width, height);
+        gr.clear(false);
+        gr.set_size(width, height);
         m_screen->draw(gr, delta);
-        gr.end();
+        gr.finalize();
         gr.draw();
     }
 

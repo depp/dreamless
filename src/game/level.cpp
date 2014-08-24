@@ -219,7 +219,7 @@ void Level::draw(::Graphics::System &gr) const {
             auto tile = info.tile;
             IVec pos(32 * x + 16, 32 * y + 16);
             if (tile != Tile::NONE)
-                gr.add_sprite(tile, pos, Orientation::NORMAL, Layer::World1);
+                gr.add_sprite(tile, pos, Orientation::NORMAL, Layer::TILE_1);
         }
     }
 }

@@ -1,7 +1,7 @@
 /* Copyright 2014 Dietrich Epp.
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
-#include "common.hpp"
+#include "shader.hpp"
 using Base::ShaderField;
 namespace Shader {
 
@@ -49,17 +49,33 @@ const ShaderField Text::ATTRIBUTES[] = {
 };
 #undef TYPE
 
-#define TYPE Television
-const ShaderField Television::UNIFORMS[] = {
+#define TYPE Scale
+const ShaderField Scale::UNIFORMS[] = {
     FIELD(u_picture),
     FIELD(u_pattern),
-    FIELD(u_texscale),
+    FIELD(u_pixscale),
+    { nullptr, 0 }
+};
+
+const ShaderField Scale::ATTRIBUTES[] = {
+    FIELD(a_vert),
+    { nullptr, 0 }
+};
+#undef TYPE
+
+#define TYPE Composite
+const ShaderField Composite::UNIFORMS[] = {
+    FIELD(u_tile1),
+    FIELD(u_tile2),
+    FIELD(u_sprite1),
+    FIELD(u_sprite2),
+    FIELD(u_world),
     FIELD(u_color),
     FIELD(u_blendscale),
     { nullptr, 0 }
 };
 
-const ShaderField Television::ATTRIBUTES[] = {
+const ShaderField Composite::ATTRIBUTES[] = {
     FIELD(a_vert),
     { nullptr, 0 }
 };

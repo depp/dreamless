@@ -65,13 +65,13 @@ void Minion::draw(::Graphics::System &gr, int delta) const {
         pos,
         m_direction > 0 ?
         Orientation::NORMAL : Orientation::FLIP_HORIZONTAL,
-        Layer::Sprite1);
+        Layer::SPRITE_1);
     if (m_haskey) {
         gr.add_sprite(
             Sprite::KEY,
             pos + IVec(0, 24),
             Orientation::NORMAL,
-            Layer::Sprite1);
+            Layer::SPRITE_1);
     }
 }
 

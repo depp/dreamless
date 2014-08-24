@@ -54,7 +54,7 @@ void Player::draw(::Graphics::System &gr, int delta) const {
         Sprite::KNIGHT_1,
         m_mover.drawpos(delta),
         Orientation::NORMAL,
-        Layer::Sprite1);
+        Layer::SPRITE_1);
 }
 
 }

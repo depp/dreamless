@@ -39,8 +39,8 @@ struct Text {
     GLint u_color;
 };
 
-/// Uniforms and attributes for the "tv" shader.
-struct Television {
+/// Uniforms and attributes for the "scal" shader.
+struct Scale {
     static const Base::ShaderField UNIFORMS[];
     static const Base::ShaderField ATTRIBUTES[];
 
@@ -48,7 +48,22 @@ struct Television {
 
     GLint u_picture;
     GLint u_pattern;
-    GLint u_texscale;
+    GLint u_pixscale;
+};
+
+/// Uniforms and attributes for the "composite" shader.
+struct Composite {
+    static const Base::ShaderField UNIFORMS[];
+    static const Base::ShaderField ATTRIBUTES[];
+
+    GLint a_vert;
+
+    GLint u_tile1;
+    GLint u_tile2;
+    GLint u_sprite1;
+    GLint u_sprite2;
+
+    GLint u_world;
     GLint u_color;
     GLint u_blendscale;
 };
