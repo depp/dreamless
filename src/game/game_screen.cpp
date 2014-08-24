@@ -9,12 +9,14 @@
 #include <algorithm>
 namespace Game {
 
+static const int DREAM_TIME = 50;
+
 static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
     return p->team() != Team::DEAD;
 }
 
 GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
-    : Screen(ctl), m_drawn(false) {
+    : Screen(ctl), m_drawn(false), m_dream(-1) {
     m_level.load(name);
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(Defs::WIDTH, Defs::HEIGHT));
@@ -54,12 +56,24 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
         m_level.draw(gr);
         m_drawn = true;
     }
+
+    float world;
+    if (m_dream <= 0) {
+        world = m_dream < 0 ? 1.0f : 0.0f;
+    } else {
+        world = (float) (m_dream * Defs::FRAMETIME - delta) *
+            (float) (1.0f / (Defs::FRAMETIME * DREAM_TIME));
+    }
+    gr.set_world(world);
+
     for (auto &ent : m_entity)
         ent->draw(gr, delta);
     gr.set_camera(m_camera.drawpos(delta));
 }
 
 void GameScreen::update(unsigned time) {
+    if (m_dream > 0)
+        m_dream--;
     m_time = time;
     m_entity.insert(
         m_entity.end(),
@@ -97,6 +111,17 @@ void GameScreen::play_sound(Sfx sfx, float volume, FVec pos) {
 
 void GameScreen::play_sound(Sfx sfx, float volume) {
     Audio::play(m_time + Defs::FRAMETIME, sfx, volume, 0.0f);
+}
+
+bool GameScreen::is_dreaming() const {
+    return m_dream > DREAM_TIME / 2 || m_dream < 0;
+}
+
+void GameScreen::wake_up() {
+    if (m_dream >= 0)
+        return;
+    m_dream = DREAM_TIME;
+    play_sound(Sfx::WHA, -10.0f);
 }
 
 }

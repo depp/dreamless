@@ -26,6 +26,8 @@ class GameScreen : public Screen {
     std::vector<std::unique_ptr<Entity>> m_new_entity;
     /// Current timestamp.
     unsigned m_time;
+    ///
+    int m_dream;
 
 public:
     GameScreen(const ControlState &ctl, const std::string &name);
@@ -55,6 +57,12 @@ public:
 
     /// Play a sound with no associated location.
     void play_sound(Sfx sfx, float volume);
+
+    /// Whether we are currently in dream.
+    bool is_dreaming() const;
+
+    /// Wake up from the dream.
+    void wake_up();
 };
 
 }

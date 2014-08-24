@@ -6,6 +6,7 @@
 #include "entity.hpp"
 #include "physics.hpp"
 namespace Game {
+class Item;
 
 class Player : public Entity {
     static const Walker::Stats STATS;
@@ -20,6 +21,9 @@ public:
 
     virtual void update();
     virtual void draw(::Graphics::System &gr, int delta) const;
+
+private:
+    void hit_item(Item &item);
 };
 
 }

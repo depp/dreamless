@@ -28,6 +28,9 @@ Minion::~Minion()
 { }
 
 void Minion::update() {
+    if (m_screen.is_dreaming())
+        return;
+
     if (m_statetime > 0) {
         m_statetime--;
     } else {

@@ -52,6 +52,23 @@ void Player::update() {
         m_screen.play_sound(Sfx::FOOT, -10.0f, m_mover.pos());
     }
 
+    IRect hitbox = IRect::centered(12, 24).offset(m_pos);
+    for (auto &ep : m_screen.entities()) {
+        Entity &ent = *ep;
+        switch (ent.team()) {
+        case Team::INTERACTIVE:
+            if (hitbox.contains(ent.pos())) {
+                Item *item = dynamic_cast<Item *>(&ent);
+                if (item)
+                    hit_item(*item);
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+
     int move = 0;
     if (ctl.get_button_instant(Button::NEXT))
         move++;
@@ -96,6 +113,22 @@ void Player::draw(::Graphics::System &gr, int delta) const {
                 pos,
                 Layer::INTERFACE);
         }
+    }
+}
+
+void Player::hit_item(Item &item) {
+    typedef Item::Type IType;
+    switch (item.type()) {
+    case IType::DOOR_OPEN:
+    case IType::DOOR_CLOSED:
+    case IType::DOOR_LOCKED:
+    case IType::KEY:
+    case IType::ACTION:
+        break;
+
+    case IType::GATEWAY:
+        m_screen.wake_up();
+        break;
     }
 }
 
