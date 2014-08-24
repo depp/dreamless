@@ -11,6 +11,7 @@ const IRect HIT_BOX = IRect::centered(8, 24);
 const IRect MEMORY_BOX = IRect::centered(16, 32);
 const int JUMP_TIME = 10;
 const int JUMP_HOLDTIME = 15;
+const int JUMP_TURNTIME = 5;
 }
 
 const Walker::Stats Minion::STATS = {
@@ -42,7 +43,12 @@ void Minion::update() {
     if (m_statetime > 0) {
         m_statetime--;
     } else {
-        m_state = State::WALK;
+        if (m_state == State::JUMP_BACK) {
+            m_state = State::JUMP;
+            m_statetime = JUMP_TIME;
+        } else {
+            m_state = State::WALK;
+        }
     }
 
     FVec drive((float) m_direction, 0.0f);
@@ -62,7 +68,7 @@ void Minion::update() {
         m_state = State::JUMPING;
         m_statetime = JUMP_HOLDTIME;
     }
-    if ((flags & Walker::FLAG_AIRBORNE) == 0 && m_state != State::JUMPING) {
+    if ((flags & Walker::FLAG_AIRBORNE) == 0 && m_state == State::JUMPING) {
         m_state = State::WALK;
     }
     if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
@@ -178,8 +184,12 @@ void Minion::do_action(Action action) {
         m_statetime = JUMP_TIME;
         break;
     case Action::JUMP_BACK:
+        m_direction = -m_direction;
+        m_state = State::JUMP_BACK;
+        m_statetime = JUMP_TURNTIME;
         break;
     case Action::TURN:
+        m_direction = -m_direction;
         break;
     case Action::DROP:
         break;

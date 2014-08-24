@@ -16,7 +16,8 @@ class Minion : public Entity {
     enum class State {
         WALK,
         JUMP,
-        JUMPING
+        JUMPING,
+        JUMP_BACK
     };
 
     struct Memory {
