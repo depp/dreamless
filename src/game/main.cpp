@@ -45,7 +45,6 @@ void Main::draw(int width, int height, unsigned msec) {
 
     Graphics::System &gr = *m_graphics;
     int delta = msec - m_frametime;
-    gr.clear(false);
     gr.set_size(width, height);
     m_screen->draw(gr, delta);
     gr.finalize();

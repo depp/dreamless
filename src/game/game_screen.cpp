@@ -70,8 +70,11 @@ GameScreen::~GameScreen()
 
 void GameScreen::draw(::Graphics::System &gr, int delta) {
     if (!m_drawn) {
+        gr.clear(true);
         m_level.draw(gr);
         m_drawn = true;
+    } else {
+        gr.clear(false);
     }
 
     float noise[4];
