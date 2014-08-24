@@ -22,7 +22,7 @@ static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
 
 GameScreen::GameScreen(const ControlState &ctl, int levelnum)
     : Screen(ctl), m_levelnum(levelnum), m_drawn(false), m_dream(-1),
-      m_minions(0), m_wincounter(-1) {
+      m_minions(0), m_wincounter(-1), m_id(0) {
     m_level.load(std::to_string(levelnum));
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(Defs::WIDTH, Defs::HEIGHT));

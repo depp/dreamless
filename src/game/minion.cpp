@@ -3,7 +3,13 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "minion.hpp"
 #include "item.hpp"
+#include <algorithm>
 namespace Game {
+
+namespace {
+const IRect HIT_BOX = IRect::centered(8, 24);
+const IRect MEMORY_BOX = IRect::centered(16, 32);
+}
 
 const Walker::Stats Minion::STATS = {
     // ground accel, speed
@@ -54,17 +60,32 @@ void Minion::update() {
         m_state = State::WALK;
     }
 
-    // We don't want to mess with the other states.
-    if (m_state != State::WALK)
-        return;
-
-    if (flags & Walker::FLAG_BLOCKED) {
+    if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
         m_direction = m_direction > 0 ? -1 : +1;
     }
 
-    IRect hitbox = IRect::centered(8, 24).offset(m_pos);
+    IRect hitbox = HIT_BOX.offset(m_pos);
     for (auto &ep : m_screen.entities()) {
         Entity &ent = *ep;
+        int id = ent.id();
+        bool skip = false;
+        for (auto &m : m_memory) {
+            if (m.id != id)
+                continue;
+            skip = true;
+            if (!m.bounds.contains(m_pos)) {
+                // Log::info("FORGET %d", m.id);
+                m.forget = true;
+            }
+            break;
+        }
+
+        if (skip)
+            continue;
+
+        if (m_state != State::WALK)
+            continue;
+
         switch (ent.team()) {
         case Team::INTERACTIVE:
             if (hitbox.contains(ent.pos())) {
@@ -78,6 +99,11 @@ void Minion::update() {
             break;
         }
     }
+
+    auto part = std::partition(
+        m_memory.begin(), m_memory.end(),
+        [](Memory &m) { return !m.forget; });
+    m_memory.erase(part, m_memory.end());
 }
 
 void Minion::draw(::Graphics::System &gr, int delta) const {
@@ -118,6 +144,7 @@ void Minion::hit_item(Item &item) {
             m_screen.capture_minion();
         } else {
             m_screen.play_sound(Sfx::LOCKED, -10.0f, m_mover.pos());
+            memorize(item);
         }
         break;
 
@@ -130,6 +157,7 @@ void Minion::hit_item(Item &item) {
         break;
 
     case IType::ACTION:
+        memorize(item);
         do_action(item.action());
         break;
 
@@ -151,6 +179,15 @@ void Minion::do_action(Action action) {
     case Action::DROP:
         break;
     }
+}
+
+void Minion::memorize(Entity &ent) {
+    Memory m;
+    m.bounds = MEMORY_BOX.offset(ent.pos());
+    m.id = ent.id();
+    m.forget = false;
+    // Log::info("REMEMBER %d", m.id);
+    m_memory.push_back(m);
 }
 
 }

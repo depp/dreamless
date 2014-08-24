@@ -5,6 +5,7 @@
 #define LD_GAME_MINION_HPP
 #include "entity.hpp"
 #include "physics.hpp"
+#include <vector>
 namespace Game {
 class Item;
 enum class Action;
@@ -17,12 +18,19 @@ class Minion : public Entity {
         JUMP
     };
 
+    struct Memory {
+        IRect bounds;
+        int id;
+        bool forget;
+    };
+
     Mover m_mover;
     Walker m_walker;
     State m_state;
     int m_statetime;
     int m_direction;
     bool m_haskey;
+    std::vector<Memory> m_memory;
 
 public:
     Minion(GameScreen &scr, IVec pos, int direction);
@@ -34,6 +42,7 @@ public:
 private:
     void hit_item(Item &item);
     void do_action(Action action);
+    void memorize(Entity &ent);
 };
 
 }

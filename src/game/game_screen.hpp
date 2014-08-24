@@ -37,6 +37,8 @@ class GameScreen : public Screen {
     /// Minions remaining to clear the level.
     int m_minions;
     int m_wincounter;
+    /// Unique ID number generator.
+    int m_id;
 
 public:
     GameScreen(const ControlState &ctl, int levelnum);
@@ -76,6 +78,11 @@ public:
     /// Register a capture.  When all minions are captured, the level
     /// is won.
     void capture_minion();
+
+    /// Generate a unique ID number.
+    int next_id() {
+        return m_id++;
+    }
 };
 
 }

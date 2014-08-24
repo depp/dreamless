@@ -5,7 +5,7 @@
 namespace Game {
 
 Entity::Entity(GameScreen &scr, Team team)
-    : m_screen(scr), m_team(team)
+    : m_screen(scr), m_id(scr.next_id()), m_team(team)
 { }
 
 Entity::~Entity()

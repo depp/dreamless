@@ -34,6 +34,8 @@ class Entity {
 protected:
     /// The enclosing game screen.
     GameScreen &m_screen;
+    /// The unique identifier for this entity.
+    int m_id;
     /// The team that this entity is on.
     Team m_team;
     /// The current position of this object.
@@ -55,6 +57,8 @@ public:
     Team team() const { return m_team; }
     /// Get the entitiy's position.
     IVec pos() const { return m_pos; }
+    /// Get the entity's unique ID number.
+    int id() const { return m_id; }
 };
 
 }
