@@ -85,7 +85,7 @@ private:
     }
 
     const TileInfo &tile_at(IVec pos) const {
-        if (pos.x < 0 || pos.y < 0 || pos.x >= m_width || pos.y >= m_width)
+        if (pos.x < 0 || pos.y < 0 || pos.x >= m_width || pos.y >= m_height)
             return TILE_SOLID;
         return tile_info(m_data[m_width * pos.y + pos.x]);
     }
