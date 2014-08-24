@@ -41,6 +41,11 @@ public:
 
     /// Set the camera target.
     void set_camera(FVec target);
+
+    /// Get the list of all entities.
+    const std::vector<std::unique_ptr<Entity>> &entities() const {
+        return m_entity;
+    }
 };
 
 }

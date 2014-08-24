@@ -31,14 +31,15 @@ enum class Team {
 };
 
 class Entity {
-public:
+protected:
     /// The enclosing game screen.
     GameScreen &m_screen;
     /// The team that this entity is on.
     Team m_team;
-    /// Bounding box.
-    IRect m_bbox;
+    /// The current position of this object.
+    IVec m_pos;
 
+public:
     Entity(GameScreen &sys, Team team);
     Entity(const Entity &) = delete;
     Entity(Entity &&) = delete;
@@ -50,6 +51,10 @@ public:
     virtual void update(unsigned time);
     /// Draw the entity.
     virtual void draw(::Graphics::System &gr, int delta) const = 0;
+    /// Get the entity's team.
+    Team team() const { return m_team; }
+    /// Get the entitiy's position.
+    IVec pos() const { return m_pos; }
 };
 
 }

@@ -19,7 +19,6 @@ public:
     };
 
 private:
-    IVec m_pos;
     Type m_type;
 
 public:

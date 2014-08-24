@@ -5,8 +5,9 @@
 namespace Game {
 
 Item::Item(GameScreen &scr, IVec pos, Type type)
-    : Entity(scr, Team::INTERACTIVE), m_pos(pos), m_type(type)
-{ }
+    : Entity(scr, Team::INTERACTIVE), m_type(type) {
+    m_pos = pos;
+}
 
 Item::~Item()
 { }

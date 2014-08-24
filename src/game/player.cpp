@@ -28,6 +28,7 @@ void Player::update(unsigned time) {
         STATS, m_screen.level(),
         m_mover, m_screen.control().get_2d());
     m_screen.set_camera(m_mover.pos());
+    m_pos = IVec(m_mover.pos());
 }
 
 void Player::draw(::Graphics::System &gr, int delta) const {

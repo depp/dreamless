@@ -10,7 +10,7 @@
 namespace Game {
 
 static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
-    return p->m_team != Team::DEAD;
+    return p->team() != Team::DEAD;
 }
 
 GameScreen::GameScreen(const ControlState &ctl, const std::string &name)

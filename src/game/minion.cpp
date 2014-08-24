@@ -31,6 +31,22 @@ void Minion::update(unsigned time) {
     if (flags & Walker::FLAG_BLOCKED) {
         m_direction = m_direction > 0 ? -1 : +1;
     }
+
+    m_pos = IVec(m_mover.pos());
+    IRect hitbox = IRect::centered(8, 24).offset(m_pos);
+    for (auto &ep : m_screen.entities()) {
+        Entity &ent = *ep;
+        switch (ent.team()) {
+        case Team::INTERACTIVE:
+            if (hitbox.contains(ent.pos())) {
+                Log::warn("Encountered object");
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
 }
 
 void Minion::draw(::Graphics::System &gr, int delta) const {
