@@ -30,6 +30,7 @@ public:
 private:
     struct SpawnInfo {
         unsigned char c;
+        int height;
         SpawnType type;
     };
 

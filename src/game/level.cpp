@@ -15,13 +15,13 @@ namespace Game {
 bool Level::is_initialized;
 
 const Level::SpawnInfo Level::SPAWN[] = {
-    { 'P', SpawnType::PLAYER },
-    { 'M', SpawnType::MINION },
-    { 'D', SpawnType::DOOR_CLOSED },
-    { 'L', SpawnType::DOOR_LOCKED },
-    { 'K', SpawnType::KEY },
+    { 'P', 32, SpawnType::PLAYER },
+    { 'M', 32, SpawnType::MINION },
+    { 'D', 48, SpawnType::DOOR_CLOSED },
+    { 'L', 48, SpawnType::DOOR_LOCKED },
+    { 'K', 32, SpawnType::KEY },
 
-    { '\0', SpawnType::PLAYER }
+    { '\0', 0, SpawnType::PLAYER }
 };
 
 const Level::TileInfo Level::TILES_RAW[] = {
@@ -167,9 +167,7 @@ void Level::load(const std::string &name) {
                 if (pi->c == c) {
                     SpawnPoint pt;
                     pt.type = pi->type;
-                    pt.pos = IVec(
-                        x * Defs::TILESZ + Defs::TILESZ / 2,
-                        y * Defs::TILESZ + Defs::TILESZ / 2);
+                    pt.pos = IVec(x, y);
                     m_spawn.push_back(pt);
                 } else {
                     Log::error("bad tile at (%d, %d): '%c'", x, y, c);
@@ -182,6 +180,31 @@ void Level::load(const std::string &name) {
         for (; x < width; x++)
             data[y * width + x] = ' ';
     }
+
+    for (auto &sp : m_spawn) {
+        IVec pos = sp.pos;
+        int dy;
+        switch (tile_at(pos + IVec(0, -1)).type) {
+        case TileType::RAMP_R1:
+        case TileType::RAMP_L2:
+            dy = -24;
+            break;
+        case TileType::RAMP_R2:
+        case TileType::RAMP_L1:
+            dy = -8;
+            break;
+        default:
+            dy = 0;
+            break;
+        }
+        const SpawnInfo *pi = SPAWN;
+        for (; pi->c != '\0' && pi->type != sp.type; pi++) { }
+        dy += pi->height / 2;
+        sp.pos = IVec(
+            sp.pos.x * Defs::TILESZ + Defs::TILESZ / 2,
+            sp.pos.y * Defs::TILESZ + dy);
+    }
+
     if (errors)
         Log::abort("level contains errors");
 }
