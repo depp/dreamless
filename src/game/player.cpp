@@ -34,8 +34,14 @@ const Walker::Stats Player::STATS_DREAM = {
 
 Player::Player(GameScreen &scr, IVec pos)
     : Entity(scr, Team::FRIEND), m_mover(pos), m_walker(),
-      m_selection(0)
-{ }
+      m_selection(0), m_num_actions(0) {
+    const Level &level = scr.level();
+    for (int i = 0; i < ACTION_COUNT; i++) {
+        auto a = static_cast<Action>(i);
+        if (level.is_action_allowed(a))
+            m_actions[m_num_actions++] = a;
+    }
+}
 
 Player::~Player()
 { }
@@ -71,6 +77,9 @@ void Player::update() {
         }
     }
 
+    if (!m_num_actions)
+        return;
+
     int move = 0;
     if (ctl.get_button_instant(Button::NEXT))
         move++;
@@ -80,12 +89,12 @@ void Player::update() {
         m_screen.play_sound(Sfx::CLICK, -10.0f);
     if (move > 0) {
         m_selection++;
-        if (m_selection >= ACTION_COUNT)
+        if (m_selection >= m_num_actions)
             m_selection = 0;
     } else if (move < 0) {
         m_selection--;
         if (m_selection < 0)
-            m_selection = ACTION_COUNT - 1;
+            m_selection = m_num_actions - 1;
     }
 
     if (ctl.get_button_instant(Button::ACTION)) {
@@ -104,11 +113,13 @@ void Player::draw(::Graphics::System &gr, int delta) const {
 
     if (!m_screen.is_dreaming())
         return;
+    if (!m_num_actions)
+        return;
     IVec center(Defs::WIDTH / 2, Defs::HEIGHT - 20);
-    for (int i = 0; i < ACTION_COUNT; i++) {
-        IVec pos = center + IVec(18 * (1 - ACTION_COUNT + 2 * i), 0);
+    for (int i = 0; i < m_num_actions; i++) {
+        IVec pos = center + IVec(18 * (1 - m_num_actions + 2 * i), 0);
         gr.add_sprite(
-            action_sprite(static_cast<Action>(i)),
+            action_sprite(m_actions[i]),
             pos,
             Layer::INTERFACE);
         if (m_selection == i) {

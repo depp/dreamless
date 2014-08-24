@@ -15,6 +15,8 @@ class Player : public Entity {
     Mover m_mover;
     Walker m_walker;
     int m_selection;
+    int m_num_actions;
+    Action m_actions[ACTION_COUNT];
 
 public:
     Player(GameScreen &scr, IVec pos);

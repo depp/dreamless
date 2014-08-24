@@ -106,6 +106,33 @@ Level &Level::operator=(Level &&other) {
     return *this;
 }
 
+namespace {
+
+typedef std::pair<const char *, int> Line;
+
+std::vector<Line> read_lines(Base::Data &filedata) {
+    std::vector<Line> lines;
+    const char *ptr = static_cast<const char *>(filedata.ptr());
+    const char *end = ptr + filedata.size();
+    while (ptr != end) {
+        const char *nl = static_cast<const char *>(
+            memchr(ptr, '\n', end - ptr));
+        const char *eol = nl ? nl : end;
+        while (eol != ptr && eol[-1] == ' ')
+            eol--;
+        lines.push_back(Line(ptr, eol - ptr));
+        if (nl)
+            ptr = nl +1;
+        else
+            break;
+    }
+    return lines;
+}
+
+
+
+}
+
 void Level::load(const std::string &name) {
     Log::info("loading level %s", name.c_str());
 
@@ -116,24 +143,7 @@ void Level::load(const std::string &name) {
     Base::Data filedata;
     filedata.read(path, MAX_SIZE);
 
-    typedef std::pair<const char *, int> Line;
-    std::vector<Line> lines;
-    {
-        const char *ptr = static_cast<const char *>(filedata.ptr());
-        const char *end = ptr + filedata.size();
-        while (ptr != end) {
-            const char *nl = static_cast<const char *>(
-                memchr(ptr, '\n', end - ptr));
-            const char *eol = nl ? nl : end;
-            while (eol != ptr && eol[-1] == ' ')
-                eol--;
-            lines.push_back(Line(ptr, eol - ptr));
-            if (nl)
-                ptr = nl +1;
-            else
-                break;
-        }
-    }
+    auto lines = read_lines(filedata);
 
     int height = lines.size();
     int width = 0;
