@@ -93,6 +93,7 @@ void Main::event_key(int key, bool state) {
 
     case KEY_R:
     case KEY_F5:
+    case KEY_Home:
         button = Button::RESTART;
         break;
 
@@ -105,10 +106,12 @@ void Main::event_key(int key, bool state) {
         break;
 
     case KEY_F7:
+    case KEY_PageUp:
         button = Button::PREVLEVEL;
         break;
 
     case KEY_F8:
+    case KEY_PageDown:
         button = Button::NEXTLEVEL;
         break;
 

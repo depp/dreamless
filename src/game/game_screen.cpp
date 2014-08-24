@@ -111,16 +111,6 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
             HELP);
     }
 
-    if (control().get_button_instant(Button::RESTART)) {
-        Main::main->load_level(m_levelnum);
-    } else if (control().get_button_instant(Button::NEXTLEVEL)) {
-        if (m_minions >= 0)
-            Main::main->load_level(m_levelnum + 1);
-    } else if (control().get_button_instant(Button::PREVLEVEL)) {
-        if (m_levelnum > 1)
-            Main::main->load_level(m_levelnum - 1);
-    }
-
     float noise[4];
     for (int i = 0; i < 4; i++) {
         noise[i] = m_noise[i] +
@@ -146,6 +136,16 @@ void GameScreen::update(unsigned time) {
     if (m_wincounter > 0) {
         if (!--m_wincounter)
             Main::main->load_level(m_levelnum + 1);
+    }
+
+    if (control().get_button_instant(Button::RESTART)) {
+        Main::main->load_level(m_levelnum);
+    } else if (control().get_button_instant(Button::NEXTLEVEL)) {
+        if (m_minions >= 0)
+            Main::main->load_level(m_levelnum + 1);
+    } else if (control().get_button_instant(Button::PREVLEVEL)) {
+        if (m_levelnum > 1)
+            Main::main->load_level(m_levelnum - 1);
     }
 
     for (int i = 0; i < 4; i++) {
