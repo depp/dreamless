@@ -19,7 +19,8 @@ const Walker::Stats Minion::STATS = {
 };
 
 Minion::Minion(GameScreen &scr, IVec pos)
-    : Entity(scr, Team::FOE), m_mover(pos), m_walker(), m_direction(1)
+    : Entity(scr, Team::FOE), m_mover(pos), m_walker(), m_direction(1),
+      m_haskey(false)
 { }
 
 Minion::~Minion()
@@ -57,12 +58,21 @@ void Minion::update() {
 }
 
 void Minion::draw(::Graphics::System &gr, int delta) const {
+    IVec pos = m_mover.drawpos(delta);
+
     gr.add_sprite(
         Sprite::KNIGHT_1,
-        m_mover.drawpos(delta),
+        pos,
         m_direction > 0 ?
         Orientation::NORMAL : Orientation::FLIP_HORIZONTAL,
         Layer::Sprite1);
+    if (m_haskey) {
+        gr.add_sprite(
+            Sprite::KEY,
+            pos + IVec(0, 24),
+            Orientation::NORMAL,
+            Layer::Sprite1);
+    }
 }
 
 void Minion::hit_item(Item &item) {
@@ -82,7 +92,10 @@ void Minion::hit_item(Item &item) {
         break;
 
     case IType::KEY:
-        // pick up
+        if (!m_haskey) {
+            m_haskey = true;
+            item.destroy();
+        }
         break;
 
     case IType::ACTION_JUMP:

@@ -14,6 +14,7 @@ class Minion : public Entity {
     Mover m_mover;
     Walker m_walker;
     int m_direction;
+    bool m_haskey;
 
 public:
     Minion(GameScreen &scr, IVec pos);
