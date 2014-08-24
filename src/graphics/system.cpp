@@ -502,7 +502,12 @@ void System::Data::text_draw() {
     glUniform1i(prog->u_texture, 0);
 
     unsigned pos = 0;
+    Color shadow = Color::palette(1);
     for (auto &run : m_text_run) {
+        glUniform2f(prog->u_vertoff, run.pos.x + 1, run.pos.y - 1);
+        glUniform4fv(prog->u_color, 1, shadow.v);
+        glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
+
         glUniform2f(prog->u_vertoff, run.pos.x, run.pos.y);
         glUniform4fv(prog->u_color, 1, run.color.v);
         glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
