@@ -34,7 +34,7 @@ const Walker::Stats Player::STATS_DREAM = {
 
 Player::Player(GameScreen &scr, IVec pos)
     : Entity(scr, Team::FRIEND), m_mover(pos), m_walker(),
-      m_selection(0), m_num_actions(0) {
+      m_selection(0), m_num_actions(0), m_direction(1) {
     const Level &level = scr.level();
     for (int i = 0; i < ACTION_COUNT; i++) {
         auto a = static_cast<Action>(i);
@@ -48,9 +48,14 @@ Player::~Player()
 
 void Player::update() {
     auto &ctl = m_screen.control();
+    FVec drive = ctl.get_2d();
     unsigned flags = m_walker.update(
         STATS_DREAM, // m_screen.is_dreaming() ? STATS_DREAM : STATS_PHYSICAL,
-        m_screen.level(), m_mover, ctl.get_2d());
+        m_screen.level(), m_mover, drive);
+    if (drive.x < -0.5f)
+        m_direction = -1;
+    else if (drive.x > 0.5f)
+        m_direction = 1;
     m_screen.set_camera(m_mover.pos());
     m_pos = IVec(m_mover.pos());
     if (flags & Walker::FLAG_FOOTSTEP) {
@@ -107,9 +112,11 @@ void Player::update() {
 
 void Player::draw(::Graphics::System &gr, int delta) const {
     gr.add_sprite(
-        Sprite::KNIGHT_1,
+        Sprite::GIRL,
         m_mover.drawpos(delta),
-        Layer::BOTH);
+        Layer::BOTH,
+        m_direction > 0 ?
+        Orientation::NORMAL : Orientation::FLIP_HORIZONTAL);
 
     if (!m_screen.is_dreaming())
         return;
