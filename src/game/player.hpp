@@ -17,7 +17,7 @@ public:
     Player(GameScreen &scr, IVec pos);
     virtual ~Player();
 
-    virtual void update(unsigned time);
+    virtual void update();
     virtual void draw(::Graphics::System &gr, int delta) const;
 };
 

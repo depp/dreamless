@@ -24,6 +24,8 @@ class GameScreen : public Screen {
     std::vector<std::unique_ptr<Entity>> m_entity;
     /// List of new entities, not yet active.
     std::vector<std::unique_ptr<Entity>> m_new_entity;
+    /// Current timestamp.
+    unsigned m_time;
 
 public:
     GameScreen(const ControlState &ctl, const std::string &name);
@@ -49,7 +51,7 @@ public:
     }
 
     /// Play a sound at the given location.
-    void play_sound(unsigned time, Sfx sfx, FVec pos, float volume);
+    void play_sound(Sfx sfx, FVec pos, float volume);
 };
 
 }

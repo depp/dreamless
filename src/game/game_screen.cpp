@@ -57,13 +57,14 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
 }
 
 void GameScreen::update(unsigned time) {
+    m_time = time;
     m_entity.insert(
         m_entity.end(),
         std::make_move_iterator(m_new_entity.begin()),
         std::make_move_iterator(m_new_entity.end()));
     m_new_entity.clear();
     for (auto &ent : m_entity)
-        ent->update(time);
+        ent->update();
     auto part = std::stable_partition(
         m_entity.begin(), m_entity.end(), entity_is_alive);
     m_entity.erase(part, m_entity.end());
@@ -79,7 +80,7 @@ void GameScreen::set_camera(FVec target) {
     m_camera.set_target(target);
 }
 
-void GameScreen::play_sound(unsigned time, Sfx sfx, FVec pos, float volume) {
+void GameScreen::play_sound(Sfx sfx, FVec pos, float volume) {
     FVec delta = pos - m_camera.center();
     int width = 1280 / 2;
     float panwidth = 0.8f;
@@ -88,7 +89,7 @@ void GameScreen::play_sound(unsigned time, Sfx sfx, FVec pos, float volume) {
         pan = 1.0f;
     else if (pan < -1.0f)
         pan = -1.0f;
-    Audio::play(time, sfx, volume, pan);
+    Audio::play(m_time + Defs::FRAMETIME, sfx, volume, pan);
 }
 
 }

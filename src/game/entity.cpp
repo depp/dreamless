@@ -11,8 +11,7 @@ Entity::Entity(GameScreen &scr, Team team)
 Entity::~Entity()
 { }
 
-void Entity::update(unsigned time) {
-    (void) time;
-}
+void Entity::update()
+{ }
 
 }

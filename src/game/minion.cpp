@@ -25,9 +25,7 @@ Minion::Minion(GameScreen &scr, IVec pos)
 Minion::~Minion()
 { }
 
-void Minion::update(unsigned time) {
-    (void) time;
-
+void Minion::update() {
     unsigned flags = m_walker.update(
         STATS, m_screen.level(),
         m_mover,
@@ -36,8 +34,7 @@ void Minion::update(unsigned time) {
         m_direction = m_direction > 0 ? -1 : +1;
     }
     if (flags & Walker::FLAG_FOOTSTEP) {
-        m_screen.play_sound(time + Defs::FRAMETIME,
-                            Sfx::BOOT, m_mover.pos(), -10.0f);
+        m_screen.play_sound(Sfx::BOOT, m_mover.pos(), -10.0f);
     }
 
     m_pos = IVec(m_mover.pos());

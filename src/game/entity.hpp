@@ -48,7 +48,7 @@ public:
     Entity &operator=(Entity &&) = delete;
 
     /// Update the entity's state for the next frame.
-    virtual void update(unsigned time);
+    virtual void update();
     /// Draw the entity.
     virtual void draw(::Graphics::System &gr, int delta) const = 0;
     /// Get the entity's team.

@@ -24,15 +24,14 @@ Player::Player(GameScreen &scr, IVec pos)
 Player::~Player()
 { }
 
-void Player::update(unsigned time) {
+void Player::update() {
     unsigned flags = m_walker.update(
         STATS, m_screen.level(),
         m_mover, m_screen.control().get_2d());
     m_screen.set_camera(m_mover.pos());
     m_pos = IVec(m_mover.pos());
     if (flags & Walker::FLAG_FOOTSTEP) {
-        m_screen.play_sound(time + Defs::FRAMETIME,
-                            Sfx::FOOT, m_mover.pos(), -10.0f);
+        m_screen.play_sound(Sfx::FOOT, m_mover.pos(), -10.0f);
     }
 }
 
