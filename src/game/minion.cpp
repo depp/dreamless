@@ -79,16 +79,22 @@ void Minion::hit_item(Item &item) {
     typedef Item::Type IType;
     switch (item.type()) {
     case IType::DOOR_OPEN:
-        m_team = Team::DEAD;
         break;
 
     case IType::DOOR_CLOSED:
         m_team = Team::DEAD;
         item.set_type(IType::DOOR_OPEN);
+        m_screen.play_sound(Sfx::OPEN, m_mover.pos(), -10.0f);
         break;
 
     case IType::DOOR_LOCKED:
-        // try to unlock
+        if (m_haskey) {
+            m_team = Team::DEAD;
+            m_screen.play_sound(Sfx::UNLOCK, m_mover.pos(), -10.0f);
+            item.set_type(IType::DOOR_OPEN);
+        } else {
+            m_screen.play_sound(Sfx::LOCKED, m_mover.pos(), -10.0f);
+        }
         break;
 
     case IType::KEY:
