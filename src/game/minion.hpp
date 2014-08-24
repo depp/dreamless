@@ -43,7 +43,7 @@ public:
 
 private:
     void hit_item(Item &item);
-    void do_action(Action action);
+    void do_action(Item &item, Action action);
     void memorize(Entity &ent);
 };
 

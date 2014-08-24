@@ -169,7 +169,7 @@ void Minion::hit_item(Item &item) {
 
     case IType::ACTION:
         memorize(item);
-        do_action(item.action());
+        do_action(item, item.action());
         break;
 
     case IType::GATEWAY:
@@ -177,7 +177,7 @@ void Minion::hit_item(Item &item) {
     }
 }
 
-void Minion::do_action(Action action) {
+void Minion::do_action(Item &item, Action action) {
     switch (action) {
     case Action::JUMP:
         m_state = State::JUMP;
@@ -192,6 +192,13 @@ void Minion::do_action(Action action) {
         m_direction = -m_direction;
         break;
     case Action::DROP:
+        if (m_haskey) {
+            item.destroy();
+            m_haskey = false;
+            auto ent = new Item(m_screen, m_pos, Item::Type::KEY);
+            m_screen.add_entity(ent);
+            memorize(*ent);
+        }
         break;
     }
 }
