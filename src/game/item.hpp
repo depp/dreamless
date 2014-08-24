@@ -26,6 +26,9 @@ public:
     virtual ~Item();
 
     virtual void draw(::Graphics::System &gr, int delta) const;
+    Type type() const { return m_type; }
+    void set_type(Type type) { m_type = type; }
+    void destroy() { m_team = Team::DEAD; }
 
 private:
     Sprite sprite() const;

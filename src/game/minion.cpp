@@ -2,6 +2,7 @@
    This file is part of Dreamless.  Dreamless is licensed under the terms
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "minion.hpp"
+#include "item.hpp"
 namespace Game {
 
 const Walker::Stats Minion::STATS = {
@@ -39,7 +40,9 @@ void Minion::update(unsigned time) {
         switch (ent.team()) {
         case Team::INTERACTIVE:
             if (hitbox.contains(ent.pos())) {
-                Log::warn("Encountered object");
+                Item *item = dynamic_cast<Item *>(&ent);
+                if (item)
+                    hit_item(*item);
             }
             break;
 
@@ -56,6 +59,39 @@ void Minion::draw(::Graphics::System &gr, int delta) const {
         m_direction > 0 ?
         Orientation::NORMAL : Orientation::FLIP_HORIZONTAL,
         Layer::Sprite1);
+}
+
+void Minion::hit_item(Item &item) {
+    typedef Item::Type IType;
+    switch (item.type()) {
+    case IType::DOOR_OPEN:
+        m_team = Team::DEAD;
+        break;
+
+    case IType::DOOR_CLOSED:
+        m_team = Team::DEAD;
+        item.set_type(IType::DOOR_OPEN);
+        break;
+        
+    case IType::DOOR_LOCKED:
+        // try to unlock
+        break;
+
+    case IType::KEY:
+        // pick up
+        break;
+
+    case IType::ACTION_JUMP:
+        // perform action
+        break;
+    case IType::ACTION_JUMPBACK:
+        // perform action
+        break;
+
+    case IType::ACTION_TURN:
+        // perform action
+        break;
+    }
 }
 
 }
