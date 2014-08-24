@@ -4,6 +4,7 @@
 #include "player.hpp"
 namespace Game {
 
+#if 0
 const Walker::Stats Player::STATS = {
     // ground accel, speed
     1200, 150,
@@ -16,7 +17,20 @@ const Walker::Stats Player::STATS = {
     // step time
     0.16
 };
+#else
+const Walker::Stats Player::STATS = {
+    // ground accel, speed
+    600, 130,
+    // air accel, speed
+    500, 180,
 
+    // jump time, accel, speed, gravity, doublejump
+    25, 400.0f, 280.0f, 800.0f, true,
+
+    // step time
+    0.20
+};
+#endif
 Player::Player(GameScreen &scr, IVec pos)
     : Entity(scr, Team::FRIEND), m_mover(pos), m_walker()
 { }
