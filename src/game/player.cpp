@@ -43,7 +43,7 @@ Player::~Player()
 void Player::update() {
     auto &ctl = m_screen.control();
     unsigned flags = m_walker.update(
-        m_screen.is_dreaming() ? STATS_DREAM : STATS_PHYSICAL,
+        STATS_DREAM, // m_screen.is_dreaming() ? STATS_DREAM : STATS_PHYSICAL,
         m_screen.level(), m_mover, ctl.get_2d());
     m_screen.set_camera(m_mover.pos());
     m_pos = IVec(m_mover.pos());
