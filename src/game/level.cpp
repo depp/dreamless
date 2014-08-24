@@ -122,14 +122,16 @@ void Level::load(const std::string &name) {
         const char *ptr = static_cast<const char *>(filedata.ptr());
         const char *end = ptr + filedata.size();
         while (ptr != end) {
-            const char *eol = static_cast<const char *>(
+            const char *nl = static_cast<const char *>(
                 memchr(ptr, '\n', end - ptr));
-            if (!eol) {
-                lines.push_back(Line(ptr, end - ptr));
-                break;
-            }
+            const char *eol = nl ? nl : end;
+            while (eol != ptr && eol[-1] == ' ')
+                eol--;
             lines.push_back(Line(ptr, eol - ptr));
-            ptr = eol + 1;
+            if (nl)
+                ptr = nl +1;
+            else
+                break;
         }
     }
 
