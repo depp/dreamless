@@ -39,6 +39,9 @@ GameScreen::GameScreen(const ControlState &ctl, const std::string &name)
         case Spawn::KEY:
             add_entity(new Item(*this, sp.pos, IType::KEY));
             break;
+        case Spawn::GATEWAY:
+            add_entity(new Item(*this, sp.pos, IType::GATEWAY));
+            break;
         }
     }
 }

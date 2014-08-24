@@ -19,7 +19,8 @@ public:
         MINION,
         DOOR_CLOSED,
         DOOR_LOCKED,
-        KEY
+        KEY,
+        GATEWAY
     };
 
     struct SpawnPoint {

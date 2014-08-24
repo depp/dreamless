@@ -7,17 +7,17 @@ namespace Graphics {
 
 /// Layers for rendering sprites.
 enum class Layer {
-    /// Tiles in the physical wold.
-    TILE_1,
+    /// Level tiles.
+    TILE,
 
-    /// Tiles in the dream world.
-    TILE_2,
+    /// Objects in the physical world.
+    PHYSICAL,
 
-    /// Sprites in the physical world.
-    SPRITE_1,
+    /// Objects in the dream world.
+    DREAM,
 
-    /// Sprites in the dream world.
-    SPRITE_2,
+    /// Objects in both worlds.
+    BOTH,
 
     /// User interface elements (screen-relative).
     INTERFACE

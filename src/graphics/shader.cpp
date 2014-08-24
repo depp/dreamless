@@ -63,19 +63,16 @@ const ShaderField Scale::ATTRIBUTES[] = {
 };
 #undef TYPE
 
-#define TYPE Composite
-const ShaderField Composite::UNIFORMS[] = {
-    FIELD(u_tile1),
-    FIELD(u_tile2),
-    FIELD(u_sprite1),
-    FIELD(u_sprite2),
+#define TYPE Dream
+const ShaderField Dream::UNIFORMS[] = {
+    FIELD(u_reality),
     FIELD(u_world),
     FIELD(u_color),
     FIELD(u_blendscale),
     { nullptr, 0 }
 };
 
-const ShaderField Composite::ATTRIBUTES[] = {
+const ShaderField Dream::ATTRIBUTES[] = {
     FIELD(a_vert),
     { nullptr, 0 }
 };

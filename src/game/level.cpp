@@ -20,6 +20,7 @@ const Level::SpawnInfo Level::SPAWN[] = {
     { 'D', 48, SpawnType::DOOR_CLOSED },
     { 'L', 48, SpawnType::DOOR_LOCKED },
     { 'K', 32, SpawnType::KEY },
+    { 'G', 32, SpawnType::GATEWAY },
 
     { '\0', 0, SpawnType::PLAYER }
 };
@@ -219,7 +220,7 @@ void Level::draw(::Graphics::System &gr) const {
             auto tile = info.tile;
             IVec pos(32 * x + 16, 32 * y + 16);
             if (tile != Tile::NONE)
-                gr.add_sprite(tile, pos, Orientation::NORMAL, Layer::TILE_1);
+                gr.add_sprite(tile, pos, Layer::TILE);
         }
     }
 }

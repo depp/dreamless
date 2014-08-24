@@ -14,7 +14,8 @@ public:
         DOOR_CLOSED,
         DOOR_LOCKED,
         KEY,
-        ACTION
+        ACTION,
+        GATEWAY,
     };
 
 private:
@@ -31,9 +32,6 @@ public:
     void set_type(Type type) { m_type = type; }
     void set_action(Action action) { m_action = action; }
     void destroy() { m_team = Team::DEAD; }
-
-private:
-    Sprite sprite() const;
 };
 
 }

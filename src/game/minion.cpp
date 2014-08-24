@@ -50,7 +50,12 @@ void Minion::update() {
         m_screen.play_sound(Sfx::GRUNT, -1.0f, m_mover.pos());
         m_state = State::WALK;
     }
-    if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
+
+    // We don't want to mess with the other states.
+    if (m_state != State::WALK)
+        return;
+
+    if (flags & Walker::FLAG_BLOCKED) {
         m_direction = m_direction > 0 ? -1 : +1;
     }
 
@@ -78,15 +83,14 @@ void Minion::draw(::Graphics::System &gr, int delta) const {
     gr.add_sprite(
         Sprite::KNIGHT_1,
         pos,
+        Layer::PHYSICAL,
         m_direction > 0 ?
-        Orientation::NORMAL : Orientation::FLIP_HORIZONTAL,
-        Layer::SPRITE_1);
+        Orientation::NORMAL : Orientation::FLIP_HORIZONTAL);
     if (m_haskey) {
         gr.add_sprite(
             Sprite::KEY,
             pos + IVec(0, 24),
-            Orientation::NORMAL,
-            Layer::SPRITE_1);
+            Layer::PHYSICAL);
     }
 }
 
@@ -122,6 +126,9 @@ void Minion::hit_item(Item &item) {
 
     case IType::ACTION:
         do_action(item.action());
+        break;
+
+    case IType::GATEWAY:
         break;
     }
 }

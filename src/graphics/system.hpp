@@ -39,9 +39,10 @@ public:
     /// Set the current world, or in between.
     void set_world(float world);
     /// Add a sprite to the world.
-    void add_sprite(AnySprite sp, Base::IVec pos,
-                    Base::Orientation orientation,
-                    Layer layer);
+    void add_sprite(AnySprite sp, Base::IVec pos, Layer layer,
+                    Base::Orientation orientation);
+    /// Add a sprite to the world.
+    void add_sprite(AnySprite sp, Base::IVec pos, Layer layer);
 };
 
 }

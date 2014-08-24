@@ -15,26 +15,31 @@ Item::~Item()
 
 void Item::draw(::Graphics::System &gr, int delta) const {
     (void) delta;
-    gr.add_sprite(
-        sprite(), m_pos, Orientation::NORMAL, Layer::SPRITE_1);
-}
-
-Sprite Item::sprite() const {
     switch (m_type) {
     case Type::DOOR_OPEN:
-        return Sprite::DOOR_OPEN;
-    case Type::DOOR_CLOSED:
-        return Sprite::DOOR_CLOSED;
-    case Type::DOOR_LOCKED:
-        return Sprite::DOOR_LOCKED;
-    case Type::KEY:
-        return Sprite::KEY;
-    case Type::ACTION:
-        return action_sprite(m_action);
-    }
+        gr.add_sprite(Sprite::DOOR_OPEN, m_pos, Layer::PHYSICAL);
+        break;
 
-    Log::abort("invalid item type");
-    return Sprite::DOOR_OPEN;
+    case Type::DOOR_CLOSED:
+        gr.add_sprite(Sprite::DOOR_CLOSED, m_pos, Layer::PHYSICAL);
+        break;
+
+    case Type::DOOR_LOCKED:
+        gr.add_sprite(Sprite::DOOR_LOCKED, m_pos, Layer::PHYSICAL);
+        break;
+
+    case Type::KEY:
+        gr.add_sprite(Sprite::KEY, m_pos, Layer::PHYSICAL);
+        break;
+
+    case Type::ACTION:
+        gr.add_sprite(action_sprite(m_action), m_pos, Layer::BOTH);
+        break;
+
+    case Type::GATEWAY:
+        gr.add_sprite(Sprite::PORTAL, m_pos, Layer::DREAM);
+        break;
+    }
 }
 
 }

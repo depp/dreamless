@@ -36,12 +36,9 @@ using Base::Texture;
 namespace {
 
 /// Render targets
-static const int TARGET_COUNT = 5;
+static const int TARGET_COUNT = 2;
 enum class Target {
-    TILE_1,
-    TILE_2,
-    SPRITE_1,
-    SPRITE_2,
+    PHYSICAL,
     COMPOSITE
 };
 
@@ -70,7 +67,7 @@ void make_fullscreen_quad(Array<float[4]> &arr, FRect tex) {
 struct System::Data {
     // Shader programs
     Program<Shader::Sprite> m_prog_sprite;
-    Program<Shader::Composite> m_prog_composite;
+    Program<Shader::Dream> m_prog_dream;
     Program<Shader::Scale> m_prog_scale;
 
     // Target textures and framebuffers.
@@ -147,7 +144,7 @@ struct System::Data {
 
     void draw_layers();
 
-    void draw_composite();
+    void draw_reality();
 
     void draw_scaled();
 
@@ -158,7 +155,7 @@ struct System::Data {
 
 System::Data::Data()
     : m_prog_sprite("sprite", "sprite"),
-      m_prog_composite("composite", "composite"),
+      m_prog_dream("dream", "dream"),
       m_prog_scale("scale", "scale"),
       m_target_width(-1), m_target_height(-1),
       m_sprite_sheet("", SPRITES),
@@ -270,11 +267,11 @@ SpriteArray &System::Data::sprite_array(Layer layer) {
 
 void System::Data::sprite_clear(bool all) {
     if (all) {
-        sprite_array(Layer::TILE_1).clear();
-        sprite_array(Layer::TILE_2).clear();
+        sprite_array(Layer::TILE).clear();
     }
-    sprite_array(Layer::SPRITE_1).clear();
-    sprite_array(Layer::SPRITE_2).clear();
+    sprite_array(Layer::PHYSICAL).clear();
+    sprite_array(Layer::DREAM).clear();
+    sprite_array(Layer::BOTH).clear();
     sprite_array(Layer::INTERFACE).clear();
 }
 
@@ -311,10 +308,10 @@ void System::Data::sprite_draw(Layer layer) {
 
     const float *xform = nullptr;
     switch (layer) {
-    case Layer::TILE_1:
-    case Layer::TILE_2:
-    case Layer::SPRITE_1:
-    case Layer::SPRITE_2:
+    case Layer::TILE:
+    case Layer::PHYSICAL:
+    case Layer::DREAM:
+    case Layer::BOTH:
         xform = m_xform_world;
         break;
     case Layer::INTERFACE:
@@ -334,46 +331,31 @@ void System::Data::sprite_draw(Layer layer) {
 // ============================================================
 
 void System::Data::draw_layers() {
-    target_set(Target::TILE_1);
+    target_set(Target::PHYSICAL);
     glClear(GL_COLOR_BUFFER_BIT);
-    sprite_draw(Layer::TILE_1);
-
-    target_set(Target::TILE_2);
-    glClear(GL_COLOR_BUFFER_BIT);
-    sprite_draw(Layer::TILE_2);
-
-    target_set(Target::SPRITE_1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    sprite_draw(Layer::SPRITE_1);
-
-    target_set(Target::SPRITE_2);
-    glClear(GL_COLOR_BUFFER_BIT);
-    sprite_draw(Layer::SPRITE_2);
-}
-
-void System::Data::draw_composite() {
-    auto &prog = m_prog_composite;
-    auto &arr = m_array_composite;
+    sprite_draw(Layer::TILE);
+    sprite_draw(Layer::PHYSICAL);
 
     target_set(Target::COMPOSITE);
+    glClear(GL_COLOR_BUFFER_BIT);
+    draw_reality();
+    sprite_draw(Layer::DREAM);
+    sprite_draw(Layer::BOTH);
+    sprite_draw(Layer::INTERFACE);
+}
+
+void System::Data::draw_reality() {
+    auto &prog = m_prog_dream;
+    auto &arr = m_array_composite;
 
     glUseProgram(prog.prog());
     glEnableVertexAttribArray(prog->a_vert);
     glDisable(GL_BLEND);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, target_texture(Target::TILE_1));
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, target_texture(Target::TILE_2));
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, target_texture(Target::SPRITE_1));
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, target_texture(Target::SPRITE_2));
+    glBindTexture(GL_TEXTURE_2D, target_texture(Target::PHYSICAL));
 
-    glUniform1i(prog->u_tile1, 0);
-    glUniform1i(prog->u_tile2, 1);
-    glUniform1i(prog->u_sprite1, 2);
-    glUniform1i(prog->u_sprite2, 3);
+    glUniform1i(prog->u_reality, 0);
 
     glUniform1f(prog->u_world, m_world);
     glUniform4fv(prog->u_color, 1, m_blendcolor.v);
@@ -384,7 +366,7 @@ void System::Data::draw_composite() {
     glDrawArrays(GL_TRIANGLES, 0, arr.size());
 
     glUseProgram(0);
-    sg_opengl_checkerror("System::Data::draw_composite");
+    sg_opengl_checkerror("System::Data::draw_reality");
 
     sprite_draw(Layer::INTERFACE);
 }
@@ -443,7 +425,6 @@ void System::finalize() {
 void System::draw() {
     auto &d = *m_data;
     d.draw_layers();
-    d.draw_composite();
     d.draw_scaled();
 }
 
@@ -463,9 +444,13 @@ void System::set_world(float world) {
     d.m_world = world;
 }
 
-void System::add_sprite(AnySprite sp, IVec pos,
-                        Orientation orientation, Layer layer) {
+void System::add_sprite(AnySprite sp, IVec pos, Layer layer,
+                        Orientation orientation) {
     m_data->sprite_add(sp, pos, orientation, layer);
+}
+
+void System::add_sprite(AnySprite sp, IVec pos, Layer layer) {
+    m_data->sprite_add(sp, pos, Orientation::NORMAL, layer);
 }
 
 }

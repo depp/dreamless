@@ -51,17 +51,14 @@ struct Scale {
     GLint u_pixscale;
 };
 
-/// Uniforms and attributes for the "composite" shader.
-struct Composite {
+/// Uniforms and attributes for the "dream" shader.
+struct Dream {
     static const Base::ShaderField UNIFORMS[];
     static const Base::ShaderField ATTRIBUTES[];
 
     GLint a_vert;
 
-    GLint u_tile1;
-    GLint u_tile2;
-    GLint u_sprite1;
-    GLint u_sprite2;
+    GLint u_reality;
 
     GLint u_world;
     GLint u_color;

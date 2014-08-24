@@ -81,8 +81,7 @@ void Player::draw(::Graphics::System &gr, int delta) const {
     gr.add_sprite(
         Sprite::KNIGHT_1,
         m_mover.drawpos(delta),
-        Orientation::NORMAL,
-        Layer::SPRITE_1);
+        Layer::BOTH);
 
     IVec center(Defs::WIDTH / 2, Defs::HEIGHT - 20);
     for (int i = 0; i < ACTION_COUNT; i++) {
@@ -90,13 +89,11 @@ void Player::draw(::Graphics::System &gr, int delta) const {
         gr.add_sprite(
             action_sprite(static_cast<Action>(i)),
             pos,
-            Orientation::NORMAL,
             Layer::INTERFACE);
         if (m_selection == i) {
             gr.add_sprite(
                 Sprite::SELECTION,
                 pos,
-                Orientation::NORMAL,
                 Layer::INTERFACE);
         }
     }
