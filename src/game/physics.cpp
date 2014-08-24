@@ -59,26 +59,6 @@ void Walker::update(const struct Stats &stats, const Level &level,
     vel += accel * Defs::dt();
     FVec newpos = pos + vel * Defs::dt();
 
-    // Handle horizontal collisions
-    if (vel.x != 0.0f) {
-        FVec test1(8.0f, -8.0f), test2(8.0f, 10.0f);
-        if (vel.x < 0) {
-            test1.x = -test1.x;
-            test2.x = -test2.x;
-        }
-        int scale = STEPS;
-        while (level.hit_test(newpos + test1) ||
-               level.hit_test(newpos + test2)) {
-            scale--;
-            if (!scale) {
-                newpos.x = pos.x;
-                break;
-            }
-            float frac = (float) scale * (1.0f / (float) STEPS);
-            newpos.x = pos.x + vel.x * (frac * Defs::dt());
-        }
-    }
-
     // Handle collisions with the ceiling
     if (vel.y > 0.0f) {
         FVec head(0.0f, 14.0f);
@@ -112,6 +92,27 @@ void Walker::update(const struct Stats &stats, const Level &level,
             m_jumptime = 0;
             m_state = State::WALK;
             newpos.y = floor;
+        }
+    }
+
+    // Handle horizontal collisions
+    if (pos.x != newpos.x) {
+        vel = (newpos - pos) * Defs::invdt();
+        FVec test1(8.0f, -8.0f), test2(8.0f, 10.0f);
+        if (vel.x < 0) {
+            test1.x = -test1.x;
+            test2.x = -test2.x;
+        }
+        int scale = STEPS;
+        while (level.hit_test(newpos + test1) ||
+               level.hit_test(newpos + test2)) {
+            scale--;
+            if (!scale) {
+                newpos.x = pos.x;
+                break;
+            }
+            float frac = (float) scale * (1.0f / (float) STEPS);
+            newpos.x = pos.x + vel.x * (frac * Defs::dt());
         }
     }
 
