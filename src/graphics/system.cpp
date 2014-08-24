@@ -520,6 +520,8 @@ void System::Data::text_draw() {
         glUniform2f(prog->u_vertoff, run.pos.x, run.pos.y);
         glUniform4fv(prog->u_color, 1, run.color.v);
         glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
+
+        pos += run.length;
     }
 
     glUseProgram(0);
