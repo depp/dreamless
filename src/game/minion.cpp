@@ -95,6 +95,7 @@ void Minion::hit_item(Item &item) {
         if (!m_haskey) {
             m_haskey = true;
             item.destroy();
+            m_screen.play_sound(Sfx::PLINK, m_mover.pos(), -10.0f);
         }
         break;
 
