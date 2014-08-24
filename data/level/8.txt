@@ -1,5 +1,7 @@
 actions: jb
-girl: Hello.
+shadow: After a thousand years...
+girl: How long is that?
+shadow: Well, it doesn't matter any more.  You're pretty close now.
 -----
 
             LA

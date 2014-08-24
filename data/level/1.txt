@@ -1,5 +1,6 @@
-girl: Hello.
-shadow: Goodbye.
+shadow: Face it kid, no one comes out of here alive.
+girl: What's wrong with your face?
+shadow: Learn some manners.  This is the dream world, not your parents' basement.
 -----
 
 

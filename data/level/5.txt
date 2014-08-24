@@ -1,5 +1,7 @@
 actions: J
-girl: Hello.
+shadow: Losing your dreams is a natural part of growing up.  Someday, you'll end up like these guys.
+girl: What's wrong with your face?
+shadow: Anyway.  Have you seen your parents anywhere?
 -----
 
                          

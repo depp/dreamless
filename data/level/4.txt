@@ -1,4 +1,6 @@
-girl: Hello.
+shadow: Have you seen my physical body anywhere?
+girl: What does it look like?
+shadow: I'm not sure.  By the way, where are your parents?
 -----
 
              M          

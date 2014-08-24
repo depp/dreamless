@@ -1,4 +1,8 @@
 girl: Hello.
+shadow: You found me.
+girl: I think you might be dead.
+shadow: Probably true.
+shadow: The End.  Created by Dietrich Epp in 48 hours for Ludum Dare.
 ----
 
 

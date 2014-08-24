@@ -1,5 +1,7 @@
 actions: b
-girl: Hello.
+shadow: I took their dreams too, but I'm still hungry.
+girl: What?
+shadow: I was just thinking about my old body, and puppies, and rainbows and things.
 -----
  
  

@@ -1,5 +1,7 @@
 actions: d
-girl: Hello.
+shadow: I was once like you, but I've been here too long.
+girl: That's nice.
+shadow: I'm beginning to think that your parents have moved on too.  We're both abandoned here.
 -----
 
 

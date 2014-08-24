@@ -1,5 +1,7 @@
 actions: J
-girl: Hello.
+shadow: Don't mind me, I'm just your imaginary friend.
+girl: Do you have a real body somewhere?
+shadow: Hah.  Somewhere, I forget.
 -----
 #                       #
 #                       #
