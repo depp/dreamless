@@ -7,8 +7,8 @@
 namespace Game {
 
 namespace {
-const IRect HIT_BOX = IRect::centered(8, 24);
-const IRect MEMORY_BOX = IRect::centered(16, 32);
+const IRect HIT_BOX = IRect::centered(12, 32);
+const IRect MEMORY_BOX = IRect::centered(20, 40);
 const int JUMP_TIME = 10;
 const int JUMP_HOLDTIME = 15;
 const int JUMP_TURNTIME = 5;
@@ -40,9 +40,7 @@ void Minion::update() {
     if (m_screen.is_dreaming())
         return;
 
-    if (m_statetime > 0) {
-        m_statetime--;
-    } else {
+    if (m_statetime > 0 && !--m_statetime) {
         if (m_state == State::JUMP_BACK) {
             m_state = State::JUMP;
             m_statetime = JUMP_TIME;
@@ -71,7 +69,9 @@ void Minion::update() {
     if ((flags & Walker::FLAG_AIRBORNE) == 0 && m_state == State::JUMPING) {
         m_state = State::WALK;
     }
-    if (flags & Walker::FLAG_BLOCKED && m_state == State::WALK) {
+    if (flags & Walker::FLAG_BLOCKED &&
+        (flags & Walker::FLAG_AIRBORNE) == 0 &&
+        m_state == State::WALK) {
         m_direction = m_direction > 0 ? -1 : +1;
     }
 
