@@ -67,8 +67,7 @@ void make_fullscreen_quad(Array<float[4]> &arr, FRect tex) {
 
 }
 
-class System::Data {
-private:
+struct System::Data {
     // Shader programs
     Program<Shader::Sprite> m_prog_sprite;
     Program<Shader::Composite> m_prog_composite;
@@ -106,10 +105,12 @@ private:
     // The camera position.
     IVec m_camera;
 
+    // The current world.
+    float m_world;
+
     // Textures
     Texture m_pattern;
 
-public:
     Data();
 
     // ============================================================
@@ -144,19 +145,6 @@ public:
 
     // ============================================================
 
-    // Set the blend effect color.
-    void set_color(Color c);
-
-    // Set the render size.
-    void set_size(int width, int height);
-
-    // Set the camera position.
-    void set_camera(IVec pos);
-
-    void clear(bool all);
-
-    void finalize();
-
     void draw_layers();
 
     void draw_composite();
@@ -176,7 +164,8 @@ System::Data::Data()
       m_sprite_sheet("", SPRITES),
       m_blendcolor(Color::transparent()),
       m_width(-1), m_height(-1),
-      m_camera(IVec::zero()) {
+      m_camera(IVec::zero()),
+      m_world(0.0f) {
     std::memset(m_target_tex, 0, sizeof(m_target_tex));
     std::memset(m_target_fbuf, 0, sizeof(m_target_fbuf));
     m_pattern = Texture::load("misc/hilbert");
@@ -344,28 +333,6 @@ void System::Data::sprite_draw(Layer layer) {
 
 // ============================================================
 
-void System::Data::set_color(Color c) {
-    m_blendcolor = c;
-}
-
-void System::Data::set_size(int width, int height) {
-    m_width = width;
-    m_height = height;
-}
-
-void System::Data::set_camera(IVec pos) {
-    m_camera = pos;
-}
-
-void System::Data::clear(bool all) {
-    sprite_clear(all);
-}
-
-void System::Data::finalize() {
-    target_finalize();
-    sprite_finalize();
-}
-
 void System::Data::draw_layers() {
     target_set(Target::TILE_1);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -408,7 +375,7 @@ void System::Data::draw_composite() {
     glUniform1i(prog->u_sprite1, 2);
     glUniform1i(prog->u_sprite2, 3);
 
-    glUniform1f(prog->u_world, 0.5f);
+    glUniform1f(prog->u_world, m_world);
     glUniform4fv(prog->u_color, 1, m_blendcolor.v);
     glUniform4fv(prog->u_blendscale, 1, m_blendscale);
 
@@ -449,9 +416,6 @@ void System::Data::draw_scaled() {
 }
 
 void System::Data::draw() {
-    draw_layers();
-    draw_composite();
-    draw_scaled();
 }
 
 // ============================================================
@@ -464,23 +428,37 @@ System::~System()
 { }
 
 void System::clear(bool all) {
-    m_data->clear(all);
+    auto &d = *m_data;
+    d.sprite_clear(all);
 }
 
 void System::finalize() {
-    m_data->finalize();
+    auto &d = *m_data;
+    d.target_finalize();
+    d.sprite_finalize();
 }
 
 void System::draw() {
-    m_data->draw();
+    auto &d = *m_data;
+    d.draw_layers();
+    d.draw_composite();
+    d.draw_scaled();
 }
 
 void System::set_size(int width, int height) {
-    m_data->set_size(width, height);
+    auto &d = *m_data;
+    d.m_width = width;
+    d.m_height = height;
 }
 
 void System::set_camera(IVec pos) {
-    m_data->set_camera(pos);
+    auto &d = *m_data;
+    d.m_camera = pos;
+}
+
+void System::set_world(float world) {
+    auto &d = *m_data;
+    d.m_world = world;
 }
 
 void System::add_sprite(AnySprite sp, IVec pos,

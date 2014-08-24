@@ -14,7 +14,7 @@ class AnySprite;
 
 class System {
 private:
-    class Data;
+    struct Data;
     std::unique_ptr<Data> m_data;
 
 public:
@@ -36,6 +36,8 @@ public:
     void set_size(int width, int height);
     /// Set the lower-left corner of the camera.
     void set_camera(Base::IVec pos);
+    /// Set the current world, or in between.
+    void set_world(float world);
     /// Add a sprite to the world.
     void add_sprite(AnySprite sp, Base::IVec pos,
                     Base::Orientation orientation,
