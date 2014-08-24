@@ -21,7 +21,7 @@ const Walker::Stats Minion::STATS = {
     300, 150,
 
     // jump time, accel, speed, gravity, doublejump
-    25, 400.0f, 180.0f, 600.0f, true,
+    25, 400.0f, 200.0f, 650.0f, true,
 
     // step time
     0.3
