@@ -3,6 +3,7 @@
    of the 2-clause BSD license.  For more information, see LICENSE.txt. */
 #include "player.hpp"
 #include "action.hpp"
+#include "item.hpp"
 namespace Game {
 
 #if 0
@@ -66,6 +67,13 @@ void Player::update() {
         m_selection--;
         if (m_selection < 0)
             m_selection = ACTION_COUNT - 1;
+    }
+
+    if (ctl.get_button_instant(Button::ACTION)) {
+        m_screen.play_sound(Sfx::WAP, -10.0f, m_mover.pos());
+        auto ent = new Item(m_screen, m_pos, Item::Type::ACTION);
+        ent->set_action(static_cast<Action>(m_selection));
+        m_screen.add_entity(ent);
     }
 }
 

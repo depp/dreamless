@@ -5,7 +5,8 @@
 namespace Game {
 
 Item::Item(GameScreen &scr, IVec pos, Type type)
-    : Entity(scr, Team::INTERACTIVE), m_type(type) {
+    : Entity(scr, Team::INTERACTIVE), m_type(type),
+      m_action(Action::JUMP) {
     m_pos = pos;
 }
 
@@ -28,12 +29,8 @@ Sprite Item::sprite() const {
         return Sprite::DOOR_LOCKED;
     case Type::KEY:
         return Sprite::KEY;
-    case Type::ACTION_JUMP:
-        return Sprite::ACTION_JUMP;
-    case Type::ACTION_JUMPBACK:
-        return Sprite::ACTION_JUMPBACK;
-    case Type::ACTION_TURN:
-        return Sprite::ACTION_TURN;
+    case Type::ACTION:
+        return action_sprite(m_action);
     }
 
     Log::abort("invalid item type");

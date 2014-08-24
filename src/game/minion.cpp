@@ -105,14 +105,7 @@ void Minion::hit_item(Item &item) {
         }
         break;
 
-    case IType::ACTION_JUMP:
-        // perform action
-        break;
-    case IType::ACTION_JUMPBACK:
-        // perform action
-        break;
-
-    case IType::ACTION_TURN:
+    case IType::ACTION:
         // perform action
         break;
     }

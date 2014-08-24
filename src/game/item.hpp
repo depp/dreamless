@@ -4,6 +4,7 @@
 #ifndef LD_GAME_ITEM_HPP
 #define LD_GAME_ITEM_HPP
 #include "entity.hpp"
+#include "action.hpp"
 namespace Game {
 
 class Item : public Entity {
@@ -13,13 +14,12 @@ public:
         DOOR_CLOSED,
         DOOR_LOCKED,
         KEY,
-        ACTION_JUMP,
-        ACTION_JUMPBACK,
-        ACTION_TURN
+        ACTION
     };
 
 private:
     Type m_type;
+    Action m_action;
 
 public:
     Item(GameScreen &scr, IVec pos, Type type);
@@ -27,7 +27,9 @@ public:
 
     virtual void draw(::Graphics::System &gr, int delta) const;
     Type type() const { return m_type; }
+    Action action() const { return m_action; }
     void set_type(Type type) { m_type = type; }
+    void set_action(Action action) { m_action = action; }
     void destroy() { m_team = Team::DEAD; }
 
 private:
