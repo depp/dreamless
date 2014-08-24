@@ -19,6 +19,7 @@ class Player : public Entity {
     Action m_actions[ACTION_COUNT];
     int m_direction;
     int m_dialogue;
+    int m_dialogue_time;
 
 public:
     Player(GameScreen &scr, IVec pos);
@@ -29,6 +30,7 @@ public:
 
 private:
     void hit_item(Item &item);
+    void show_dialogue(int index);
 };
 
 }

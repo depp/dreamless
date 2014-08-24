@@ -7,6 +7,11 @@
 #include "graphics/color.hpp"
 namespace Game {
 
+namespace {
+const int DIALOGUE_STICKY = 25;
+const int DIALOGUE_DISMISS = 32 * 20;
+};
+
 const Walker::Stats Player::STATS_PHYSICAL = {
     // ground accel, speed
     1200, 150,
@@ -84,31 +89,41 @@ void Player::update() {
         }
     }
 
-    if (!m_num_actions)
-        return;
+    if (m_dialogue > 0) {
+        m_dialogue_time++;
+        if (m_dialogue_time >= DIALOGUE_STICKY) {
+            bool dismiss = m_dialogue_time >= DIALOGUE_DISMISS ||
+                ctl.get_button_instant(Button::NEXT) ||
+                ctl.get_button_instant(Button::PREV) ||
+                ctl.get_button_instant(Button::ACTION) ||
+                ctl.get_button_instant(Button::ESCAPE);
+            if (dismiss)
+                show_dialogue(m_dialogue + 1);
+        }
+    } else if (m_num_actions > 0) {
+        int move = 0;
+        if (ctl.get_button_instant(Button::NEXT))
+            move++;
+        if (ctl.get_button_instant(Button::PREV))
+            move--;
+        if (move != 0)
+            m_screen.play_sound(Sfx::CLICK, -10.0f);
+        if (move > 0) {
+            m_selection++;
+            if (m_selection >= m_num_actions)
+                m_selection = 0;
+        } else if (move < 0) {
+            m_selection--;
+            if (m_selection < 0)
+                m_selection = m_num_actions - 1;
+        }
 
-    int move = 0;
-    if (ctl.get_button_instant(Button::NEXT))
-        move++;
-    if (ctl.get_button_instant(Button::PREV))
-        move--;
-    if (move != 0)
-        m_screen.play_sound(Sfx::CLICK, -10.0f);
-    if (move > 0) {
-        m_selection++;
-        if (m_selection >= m_num_actions)
-            m_selection = 0;
-    } else if (move < 0) {
-        m_selection--;
-        if (m_selection < 0)
-            m_selection = m_num_actions - 1;
-    }
-
-    if (ctl.get_button_instant(Button::ACTION)) {
-        m_screen.play_sound(Sfx::WAP, -10.0f, m_mover.pos());
-        auto ent = new Item(m_screen, m_pos, Item::Type::ACTION);
-        ent->set_action(m_actions[m_selection]);
-        m_screen.add_entity(ent);
+        if (ctl.get_button_instant(Button::ACTION)) {
+            m_screen.play_sound(Sfx::WAP, -10.0f, m_mover.pos());
+            auto ent = new Item(m_screen, m_pos, Item::Type::ACTION);
+            ent->set_action(m_actions[m_selection]);
+            m_screen.add_entity(ent);
+        }
     }
 }
 
@@ -177,9 +192,20 @@ void Player::hit_item(Item &item) {
 
     case IType::ADVERSARY:
         if (m_dialogue == 0)
-            m_dialogue = 1;
+            show_dialogue(1);
         break;
     }
 }
+
+void Player::show_dialogue(int index) {
+    int limit = m_screen.level().dialogue().size();
+    if (index > limit) {
+        m_dialogue = -1;
+    } else {
+        m_dialogue = index;
+        m_dialogue_time = 0;
+    }
+}
+
 
 }
