@@ -16,6 +16,10 @@
 #include "screen.hpp"
 #include "audio.hpp"
 
+namespace {
+const float MUSIC_VOLUME = -12.0;
+}
+
 namespace Game {
 
 Main::Main() : m_initted(false), m_pending(1) { }
@@ -124,6 +128,7 @@ void Main::event_key(int key, bool state) {
 void Main::advance(unsigned time) {
     unsigned nframes;
     if (m_initted) {
+        Audio::music(time, MUSIC_VOLUME);
         unsigned delta = time - m_frametime;
         if (delta > Defs::MAXUPDATE) {
             Log::warn("lag");

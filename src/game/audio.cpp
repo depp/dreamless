@@ -44,4 +44,24 @@ void Audio::init() {
     }
 }
 
+void Audio::music(unsigned time, float volume) {
+    static sg_mixer_sound *music;
+    if (!music) {
+        music = sg_mixer_sound_file(
+            "music", std::strlen("music"), nullptr);
+        if (!music)
+            Base::Log::warn("music failed to load");
+        return;
+    }
+
+    static sg_mixer_channel *channel;
+    if (!channel) {
+        channel = sg_mixer_channel_play(music, time, SG_MIXER_FLAG_LOOP);
+        if (!channel)
+            return;
+    }
+
+    sg_mixer_channel_setparam(channel, SG_MIXER_PARAM_VOL, volume);
+}
+
 }

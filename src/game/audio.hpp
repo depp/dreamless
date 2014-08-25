@@ -12,6 +12,9 @@ struct Audio {
 
     /// Load all sound effects.
     static void init();
+
+    /// Start music, or adjust volume.
+    static void music(unsigned time, float volume);
 };
 
 }
