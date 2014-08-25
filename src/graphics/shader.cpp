@@ -25,6 +25,7 @@ const ShaderField Sprite::UNIFORMS[] = {
     FIELD(u_vertxform),
     FIELD(u_texscale),
     FIELD(u_texture),
+    FIELD(u_color),
     { nullptr, 0 }
 };
 

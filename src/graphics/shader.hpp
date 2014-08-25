@@ -25,6 +25,7 @@ struct Sprite {
     GLint u_vertxform;
     GLint u_texscale;
     GLint u_texture;
+    GLint u_color;
 };
 
 /// Uniforms and attributes for the "text" shader.

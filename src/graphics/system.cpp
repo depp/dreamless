@@ -20,6 +20,7 @@
 #include <cstring>
 #include <limits>
 #include <vector>
+#include <cmath>
 
 namespace Graphics {
 
@@ -350,18 +351,25 @@ void System::Data::sprite_draw(Layer layer) {
     glUniform1i(prog->u_texture, 0);
 
     const float *xform = nullptr;
+    Color color = { 1.0, 1.0, 1.0, 1.0 };
     switch (layer) {
     case Layer::TILE:
     case Layer::PHYSICAL:
-    case Layer::DREAM:
     case Layer::BOTH:
         xform = m_xform_world;
+        break;
+    case Layer::DREAM:
+        xform = m_xform_world;
+        color = Color::blend(Color::palette(27), color, m_world)
+            .fade(m_world);
+        color.v[3] = std::sqrt(color.v[3]);
         break;
     case Layer::INTERFACE:
         xform = m_xform_screen;
         break;
     }
     glUniform4fv(prog->u_vertxform, 1, xform);
+    glUniform4fv(prog->u_color, 1, color.v);
 
     arr.set_attrib(prog->a_vert);
 
