@@ -15,6 +15,7 @@
 #include "game_screen.hpp"
 #include "screen.hpp"
 #include "audio.hpp"
+#include "analytics/analytics.hpp"
 
 namespace {
 const float MUSIC_VOLUME = -12.0;
@@ -145,7 +146,7 @@ void Main::advance(unsigned time) {
     }
 
     if (m_pending) {
-        m_screen.reset(new GameScreen(m_control, m_pending));
+        m_screen.reset(new GameScreen(m_control, m_pending, time));
         m_pending = 0;
         nframes = 1;
     }
@@ -167,11 +168,13 @@ Main *Main::main;
 void sg_game_init(void) {
     Base::Log::init();
     Game::Audio::init();
+    Analytics::Analytics::init();
     Game::Main::main = new Game::Main;
 }
 
 void sg_game_destroy(void) {
     delete Game::Main::main;
+    Analytics::Analytics::finish();
 }
 
 void sg_game_getinfo(struct sg_game_info *info) {

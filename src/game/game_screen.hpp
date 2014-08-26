@@ -7,6 +7,7 @@
 #include "screen.hpp"
 #include "camera.hpp"
 #include "audio.hpp"
+#include "analytics/analytics.hpp"
 #include <memory>
 #include <string>
 #include <vector>
@@ -39,9 +40,11 @@ class GameScreen : public Screen {
     int m_wincounter;
     /// Unique ID number generator.
     int m_id;
+    /// Analytics info.
+    Analytics::Level m_analytics;
 
 public:
-    GameScreen(const ControlState &ctl, int levelnum);
+    GameScreen(const ControlState &ctl, int levelnum, unsigned time);
     virtual ~GameScreen();
 
     /// Draw the screen.
@@ -82,6 +85,11 @@ public:
     /// Generate a unique ID number.
     int next_id() {
         return m_id++;
+    }
+
+    /// Get the analytics data.
+    Analytics::Level &analytics() {
+        return m_analytics;
     }
 };
 

@@ -20,9 +20,9 @@ static bool entity_is_alive(const std::unique_ptr<Entity> &p) {
     return p->team() != Team::DEAD;
 }
 
-GameScreen::GameScreen(const ControlState &ctl, int levelnum)
-    : Screen(ctl), m_levelnum(levelnum), m_drawn(false), m_dream(-1),
-      m_minions(0), m_wincounter(-1), m_id(0) {
+GameScreen::GameScreen(const ControlState &ctl, int levelnum, unsigned time)
+    : Screen(ctl), m_levelnum(levelnum), m_drawn(false), m_time(time),
+      m_dream(-1), m_minions(0), m_wincounter(-1), m_id(0) {
     m_level.load(std::to_string(levelnum));
     m_camera.set_bounds(m_level.bounds());
     m_camera.set_fov(IVec(Defs::WIDTH, Defs::HEIGHT));
@@ -69,10 +69,24 @@ GameScreen::GameScreen(const ControlState &ctl, int levelnum)
     /// End condition (the last level)
     if (!m_minions)
         m_minions = -1;
+
+    {
+        static int index = 0;
+        auto &a = m_analytics;
+        a.index = index++;
+        a.level = levelnum;
+        a.time_start = time;
+        a.time_wake = -1;
+        a.time_end = 0;
+        a.action_count = 0;
+        a.talked_to_shadow = false;
+        a.status = Analytics::Status::IN_PROGRESS;
+    }
 }
 
-GameScreen::~GameScreen()
-{ }
+GameScreen::~GameScreen() {
+    m_analytics.submit();
+}
 
 static const char HELP[] =
     "[F1]: help\n"
@@ -136,19 +150,28 @@ void GameScreen::draw(::Graphics::System &gr, int delta) {
 }
 
 void GameScreen::update(unsigned time) {
+    m_analytics.time_end = time - m_analytics.time_start;
+
     if (m_wincounter > 0) {
-        if (!--m_wincounter)
+        if (!--m_wincounter) {
+            m_analytics.status = Analytics::Status::SUCCESS;
             Main::main->load_level(m_levelnum + 1);
+        }
     }
 
     if (control().get_button_instant(Button::RESTART)) {
+        m_analytics.status = Analytics::Status::RESTART;
         Main::main->load_level(m_levelnum);
     } else if (control().get_button_instant(Button::NEXTLEVEL)) {
-        if (m_minions >= 0)
+        if (m_minions >= 0) {
+            m_analytics.status = Analytics::Status::SKIP_NEXT;
             Main::main->load_level(m_levelnum + 1);
+        }
     } else if (control().get_button_instant(Button::PREVLEVEL)) {
-        if (m_levelnum > 1)
+        if (m_levelnum > 1) {
+            m_analytics.status = Analytics::Status::SKIP_PREV;
             Main::main->load_level(m_levelnum - 1);
+        }
     }
 
     for (int i = 0; i < 4; i++) {
@@ -207,6 +230,7 @@ bool GameScreen::is_dreaming() const {
 void GameScreen::wake_up() {
     if (m_dream >= 0)
         return;
+    m_analytics.time_wake = m_time - m_analytics.time_start;
     m_dream = DREAM_TIME;
     play_sound(Sfx::WHA, -10.0f);
 }

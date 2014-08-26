@@ -122,6 +122,7 @@ void Player::update() {
         }
 
         if (ctl.get_button_instant(Button::ACTION)) {
+            m_screen.analytics().action_count++;
             m_screen.play_sound(Sfx::WAP, -10.0f, m_mover.pos());
             auto ent = new Item(m_screen, m_pos, Item::Type::ACTION);
             ent->set_action(m_actions[m_selection]);
@@ -203,6 +204,7 @@ void Player::hit_item(Item &item) {
 
 void Player::show_dialogue(int index) {
     int limit = m_screen.level().dialogue().size();
+    m_screen.analytics().talked_to_shadow = true;
     if (index > limit) {
         m_dialogue = -1;
     } else {
@@ -210,6 +212,5 @@ void Player::show_dialogue(int index) {
         m_dialogue_time = 0;
     }
 }
-
 
 }

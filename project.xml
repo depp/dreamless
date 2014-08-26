@@ -83,5 +83,16 @@
       <src path="vec.cpp"/>
       <src path="vec.hpp"/>
     </group>
+    <group path="src/analytics">
+      <src path="analytics.cpp"/>
+      <src path="analytics.hpp"/>
+      <group>
+        <require module="libcurl"/>
+        <src path="curl.hpp"/>
+        <src path="curl.cpp"/>
+      </group>
+      <src path="json.cpp"/>
+      <src path="json.hpp"/>
+    </group>
   </module>
 </build>
