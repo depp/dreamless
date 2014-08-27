@@ -41,7 +41,6 @@ const int SHUTDOWN_WAIT = 5;
 
 sg_logger *logger;
 std::vector<Level> queue;
-bool is_started, request_stop, is_stopped;
 
 struct Start {
     std::string computer_id;
@@ -85,14 +84,15 @@ std::string to_json(const Level &l, const std::string &sid) {
     return j.to_string();
 }
 
+typedef std::pair<std::string, Start> Arg;
+
 #if defined SG_THREAD_PTHREAD
 
 namespace PThread {
 pthread_mutex_t mutex;
 pthread_cond_t cond;
 pthread_t thread;
-
-typedef std::pair<std::string, Start> Arg;
+bool is_started, request_stop, is_stopped;
 
 void *worker(void *arg) {
     int r;
@@ -128,7 +128,7 @@ void *worker(void *arg) {
     r = pthread_mutex_unlock(&mutex);
     if (r) abort();
 
-    sg_logs(logger, SG_LOG_INFO, "Analyticts startup successful.");
+    sg_logs(logger, SG_LOG_INFO, "Analytics startup successful.");
 
     while (true) {
         r = pthread_mutex_lock(&mutex);
@@ -267,6 +267,140 @@ using PThread::stop_worker;
 using PThread::submit_level;
 
 #elif defined SG_THREAD_WINDOWS
+
+namespace Windows {
+
+CRITICAL_SECTION lock;
+bool is_started, request_stop, is_stopped;
+HANDLE has_data, has_stopped;
+
+static DWORD WINAPI worker(void *param) {
+    BOOL r;
+    std::string endpoint, session_id;
+
+    {
+        std::unique_ptr<Arg> a(reinterpret_cast<Arg *>(param));
+        endpoint = a->first;
+        auto json = to_json(a->second);
+        for (int retry = 0;; retry++) {
+            if (retry > 0) {
+                sg_logs(logger, SG_LOG_WARN, "Retrying request...");
+                Sleep(RETRY_DELAY * 1000);
+            }
+
+            auto result = Curl::post(endpoint + "start", json);
+            if (result.first) {
+                session_id = result.second;
+                break;
+            }
+            if (retry >= MAX_RETRIES) {
+                sg_logs(logger, SG_LOG_ERROR, "Too many analytics failures.");
+                is_stopped = true;
+                r = SetEvent(has_stopped);
+                if (!r) abort();
+                return 0;
+            }
+        }
+    }
+
+    EnterCriticalSection(&lock);
+    is_started = true;
+    LeaveCriticalSection(&lock);
+
+    sg_logs(logger, SG_LOG_INFO, "Analytics startup successful.");
+
+    while (true) {
+        EnterCriticalSection(&lock);
+        while (queue.empty() && !request_stop) {
+            LeaveCriticalSection(&lock);
+            r = WaitForSingleObject(has_data, INFINITE);
+            EnterCriticalSection(&lock);
+        }
+
+        Level level;
+        bool done = queue.empty();
+        if (!done) {
+            level = queue.front();
+            queue.erase(queue.begin());
+        }
+
+        LeaveCriticalSection(&lock);
+
+        if (done)
+            break;
+        auto json = to_json(level, session_id);
+
+        int i;
+        for (i = 0; i < MAX_RETRIES; i++) {
+            if (i > 0) {
+                sg_logs(logger, SG_LOG_WARN, "Retrying request...");
+                Sleep(RETRY_DELAY * 1000);
+            }
+
+            auto result = Curl::post(endpoint + "level", json);
+            if (result.first && result.second == "ok")
+                break;
+        }
+        if (i == MAX_RETRIES) {
+            sg_logs(logger, SG_LOG_ERROR, "Too many analytics failures.");
+            break;
+        }
+
+        sg_logs(logger, SG_LOG_INFO, "Post successful.");
+    }
+
+    sg_logs(logger, SG_LOG_INFO, "Shutting down analytics.");
+
+    EnterCriticalSection(&lock);
+    is_stopped = true;
+    r = SetEvent(has_stopped);
+    if (!r) abort();
+    LeaveCriticalSection(&lock);
+
+    return 0;
+}
+
+void start_worker(const std::string &endpoint, const Start &start) {
+    InitializeCriticalSection(&lock);
+    has_data = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+    if (!has_data) abort();
+    has_stopped = CreateEvent(nullptr, TRUE, FALSE, nullptr);
+    if (!has_stopped) abort();
+
+    Arg *arg = new Arg(endpoint, start);
+    HANDLE thread = CreateThread(nullptr, 0, worker, reinterpret_cast<void *>(arg), 0, NULL);
+}
+
+void stop_worker() {
+    BOOL r;
+    bool do_wait;
+    EnterCriticalSection(&lock);
+    do_wait = is_started;
+    if (do_wait) {
+        request_stop = true;
+        r = SetEvent(has_data);
+    }
+    LeaveCriticalSection(&lock);
+
+    WaitForSingleObject(has_stopped, SHUTDOWN_WAIT * 1000);
+}
+
+void submit_level(const Level &level) {
+    EnterCriticalSection(&lock);
+
+    if (!is_stopped) {
+        if (!queue.empty() && queue.back().index == level.index)
+            queue.back() = level;
+        else
+            queue.push_back(level);
+        BOOL r = SetEvent(has_data);
+        if (!r) abort();
+    }
+
+    LeaveCriticalSection(&lock);
+}
+
+}
 
 using Windows::start_worker;
 using Windows::stop_worker;
