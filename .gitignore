@@ -4,6 +4,7 @@
 # Build system
 /config.dat
 /config.log
+/lib
 
 # Build system, GNUMake
 /Makefile
