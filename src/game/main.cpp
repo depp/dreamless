@@ -25,6 +25,12 @@ namespace Game {
 
 Main::Main() : m_initted(false), m_pending(1) { }
 
+Main::~Main() {
+    // The destructor is not really safe, it calls OpenGL functions.
+    // So we intentionally leak the object.
+    m_graphics.release();
+}
+
 void Main::event(sg_event &evt) {
     switch (evt.type) {
     case SG_EVENT_VIDEO_INIT:

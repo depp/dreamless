@@ -25,6 +25,7 @@ public:
     static Main *main;
 
     Main();
+    ~Main();
     void event(sg_event &evt);
     void draw(int width, int height, unsigned msec);
     void load_level(int level);
