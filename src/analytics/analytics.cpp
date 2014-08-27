@@ -4,15 +4,18 @@
 #include "analytics.hpp"
 #include "curl.hpp"
 #include "json.hpp"
+#include "sg/atomic.h"
 #include "sg/cvar.h"
 #include "sg/entry.h"
 #include "sg/log.h"
 #include "sg/thread.h"
 #include "sg/version.h"
 #include <vector>
+#include <memory>
 
 #if defined SG_THREAD_PTHREAD
 # include <pthread.h>
+# include <sys/time.h>
 # include <unistd.h>
 #elif defined SG_THREAD_WINDOWS
 # include <windows.h>
@@ -28,15 +31,17 @@ namespace {
 const int MIN_LEVEL_TIME = 5 * 1000;
 
 // Max retries before the analytics are shut down.
-const int MAX_RETRIES = 5;
+const int MAX_RETRIES = 2;
 
 // Delay between retries, in seconds.
 const int RETRY_DELAY = 10;
 
+// Wait at most five seconds to shut down.
+const int SHUTDOWN_WAIT = 5;
+
 sg_logger *logger;
-std::string endpoint;
-std::string session_id;
 std::vector<Level> queue;
+bool is_started, request_stop, is_stopped;
 
 struct Start {
     std::string computer_id;
@@ -86,24 +91,56 @@ namespace PThread {
 pthread_mutex_t mutex;
 pthread_cond_t cond;
 pthread_t thread;
-bool running;
+
+typedef std::pair<std::string, Start> Arg;
 
 void *worker(void *arg) {
-    (void) arg;
     int r;
-    std::string uri = endpoint + "level";
+
+    std::string endpoint, session_id;
+
+    {
+        std::unique_ptr<Arg> a(reinterpret_cast<Arg *>(arg));
+        endpoint = a->first;
+        auto json = to_json(a->second);
+        for (int retry = 0; ; retry++) {
+            if (retry > 0) {
+                sg_logs(logger, SG_LOG_WARN, "Retrying request...");
+                sleep(RETRY_DELAY);
+            }
+
+            auto result = Curl::post(endpoint + "start", json);
+            if (result.first) {
+                session_id = result.second;
+                break;
+            }
+            if (retry >= MAX_RETRIES) {
+                sg_logs(logger, SG_LOG_ERROR, "Too many analytics failures.");
+                is_stopped = true;
+                return nullptr;
+            }
+        }
+    }
+
+    r = pthread_mutex_lock(&mutex);
+    if (r) abort();
+    is_started = true;
+    r = pthread_mutex_unlock(&mutex);
+    if (r) abort();
+
+    sg_logs(logger, SG_LOG_INFO, "Analyticts startup successful.");
 
     while (true) {
         r = pthread_mutex_lock(&mutex);
         if (r) abort();
-        while (queue.empty() && !session_id.empty()) {
+        while (queue.empty() && !request_stop) {
             r = pthread_cond_wait(&cond, &mutex);
             if (r) abort();
         }
 
-        std::string sid = session_id;
         Level level;
-        if (!queue.empty()) {
+        bool done = queue.empty();
+        if (!done) {
             level = queue.front();
             queue.erase(queue.begin());
         }
@@ -111,9 +148,9 @@ void *worker(void *arg) {
         r = pthread_mutex_unlock(&mutex);
         if (r) abort();
 
-        if (sid.empty())
+        if (done)
             break;
-        auto json = to_json(level, sid);
+        auto json = to_json(level, session_id);
 
         int i;
         for (i = 0; i < MAX_RETRIES; i++) {
@@ -138,20 +175,18 @@ void *worker(void *arg) {
 
     r = pthread_mutex_lock(&mutex);
     if (r) abort();
-
-    queue.clear();
-    session_id.clear();
-
+    is_stopped = true;
+    pthread_cond_broadcast(&cond);
     r = pthread_mutex_unlock(&mutex);
     if (r) abort();
 
     return nullptr;
 }
 
-void start_worker() {
-    pthread_mutexattr_t mattr;
+void start_worker(const std::string &endpoint, const Start &start) {
     int r;
 
+    pthread_mutexattr_t mattr;
     r = pthread_mutexattr_init(&mattr);
     if (r) abort();
     r = pthread_mutexattr_settype(&mattr, PTHREAD_MUTEX_NORMAL);
@@ -161,36 +196,48 @@ void start_worker() {
     r = pthread_mutexattr_destroy(&mattr);
     if (r) abort();
 
-    r = pthread_cond_init(&cond, NULL);
+    r = pthread_cond_init(&cond, nullptr);
     if (r) abort();
 
-    if (!session_id.empty()) {
-        r = pthread_create(&thread, NULL, worker, nullptr);
-        if (r) abort();
-        running = true;
-    } else {
-        running = false;
-    }
+    pthread_attr_t threadattr;
+    r = pthread_attr_init(&threadattr);
+    if (r) abort();
+    r = pthread_attr_setdetachstate(&threadattr, PTHREAD_CREATE_DETACHED);
+    if (r) abort();
+    Arg *arg = new Arg(endpoint, start);
+    r = pthread_create(&thread, &threadattr,
+                       worker, reinterpret_cast<void *>(arg));
+    if (r) abort();
+    pthread_attr_destroy(&threadattr);
 }
 
 void stop_worker() {
-    if (!running)
-        return;
-
     int r;
 
     r = pthread_mutex_lock(&mutex);
     if (r) abort();
 
-    session_id.clear();
-    r = pthread_cond_broadcast(&cond);
-    if (r) abort();
+    if (is_started) {
+        request_stop = true;
+        r = pthread_cond_broadcast(&cond);
+        if (r) abort();
+
+        timeval tv;
+        gettimeofday(&tv, nullptr);
+        timespec ts;
+        ts.tv_sec = tv.tv_sec + SHUTDOWN_WAIT;
+        ts.tv_nsec = tv.tv_usec * 1000;
+        while (!is_stopped) {
+            r = pthread_cond_timedwait(&cond, &mutex, &ts);
+            if (r == ETIMEDOUT) {
+                sg_logs(logger, SG_LOG_ERROR, "Analytics timed out.");
+                break;
+            }
+            if (r) abort();
+        }
+    }
 
     r = pthread_mutex_unlock(&mutex);
-    if (r) abort();
-
-    void *retval;
-    r = pthread_join(thread, &retval);
     if (r) abort();
 }
 
@@ -200,7 +247,7 @@ void submit_level(const Level &level) {
     r = pthread_mutex_lock(&mutex);
     if (r) abort();
 
-    if (!session_id.empty()) {
+    if (!is_stopped) {
         if (!queue.empty() && queue.back().index == level.index)
             queue.back() = level;
         else
@@ -240,15 +287,15 @@ void Level::submit() const {
 
 void Analytics::init() {
     Curl::init();
+    logger = sg_logger_get("analytics");
 
+    std::string endpoint;
     {
         const char *uri;
         if (!sg_cvar_gets("analytics", "uri", &uri))
             uri = "http://analytics.moria.us/dreamless/";
         endpoint = uri;
     }
-
-    logger = sg_logger_get("analytics");
 
     Start s;
     {
@@ -268,15 +315,7 @@ void Analytics::init() {
         s.os_version = buf;
     }
 
-    auto result = Curl::post(endpoint + "start", to_json(s));
-    if (!result.first) {
-        start_worker(); // We still want to initialize the mutex.
-        sg_logs(logger, SG_LOG_ERROR, "failed to report to analytics server");
-        return;
-    }
-    session_id = std::move(result.second);
-    sg_logs(logger, SG_LOG_INFO, "have session ID");
-    start_worker();
+    start_worker(endpoint, s);
 }
 
 void Analytics::finish() {
