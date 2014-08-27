@@ -42,10 +42,10 @@ public:
     SpriteSheet();
     SpriteSheet(const std::string &dirname, const Sprite *sprites);
     SpriteSheet(const SpriteSheet &other) = delete;
-    SpriteSheet(SpriteSheet &&other) = default;
+    SpriteSheet(SpriteSheet &&other) = delete;
     ~SpriteSheet();
     SpriteSheet &operator=(const SpriteSheet &other) = delete;
-    SpriteSheet &operator=(SpriteSheet &&other) = default;
+    SpriteSheet &operator=(SpriteSheet &&other) = delete;
 
     /// Get the texture object containing the sprites.
     GLuint texture() const { return m_texture.tex; }
