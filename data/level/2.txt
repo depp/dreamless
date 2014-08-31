@@ -1,5 +1,5 @@
 actions: J
-shadow: Don't touch anything.  If you mess with the real world, you mess with the physical world too.
+shadow: Don't touch anything.  If you mess with the dream world, you mess with the physical world too.
 girl: Who are those guys?
 shadow: The dreamless.  Dreadful, really.
 -----
