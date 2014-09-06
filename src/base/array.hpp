@@ -4,6 +4,7 @@
 #ifndef LD_BASE_ARRAY_HPP
 #define LD_BASE_ARRAY_HPP
 #include "sg/opengl.h"
+#include "sg/entry.h"
 #include <limits>
 #include <new>
 #include <cstdlib>
@@ -158,7 +159,7 @@ template<class T>
 void Array<T>::reserve(std::size_t total) {
     std::size_t rounded;
     if (total > std::numeric_limits<int>::max())
-        throw std::bad_alloc();
+        sg_sys_abort("out of memory");
     if (m_alloc >= total)
         return;
     rounded = total - 1;
@@ -170,7 +171,7 @@ void Array<T>::reserve(std::size_t total) {
     rounded += 1;
     T *newdata = static_cast<T *>(std::realloc(m_data, sizeof(T) * rounded));
     if (!newdata)
-        throw std::bad_alloc();
+        sg_sys_abort("out of memory");
     m_data = newdata;
     m_alloc = rounded;
 }
@@ -179,7 +180,7 @@ template<class T>
 T *Array<T>::insert(std::size_t count) {
     if (count > m_alloc - m_count) {
         if (count > std::numeric_limits<int>::max() - m_count)
-            throw std::bad_alloc();
+            sg_sys_abort("out of memory");
         reserve(count + m_count);
     }
     int pos = m_count;
