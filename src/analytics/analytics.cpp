@@ -368,7 +368,8 @@ void start_worker(const std::string &endpoint, const Start &start) {
     if (!has_stopped) abort();
 
     Arg *arg = new Arg(endpoint, start);
-    HANDLE thread = CreateThread(nullptr, 0, worker, reinterpret_cast<void *>(arg), 0, NULL);
+    HANDLE thread = CreateThread(nullptr, 0, worker,
+                                 reinterpret_cast<void *>(arg), 0, NULL);
 }
 
 void stop_worker() {
