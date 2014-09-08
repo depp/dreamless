@@ -15,6 +15,7 @@
 #include "base/sprite.hpp"
 #include "base/vec.hpp"
 
+#include "sg/record.h"
 #include "sg/util.h"
 
 #include <cstring>
@@ -82,6 +83,7 @@ struct System::Data {
 
     // Target textures and framebuffers.
     int m_target_width, m_target_height;
+    IRect m_target_rect;
     GLuint m_target_tex[TARGET_COUNT];
     GLuint m_target_fbuf[TARGET_COUNT];
 
@@ -258,6 +260,10 @@ void System::Data::target_finalize() {
 
     IVec texpos((m_target_width - width) / 2,
                 (m_target_height - height) / 2);
+    m_target_rect.x0 = texpos.x;
+    m_target_rect.x1 = texpos.x + width;
+    m_target_rect.y0 = texpos.y;
+    m_target_rect.y1 = texpos.y + height;
     make_xform(m_xform_world, m_camera - texpos,
                m_target_width, m_target_height);
     make_xform(m_xform_screen, IVec::zero() - texpos,
@@ -553,6 +559,13 @@ void System::Data::draw_layers() {
     sprite_draw(Layer::BOTH);
     sprite_draw(Layer::INTERFACE);
     text_draw();
+
+    glReadBuffer(GL_COLOR_ATTACHMENT0);
+    sg_record_frame_end(
+        m_target_rect.x0,
+        m_target_rect.y0,
+        m_target_rect.x1 - m_target_rect.x0,
+        m_target_rect.y1 - m_target_rect.y0);
 }
 
 void System::Data::draw_reality() {
