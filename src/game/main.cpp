@@ -6,6 +6,7 @@
 #include "sg/entry.h"
 #include "sg/event.h"
 #include "sg/mixer.h"
+#include "sg/record.h"
 #include "sg/keycode.h"
 #include "base/sprite.hpp"
 #include "graphics/system.hpp"
@@ -125,6 +126,21 @@ void Main::event_key(int key, bool state) {
     case KEY_PageDown:
         button = Button::NEXTLEVEL;
         break;
+
+    case KEY_F10:
+        if (state)
+            sg_record_start(m_frametime + Defs::FRAMETIME);
+        return;
+
+    case KEY_F11:
+        if (state)
+            sg_record_stop();
+        return;
+
+    case KEY_F12:
+        if (state)
+            sg_record_screenshot();
+        return;
 
     default:
         return;
