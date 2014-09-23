@@ -7,12 +7,12 @@
 #include <string>
 namespace Base {
 enum class Orientation;
-class IVec;
+struct IVec;
 }
 namespace Graphics {
 enum class Layer;
 class AnySprite;
-class Color;
+struct Color;
 
 enum class HAlign { LEFT, CENTER, RIGHT };
 enum class VAlign { BOTTOM, CENTER, TOP };
