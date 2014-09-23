@@ -65,6 +65,17 @@ void Image::copy_from(const Image &other, int x, int y) {
                 orp[4 * (x + xi) + 3] = 255;
             }
         }
+    } else if (m_pixbuf.format == SG_RGBA && other->format == SG_RGBX) {
+        for (size_t yi = 0; yi < yn; yi++) {
+            const unsigned char *irp = ip + irb * yi;
+            unsigned char *orp = op + orb * (yi + y);
+            for (size_t xi = 0; xi < xn; xi++) {
+                orp[4 * (x + xi) + 0] = irp[4 * xi + 0];
+                orp[4 * (x + xi) + 1] = irp[4 * xi + 1];
+                orp[4 * (x + xi) + 2] = irp[4 * xi + 2];
+                orp[4 * (x + xi) + 3] = 255;
+            }
+        }
     } else {
         sg_sys_abortf(
             "mismatched pixel format: %s -> %s",
@@ -124,7 +135,7 @@ const FormatInfo FORMAT_INFO[SG_PIXBUF_NFORMAT] = {
     { GL_R8,    GL_RED,  GL_UNSIGNED_BYTE },
     { GL_RG8,   GL_RG,   GL_UNSIGNED_BYTE },
     { GL_RGBA8, GL_RGB,  GL_UNSIGNED_BYTE },
-    { GL_RGBA8, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8 },
+    { GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE },
     { GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE }
 };
 
