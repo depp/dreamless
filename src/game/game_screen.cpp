@@ -59,7 +59,7 @@ GameScreen::GameScreen(const ControlState &ctl, int levelnum, unsigned time)
         }
     }
     for (int i = 0; i < 2; i++) {
-        float angle = std::atan(1.0f) * 8.0 * Base::Random::gnextf();
+        float angle = std::atan(1.0f) * 8.0f * Base::Random::gnextf();
         m_noise[2*i+0] = 0.0f;
         m_noise[2*i+1] = 0.0f;
         m_noisevel[2*i+0] = std::cos(angle) * NOISE_SPEED;

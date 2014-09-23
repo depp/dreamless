@@ -138,8 +138,8 @@ Texture Texture::load(const Image &image) {
     tex.iheight = image->iheight;
     tex.twidth = image->pwidth;
     tex.theight = image->pheight;
-    tex.scale[0] = 1.0 / tex.twidth;
-    tex.scale[1] = 1.0 / tex.theight;
+    tex.scale[0] = (float) (1.0 / tex.twidth);
+    tex.scale[1] = (float) (1.0 / tex.theight);
 
     glGenTextures(1, &tex.tex);
     glBindTexture(GL_TEXTURE_2D, tex.tex);
@@ -175,8 +175,8 @@ Texture Texture::load_1d(const Image &image) {
     tex.iheight = 1;
     tex.twidth = image->pwidth;
     tex.theight = 1;
-    tex.scale[0] = 1.0 / tex.twidth;
-    tex.scale[1] = 1.0;
+    tex.scale[0] = (float) (1.0 / tex.twidth);
+    tex.scale[1] = 1.0f;
 
     glGenTextures(1, &tex.tex);
     glBindTexture(GL_TEXTURE_1D, tex.tex);

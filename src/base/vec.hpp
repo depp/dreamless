@@ -72,7 +72,9 @@ struct IVec {
     { }
 
     static IVec zero() { return IVec(0, 0); }
-    explicit operator FVec() const { return FVec(x, y); }
+    explicit operator FVec() const {
+		return FVec(static_cast<float>(x), static_cast<float>(y));
+	}
 };
 
 inline IVec operator+(IVec u, IVec v) { return IVec(u.x + v.x, u.y + v.y); }

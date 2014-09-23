@@ -63,16 +63,18 @@ FVec Camera::center() const {
 
 void Camera::calculate_clamp() {
     if (m_bounds.width() <= m_camera.width()) {
-        m_clamp.x0 = m_clamp.x1 = (m_bounds.x0 + m_bounds.x1) >> 1;
+        m_clamp.x0 = m_clamp.x1 =
+			static_cast<float>((m_bounds.x0 + m_bounds.x1) >> 1);
     } else {
-        m_clamp.x0 = m_bounds.x0 - m_camera.x0;
-        m_clamp.x1 = m_bounds.x1 - m_camera.x1;
+        m_clamp.x0 = static_cast<float>(m_bounds.x0 - m_camera.x0);
+        m_clamp.x1 = static_cast<float>(m_bounds.x1 - m_camera.x1);
     }
     if (m_bounds.height() <= m_camera.height()) {
-        m_clamp.y0 = m_clamp.y1 = (m_bounds.y0 + m_bounds.y1) >> 1;
+        m_clamp.y0 = m_clamp.y1 =
+			static_cast<float>((m_bounds.y0 + m_bounds.y1) >> 1);
     } else {
-        m_clamp.y0 = m_bounds.y0 - m_camera.y0;
-        m_clamp.y1 = m_bounds.y1 - m_camera.y1;
+        m_clamp.y0 = static_cast<float>(m_bounds.y0 - m_camera.y0);
+        m_clamp.y1 = static_cast<float>(m_bounds.y1 - m_camera.y1);
     }
 }
 

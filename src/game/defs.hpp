@@ -86,7 +86,9 @@ struct Defs {
         // Note: this won't be correct outside the first quadrant.
         // But the level is all within the first quadrant, so it
         // doesn't matter.
-        return FVec(fmod(pos.x, TILESZ), fmod(pos.y, TILESZ));
+        return FVec(
+			std::fmod(pos.x, static_cast<float>(TILESZ)),
+			std::fmod(pos.y, static_cast<float>(TILESZ)));
     }
 };
 

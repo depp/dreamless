@@ -80,7 +80,7 @@ public:
     /// Bind the OpenGL attribute.
     void set_attrib(GLint attrib);
     /// Get the number of vertexes.
-    int size() const { return m_array.size(); }
+    unsigned size() const { return m_array.size(); }
     /// Determine whether the array is empty.
     bool empty() const { return m_array.empty(); }
 };

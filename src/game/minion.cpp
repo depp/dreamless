@@ -24,7 +24,7 @@ const Walker::Stats Minion::STATS = {
     25, 400.0f, 200.0f, 650.0f, true,
 
     // step time
-    0.3
+    0.3f
 };
 
 Minion::Minion(GameScreen &scr, IVec pos, int direction)

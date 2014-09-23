@@ -47,10 +47,10 @@ enum class Target {
 };
 
 void make_xform(float *xform, IVec origin, int width, int height) {
-    xform[0] = 2.0 / width;
-    xform[1] = 2.0 / height;
-    xform[2] = -1.0 - xform[0] * origin.x;
-    xform[3] = -1.0 - xform[1] * origin.y;
+    xform[0] = static_cast<float>(2.0 / width);
+    xform[1] = static_cast<float>(2.0 / height);
+    xform[2] = static_cast<float>(-1.0 - xform[0] * origin.x);
+    xform[3] = static_cast<float>(-1.0 - xform[1] * origin.y);
 }
 
 void make_fullscreen_quad(Array<float[4]> &arr, FRect tex) {
@@ -254,8 +254,8 @@ void System::Data::target_finalize() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         m_target_width = fwidth;
         m_target_height = fheight;
-        m_pixscale[0] = m_target_width;
-        m_pixscale[1] = m_target_height;
+        m_pixscale[0] = static_cast<float>(m_target_width);
+        m_pixscale[1] = static_cast<float>(m_target_height);
     }
 
     IVec texpos((m_target_width - width) / 2,
@@ -273,7 +273,8 @@ void System::Data::target_finalize() {
         m_array_composite,
         FRect(0.0f, 0.0f, 1.0f, 1.0f));
 
-    float xs = 1.0f / m_target_width, ys = 1.0 / m_target_height;
+	float xs = static_cast<float>(1.0 / m_target_width);
+	float ys = static_cast<float>(1.0 / m_target_height);
     make_fullscreen_quad(
         m_array_scale,
         FRect(texpos.x * xs,
@@ -527,11 +528,17 @@ void System::Data::text_draw() {
     unsigned pos = 0;
     Color shadow = Color::palette(1);
     for (auto &run : m_text_run) {
-        glUniform2f(prog->u_vertoff, run.pos.x + 1, run.pos.y - 1);
+        glUniform2f(
+			prog->u_vertoff,
+			static_cast<float>(run.pos.x + 1),
+			static_cast<float>(run.pos.y - 1));
         glUniform4fv(prog->u_color, 1, shadow.v);
         glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
 
-        glUniform2f(prog->u_vertoff, run.pos.x, run.pos.y);
+        glUniform2f(
+			prog->u_vertoff,
+			static_cast<float>(run.pos.x),
+			static_cast<float>(run.pos.y));
         glUniform4fv(prog->u_color, 1, run.color.v);
         glDrawArrays(GL_TRIANGLES, pos * 6, run.length * 6);
 

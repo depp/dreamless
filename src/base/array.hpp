@@ -67,8 +67,8 @@ template<class T>
 class Array {
 private:
     T *m_data;
-    int m_count;
-    int m_alloc;
+    unsigned m_count;
+    unsigned m_alloc;
     bool m_dirty;
     GLuint m_buffer;
 
@@ -81,7 +81,7 @@ public:
     Array &operator=(Array &&other);
 
     /// Get the number of elements in the array.
-    int size() const;
+    unsigned size() const;
     /// Determine whether the array is empty.
     bool empty() const;
     /// Set the number of elements in the array to zero.
@@ -141,7 +141,7 @@ Array<T> &Array<T>::operator=(Array<T> &&other) {
 }
 
 template<class T>
-int Array<T>::size() const {
+unsigned Array<T>::size() const {
     return m_count;
 }
 
@@ -158,9 +158,9 @@ void Array<T>::clear() {
 template<class T>
 void Array<T>::reserve(std::size_t total) {
     std::size_t rounded;
-    if (total > std::numeric_limits<int>::max())
+    if (total > std::numeric_limits<unsigned>::max())
         sg_sys_abort("out of memory");
-    if (m_alloc >= total)
+    if (static_cast<size_t>(m_alloc) >= total)
         return;
     rounded = total - 1;
     rounded |= rounded >> 1;
@@ -179,7 +179,7 @@ void Array<T>::reserve(std::size_t total) {
 template<class T>
 T *Array<T>::insert(std::size_t count) {
     if (count > m_alloc - m_count) {
-        if (count > std::numeric_limits<int>::max() - m_count)
+        if (count > std::numeric_limits<unsigned>::max() - m_count)
             sg_sys_abort("out of memory");
         reserve(count + m_count);
     }

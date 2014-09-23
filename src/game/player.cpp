@@ -24,7 +24,7 @@ const Walker::Stats Player::STATS_PHYSICAL = {
     25, 400.0f, 280.0f, 1200.0f, false,
 
     // step time
-    0.16
+    0.16f
 };
 
 const Walker::Stats Player::STATS_DREAM = {
@@ -37,7 +37,7 @@ const Walker::Stats Player::STATS_DREAM = {
     25, 400.0f, 300.0f, 800.0f, true,
 
     // step time
-    0.20
+    0.20f
 };
 
 Player::Player(GameScreen &scr, IVec pos)
