@@ -358,7 +358,7 @@ void System::Data::sprite_draw(Layer layer) {
     glUniform1i(prog->u_texture, 0);
 
     const float *xform = nullptr;
-    Color color = { 1.0, 1.0, 1.0, 1.0 };
+    Color color = {{ 1.0, 1.0, 1.0, 1.0 }};
     switch (layer) {
     case Layer::TILE:
     case Layer::PHYSICAL:
