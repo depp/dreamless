@@ -203,9 +203,9 @@ void Player::hit_item(Item &item) {
 }
 
 void Player::show_dialogue(int index) {
-    int limit = m_screen.level().dialogue().size();
+    std::size_t limit = m_screen.level().dialogue().size();
     m_screen.analytics().talked_to_shadow = true;
-    if (index > limit) {
+    if ((std::size_t) index > limit) {
         m_dialogue = -1;
     } else {
         m_dialogue = index;

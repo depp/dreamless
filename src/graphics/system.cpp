@@ -399,12 +399,14 @@ void System::Data::text_put(IVec pos, HAlign halign, VAlign valign, int width,
     int maxc = width >= 0 ?
         width / csz.x : std::numeric_limits<int>::max();
 
+    if (str.size() > static_cast<size_t>(std::numeric_limits<int>::max()))
+        Log::abort("string too long");
     const char *cpos = str.data(), *cend = cpos + str.size();
     int ypos = 0;
     unsigned runsize = 0;
     while (cpos != cend) {
         // Get the next line of text
-        int rem = cend - cpos;
+        int rem = static_cast<int>(cend - cpos);
         const char *line_end;
         if (rem > maxc) {
             line_end = nullptr;
@@ -441,7 +443,7 @@ void System::Data::text_put(IVec pos, HAlign halign, VAlign valign, int width,
             }
         }
 
-        int line_len = line_end - cpos;
+        int line_len = static_cast<int>(line_end - cpos);
         int offset = 0;
         switch (halign) {
         case HAlign::LEFT:

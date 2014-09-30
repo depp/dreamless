@@ -113,6 +113,9 @@ typedef std::pair<const char *, int> Line;
 
 std::vector<Line> read_lines(Base::Data &filedata) {
     std::vector<Line> lines;
+    if (filedata.size() >
+        static_cast<std::size_t>(std::numeric_limits<int>::max()))
+        Log::error("level too large");
     const char *ptr = static_cast<const char *>(filedata.ptr());
     const char *end = ptr + filedata.size();
     while (ptr != end) {
@@ -121,7 +124,7 @@ std::vector<Line> read_lines(Base::Data &filedata) {
         const char *eol = nl ? nl : end;
         while (eol != ptr && eol[-1] == ' ')
             eol--;
-        lines.push_back(Line(ptr, eol - ptr));
+        lines.push_back(Line(ptr, static_cast<int>(eol - ptr)));
         if (nl)
             ptr = nl +1;
         else
@@ -204,7 +207,9 @@ void Level::load(const std::string &name) {
         lines.erase(find_break(lines), lines.end());
     }
 
-    int height = lines.size();
+    if (lines.size() > std::numeric_limits<int>::max())
+        Log::abort("level too large");
+    int height = static_cast<int>(lines.size());
     int width = 0;
     for (auto &line : lines) {
         if (line.second > width)

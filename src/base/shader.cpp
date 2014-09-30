@@ -29,7 +29,7 @@ GLuint load_shader(const std::string &name, GLenum type) {
 
     GLuint shader = glCreateShader(type);
     darr[0] = static_cast<const char *>(data.ptr());
-    larr[0] = data.size();
+    larr[0] = static_cast<int>(data.size()); // See MAX_SIZE
     glShaderSource(shader, 1, darr, larr);
     glCompileShader(shader);
     GLint flag;

@@ -169,11 +169,13 @@ void Array<T>::reserve(std::size_t total) {
     rounded |= rounded >> 8;
     rounded |= rounded >> 16;
     rounded += 1;
+    if (rounded >= (unsigned) -1)
+        sg_sys_abort("out of memory");
     T *newdata = static_cast<T *>(std::realloc(m_data, sizeof(T) * rounded));
     if (!newdata)
         sg_sys_abort("out of memory");
     m_data = newdata;
-    m_alloc = rounded;
+    m_alloc = (unsigned) rounded;
 }
 
 template<class T>
